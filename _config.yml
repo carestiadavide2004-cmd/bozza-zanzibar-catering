@@ -1,0 +1,8 @@
+# Pagine pubblicate: i file interni restano fuori
+exclude:
+  - DIREZIONE.md
+  - credits.md
+  - README.md
+  - _strumenti
+  - _design.md
+  - _controllo

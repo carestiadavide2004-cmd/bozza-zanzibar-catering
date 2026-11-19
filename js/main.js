@@ -1,0 +1,873 @@
+/* =====================================================================
+   Zanzibar · Catering & Eventi — main.js
+   Testi e dati arrivano da config.js (window.SITO).
+   Animazioni con GSAP + ScrollTrigger + SplitText (in js/vendor, locali).
+   Regole: solo transform / opacity / clip-path, nessuno scroll-jacking,
+   ricalcoli solo quando cambia la LARGHEZZA della finestra.
+   ===================================================================== */
+(() => {
+  'use strict';
+
+  const S = window.SITO || {};
+  const D = document, H = D.documentElement, B = D.body;
+  const $ = (s, r = D) => r.querySelector(s);
+  const $$ = (s, r = D) => [...r.querySelectorAll(s)];
+  const BASE = H.dataset.base || '';
+  const CHIAVE = B.dataset.evento || '';
+  const RIDOTTO = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const MQ_TEL = matchMedia('(max-width: 767px), (orientation: portrait)');
+  const PUNTATORE = matchMedia('(hover: hover) and (pointer: fine)');
+  const gsap = window.gsap, ScrollTrigger = window.ScrollTrigger, SplitText = window.SplitText;
+  const ANIM = !RIDOTTO && !!(gsap && ScrollTrigger);
+  if (!ANIM) H.classList.add('no-anim');
+  if (gsap && ScrollTrigger) {
+    gsap.registerPlugin(ScrollTrigger);
+    if (SplitText) gsap.registerPlugin(SplitText);
+    // niente ricalcoli quando si apre la tastiera o cambia la barra del browser
+    ScrollTrigger.config({ ignoreMobileResize: true, autoRefreshEvents: 'visibilitychange,DOMContentLoaded,load' });
+  }
+
+  /* ---------- Utilità ---------- */
+  const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+  const enfasi = s => esc(s).replace(/\*(.+?)\*([,.;:!?]+)/g, '*$1$2*').replace(/\*(.+?)\*/g, '<em>$1</em>');
+  const prendi = p => p.split('.').reduce((o, k) => (o == null ? o : o[k]), S);
+  const due = n => String(n).padStart(2, '0');
+  const C = S.contatti || {};
+  const EVENTI = S.eventi || [];
+  const EVENTO = EVENTI.find(e => e.chiave === CHIAVE) || null;
+  const LARGHEZZE = [640, 1280, 1920, 2560];
+  const ICONA = {
+    freccia: '<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M1 8h13M9.5 3.5 14 8l-4.5 4.5" fill="none" stroke="currentColor" stroke-width="1.4"/></svg>',
+    sx: '<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M10.5 2.5 5 8l5.5 5.5" fill="none" stroke="currentColor" stroke-width="1.5"/></svg>',
+    dx: '<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M5.5 2.5 11 8l-5.5 5.5" fill="none" stroke="currentColor" stroke-width="1.5"/></svg>',
+    x: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 5l14 14M19 5 5 19" fill="none" stroke="currentColor" stroke-width="1.6"/></svg>',
+  };
+
+  // Ricalcoli SOLO quando cambia la larghezza (non con tastiera o barra del browser)
+  const allaLarghezza = [];
+  let ultimaL = innerWidth, timerL = 0;
+  addEventListener('resize', () => {
+    if (innerWidth === ultimaL) return;
+    ultimaL = innerWidth;
+    clearTimeout(timerL);
+    timerL = setTimeout(() => {
+      allaLarghezza.forEach(f => f());
+      if (ANIM) ScrollTrigger.refresh();
+    }, 160);
+  });
+
+  /* ---------- Foto ---------- */
+  const fotoDi = (gruppo, nome) => (S.foto?.[gruppo] || []).find(f => f[0] === nome);
+  const larghezzeDi = w => LARGHEZZE.filter(x => x <= w);
+  const srcset = (g, [f, w]) => larghezzeDi(w).map(x => `${BASE}assets/img/${g}/${f}-${x}.webp ${x}w`).join(', ');
+  const src = (g, [f, w], pref = 1280) => { const ws = larghezzeDi(w); return `${BASE}assets/img/${g}/${f}-${ws.includes(pref) ? pref : ws[ws.length - 1]}.webp`; };
+  function img(g, foto, { sizes = '100vw', cls = '', pref = 1280, lazy = true, stile = '' } = {}) {
+    const [, w, h, alt] = foto;
+    return `<img${cls ? ` class="${cls}"` : ''} src="${src(g, foto, pref)}" srcset="${srcset(g, foto)}" sizes="${sizes}" width="${w}" height="${h}" alt="${esc(alt)}"${lazy ? ' loading="lazy"' : ''} decoding="async" draggable="false"${stile ? ` style="${stile}"` : ''}>`;
+  }
+
+  /* ---------- Collegamenti ---------- */
+  const indirizzo = () => `${C.indirizzo}, ${C.cap} ${C.citta} (${C.provincia})`;
+  const hrefEvento = e => `${BASE}eventi/${e.pagina}.html`;
+  function testoWa(tipo, data, ospiti) {
+    let t = S.whatsappMessaggio || 'Ciao! Vorrei un preventivo.';
+    const ev = tipo || EVENTO?.nome;
+    if (ev) t += `\nTipo di evento: ${ev}`;
+    if (data) t += `\nData: ${data.split('-').reverse().join('/')}`;
+    if (ospiti) t += `\nOspiti: circa ${ospiti}`;
+    return t;
+  }
+  const linkWa = (...a) => `https://wa.me/${C.whatsapp || ''}?text=${encodeURIComponent(testoWa(...a))}`;
+
+  /* =====================================================================
+     1. TESTI E DATI DA config.js
+     ===================================================================== */
+  function riempi() {
+    $$('[data-t]').forEach(el => { const v = prendi(el.dataset.t); if (v != null) el.textContent = v; });
+    $$('[data-h]').forEach(el => { const v = prendi(el.dataset.h); if (v != null) el.innerHTML = enfasi(v); });
+    $$('[data-ev]').forEach(el => { const v = EVENTO?.[el.dataset.ev]; if (v != null) el.innerHTML = enfasi(v); });
+    $$('[data-indirizzo]').forEach(el => { el.textContent = indirizzo(); });
+    $$('[data-anno]').forEach(el => { el.textContent = new Date().getFullYear(); });
+    $$('[data-link]').forEach(a => {
+      const t = a.dataset.link;
+      if (t === 'tel') a.href = `tel:${C.telefonoLink || ''}`;
+      else if (t === 'mail') a.href = `mailto:${C.email || ''}`;
+      else if (t === 'mail-privacy') a.href = `mailto:${S.legale?.emailPrivacy || ''}`;
+      else if (t === 'wa') a.href = linkWa();
+      else if (t === 'maps') a.href = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(indirizzo())}`;
+      else if (S.social?.[t]) a.href = S.social[t];
+      if (!/^(tel|mail)/.test(t)) { a.target = '_blank'; a.rel = 'noopener'; }
+    });
+  }
+
+  /* =====================================================================
+     2. CONTENUTI RIPETUTI (liste, card, strisce…)
+     ===================================================================== */
+  const mini = e => `${BASE}assets/img/eventi/${e.chiave}-mini-200.webp`;
+  const card = (e, i) => `
+    <li class="card" data-card><a class="card__a" href="${hrefEvento(e)}" data-anteprima="${BASE}assets/video/${e.chiave}-anteprima.mp4">
+      <div class="card__media"><div class="card__zoom" style="position:absolute;inset:0">
+        <img class="card__img" src="${BASE}assets/img/eventi/${e.chiave}-card-480.webp" srcset="${BASE}assets/img/eventi/${e.chiave}-card-480.webp 480w, ${BASE}assets/img/eventi/${e.chiave}-card-720.webp 720w" sizes="(min-width: 1100px) 30vw, (min-width: 640px) 46vw, 78vw" width="720" height="900" alt="" loading="lazy" decoding="async">
+      </div></div>
+      <div class="card__testo"><span class="card__n">${due(i + 1)}</span><h3 class="card__nome">${esc(e.nome)}</h3><p class="card__desc">${esc(e.breve)}</p><span class="card__vai">Scopri ${ICONA.freccia}</span></div>
+    </a></li>`;
+
+  function rendi() {
+    const r = n => $(`[data-render="${n}"]`);
+    let el;
+    if ((el = r('tendina'))) el.innerHTML = EVENTI.map(e => `<li><a class="tendina__a" href="${hrefEvento(e)}"${e.chiave === CHIAVE ? ' aria-current="page"' : ''}><img class="tendina__img" src="${mini(e)}" width="200" height="250" alt="" loading="lazy" decoding="async"><span><span class="tendina__nome">${esc(e.nome)}</span><span class="tendina__desc">${esc(e.breve)}</span></span></a></li>`).join('');
+    if ((el = r('mm-eventi'))) el.innerHTML = EVENTI.map(e => `<li><a href="${hrefEvento(e)}"><img src="${mini(e)}" width="200" height="250" alt="" loading="lazy" decoding="async"><span><strong>${esc(e.nome)}</strong><span>${esc(e.breve)}</span></span></a></li>`).join('');
+    if ((el = r('pie-eventi'))) el.innerHTML = EVENTI.map(e => `<li><a href="${hrefEvento(e)}">${esc(e.nome)}</a></li>`).join('');
+    if ((el = r('card-eventi'))) el.innerHTML = EVENTI.map(card).join('');
+    if ((el = r('altri-eventi'))) el.innerHTML = EVENTI.filter(e => e.chiave !== CHIAVE).map(card).join('');
+
+    // introduzione (home o evento)
+    if ((el = r('intro-foto'))) {
+      const g = EVENTO ? EVENTO.chiave : 'home';
+      const f = fotoDi(g, EVENTO ? EVENTO.intro.foto : S.home?.intro?.foto);
+      if (f) el.innerHTML = img(g, f, { sizes: '(min-width: 900px) 40vw, 92vw', pref: 1280 });
+    }
+
+    // passi
+    if ((el = r('passi'))) {
+      const lista = EVENTO ? EVENTO.passi : S.home?.passi?.lista || [];
+      el.innerHTML = lista.map(([t, p], i) => `<li class="passo"><span class="passo__n">${due(i + 1)}</span><h3 class="passo__t">${esc(t)}</h3><p class="passo__p">${esc(p)}</p></li>`).join('');
+    }
+
+    // recensioni di esempio
+    if ((el = r('recensioni'))) el.innerHTML = (S.home?.recensioni?.lista || []).map(([q, chi, ev]) => `<li><figure class="rec"><blockquote class="rec__q"><p>“${esc(q)}”</p></blockquote><figcaption class="rec__chi"><strong>${esc(chi)}</strong> · ${esc(ev)}</figcaption></figure></li>`).join('');
+
+    // cosa possiamo curare
+    if ((el = r('cura')) && EVENTO) el.innerHTML = EVENTO.cura.map(([t, p], i) => `<li class="cura__i" data-rivela><span class="cura__n">${due(i + 1)}</span><h3 class="cura__t">${esc(t)}</h3><p class="cura__p">${esc(p)}</p></li>`).join('');
+
+    // proposta di esempio
+    if ((el = r('proposta')) && EVENTO) {
+      const pe = S.paginaEvento || {};
+      el.innerHTML = `<span class="menu-carta__etichetta">${esc(pe.propostaEtichetta || 'Proposta di esempio')}</span>
+        <p class="menu-carta__titolo">${esc(EVENTO.nome)}</p>
+        ${EVENTO.proposta.map(([t, piatti]) => `<div class="menu-carta__sez"><h3>${esc(t)}</h3><ul>${piatti.map(p => `<li>${esc(p)}</li>`).join('')}</ul></div>`).join('')}
+        <p class="menu-carta__nota">${esc(pe.propostaNota || '')}</p>`;
+    }
+
+    // domande frequenti
+    if ((el = r('faq')) && EVENTO) el.innerHTML = EVENTO.faq.map(([q, a]) => `<details class="faq__i"><summary class="faq__q">${esc(q)}<span class="mm__piu" aria-hidden="true"></span></summary><p class="faq__r">${esc(a)}</p></details>`).join('');
+
+    // zona servita e orari
+    if ((el = r('zona'))) el.textContent = S.zona?.testo || '';
+
+    // strisce di foto
+    if ((el = r('strisce'))) {
+      const g = EVENTO ? EVENTO.chiave : 'home';
+      const escludi = EVENTO ? EVENTO.intro.foto : S.home?.intro?.foto;
+      const lista = (S.foto?.[g] || []).filter(f => f[0] !== escludi);
+      el.dataset.gruppo = g;
+      el._foto = lista;
+      const righe = [[], []];
+      lista.forEach((f, i) => righe[i % 2].push([f, i]));
+      const alt = [[230, 400], [180, 310]]; // altezze telefono / computer (come nel CSS)
+      el.innerHTML = righe.map((riga, ri) => `
+        <div class="striscia striscia--${ri ? 'b' : 'a'}" data-dir="${ri ? 1 : -1}">
+          <div class="striscia__vista"><div class="striscia__in"><ul class="striscia__traccia">
+            ${riga.map(([f, i]) => {
+              const k = f[1] / f[2];
+              const sizes = `(max-width: 767px) ${Math.round(alt[ri][0] * k)}px, ${Math.round(alt[ri][1] * k)}px`;
+              return `<li class="striscia__item"><button class="striscia__btn" type="button" data-lb="${i}" aria-label="Apri la foto: ${esc(f[3])}">${img(g, f, { sizes, pref: 640, stile: `--r-img:${f[1]}/${f[2]}` })}</button></li>`;
+            }).join('')}
+          </ul></div></div>
+          <button class="striscia__freccia striscia__freccia--prev" type="button" aria-label="Foto precedenti">${ICONA.sx}</button>
+          <button class="striscia__freccia striscia__freccia--next" type="button" aria-label="Foto successive">${ICONA.dx}</button>
+        </div>`).join('');
+    }
+  }
+
+  /* =====================================================================
+     3. NOME GIGANTE DA BORDO A BORDO
+     Misura i bordi reali dell'inchiostro della prima e dell'ultima lettera
+     e porta il nome a toccare i margini, uguali a destra e a sinistra.
+     ===================================================================== */
+  const tela = D.createElement('canvas').getContext('2d');
+  function preparaGiganti() {
+    $$('[data-giant]').forEach(g => {
+      const tipo = g.dataset.giant;
+      const testo = tipo === 'evento' ? EVENTO?.titolo : S.nome;
+      const p = $('.giant__parola', g);
+      if (!p || !testo) return;
+      p.innerHTML = [...testo].map(c => `<span class="ch"><span class="ch__in">${c === ' ' ? '&nbsp;' : esc(c)}</span></span>`).join('');
+      p.setAttribute('aria-hidden', 'true');
+    });
+  }
+  function adatta(g) {
+    const p = $('.giant__parola', g);
+    const lettere = p ? $$('.ch', p) : [];
+    if (!lettere.length) return;
+    const cont = g.parentElement;
+    const cs = getComputedStyle(cont);
+    const disp = cont.clientWidth - parseFloat(cs.paddingLeft) - parseFloat(cs.paddingRight);
+    const st = getComputedStyle(p);
+    const misura = fs => {
+      p.style.fontSize = fs + 'px';
+      tela.font = `${st.fontStyle} ${st.fontWeight} ${fs}px ${st.fontFamily}`;
+      // crenatura tra le coppie di lettere (le lettere separate la perderebbero)
+      lettere.forEach((l, i) => {
+        const a = l.textContent, b = lettere[i + 1]?.textContent;
+        l.style.marginRight = b ? ((tela.measureText(a + b).width - tela.measureText(a).width - tela.measureText(b).width) / fs).toFixed(4) + 'em' : '';
+      });
+      const pr = lettere[0], ul = lettere[lettere.length - 1];
+      const sx = pr.offsetLeft - tela.measureText(pr.textContent).actualBoundingBoxLeft;
+      const dx = ul.offsetLeft + tela.measureText(ul.textContent).actualBoundingBoxRight;
+      return { sx, w: dx - sx };
+    };
+    let fs = 100, m = misura(fs);
+    fs = fs * disp / m.w; m = misura(fs);          // seconda passata: la dimensione ottica cambia le larghezze
+    fs = fs * disp / m.w;
+    fs = Math.min(fs, innerHeight * (g.dataset.max ? +g.dataset.max : 0.42));
+    m = misura(fs);
+    const sposta = -m.sx + Math.max(0, (disp - m.w) / 2);
+    p.style.setProperty('--sposta', sposta.toFixed(2) + 'px');
+    g.style.setProperty('--fit-px', fs.toFixed(1) + 'px');
+    g.parentElement.style.setProperty('--fit-px', fs.toFixed(1) + 'px');
+    g.classList.add('is-pronto');
+  }
+  const adattaTutti = () => $$('[data-giant]').forEach(adatta);
+
+  function fontPronti() {
+    if (!D.fonts?.load) return Promise.resolve();
+    const prova = [...new Set($$('[data-giant]').map(g => g.textContent.trim()))].join('') || 'Zanzibar';
+    const attesa = Promise.all([
+      D.fonts.load('500 100px "Bodoni Moda"', prova),
+      D.fonts.load('400 17px "Manrope"'),
+    ]).catch(() => {});
+    return Promise.race([attesa, new Promise(r => setTimeout(r, 1800))]);
+  }
+
+  /* =====================================================================
+     4. HEADER, TENDINA EVENTI, MENU DEL TELEFONO
+     ===================================================================== */
+  function header() {
+    const hd = $('[data-header]');
+    if (!hd) return;
+    const hero = $('[data-hero]');
+    let soglia = 0;
+    const calcola = () => { soglia = hero ? Math.max(60, hero.offsetHeight * 0.55) : -1; };
+    const aggiorna = () => hd.classList.toggle('is-pieno', scrollY > soglia);
+    calcola(); aggiorna();
+    addEventListener('scroll', aggiorna, { passive: true });
+    allaLarghezza.push(() => { calcola(); aggiorna(); });
+  }
+
+  function tendina() {
+    const btn = $('[data-tendina-btn]'), pan = $('[data-tendina]');
+    if (!btn || !pan) return;
+    let aperta = false, anim = null;
+    const voci = () => $$('.tendina__a', pan);
+    const carica = () => $$('img', pan).forEach(i => { i.loading = 'eager'; });
+    btn.addEventListener('pointerenter', carica, { once: true });
+    btn.addEventListener('focus', carica, { once: true });
+    const apri = primo => {
+      if (aperta) return;
+      aperta = true; carica();
+      pan.hidden = false;
+      btn.setAttribute('aria-expanded', 'true');
+      anim?.kill();
+      if (ANIM) {
+        anim = gsap.timeline()
+          .fromTo(pan, { clipPath: 'inset(0% 0% 100% 0%)' }, { clipPath: 'inset(0% 0% 0% 0%)', duration: .6, ease: 'power4.out' })
+          .fromTo(voci(), { opacity: 0, y: 14 }, { opacity: 1, y: 0, duration: .55, stagger: .045, ease: 'power3.out' }, .1)
+          .fromTo('.tendina__piede', { opacity: 0 }, { opacity: 1, duration: .5 }, .3);
+      } else pan.classList.add('is-aperta');
+      if (primo) voci()[0]?.focus();
+    };
+    const chiudi = focus => {
+      if (!aperta) return;
+      aperta = false;
+      btn.setAttribute('aria-expanded', 'false');
+      anim?.kill();
+      const fine = () => { pan.hidden = true; pan.classList.remove('is-aperta'); };
+      if (ANIM) anim = gsap.to(pan, { clipPath: 'inset(0% 0% 100% 0%)', duration: .38, ease: 'power2.in', onComplete: fine });
+      else fine();
+      if (focus) btn.focus();
+    };
+    btn.addEventListener('click', () => (aperta ? chiudi() : apri()));
+    btn.addEventListener('keydown', e => { if (e.key === 'ArrowDown') { e.preventDefault(); apri(true); } });
+    pan.addEventListener('keydown', e => {
+      const l = voci(), i = l.indexOf(D.activeElement);
+      if (i < 0) return;
+      const vai = n => { e.preventDefault(); l[(n + l.length) % l.length].focus(); };
+      if (e.key === 'ArrowDown') vai(i + 2 < l.length ? i + 2 : i + 1);
+      else if (e.key === 'ArrowUp') vai(i - 2 >= 0 ? i - 2 : i - 1);
+      else if (e.key === 'ArrowRight') vai(i + 1);
+      else if (e.key === 'ArrowLeft') vai(i - 1);
+      else if (e.key === 'Home') vai(0);
+      else if (e.key === 'End') vai(l.length - 1);
+    });
+    D.addEventListener('keydown', e => { if (e.key === 'Escape' && aperta) chiudi(true); });
+    D.addEventListener('pointerdown', e => { if (aperta && !pan.contains(e.target) && !btn.contains(e.target)) chiudi(); });
+    pan.addEventListener('click', e => { if (e.target.closest('a')) chiudi(); });
+    pan.addEventListener('focusout', e => { if (aperta && e.relatedTarget && !pan.contains(e.relatedTarget) && e.relatedTarget !== btn) chiudi(); });
+  }
+
+  function menuTelefono() {
+    const btn = $('[data-burger]'), mm = $('[data-mm]');
+    if (!btn || !mm) return;
+    const etichetta = $('.sr-only', btn);
+    const fuori = $$('main, footer');
+    let aperto = false, anim = null;
+    const apri = () => {
+      aperto = true;
+      mm.hidden = false;
+      H.classList.add('mm-aperto', 'blocca');
+      btn.setAttribute('aria-expanded', 'true');
+      if (etichetta) etichetta.textContent = 'Chiudi il menu';
+      fuori.forEach(n => { n.inert = true; });
+      anim?.kill();
+      if (ANIM) {
+        anim = gsap.timeline()
+          .fromTo(mm, { clipPath: 'inset(0% 0% 100% 0%)' }, { clipPath: 'inset(0% 0% 0% 0%)', duration: .7, ease: 'power4.inOut' })
+          .fromTo($$('.mm__lista > li, .mm__piede > *', mm), { opacity: 0, y: 24 }, { opacity: 1, y: 0, duration: .7, stagger: .06, ease: 'power3.out' }, .3);
+      } else mm.classList.add('is-aperto');
+    };
+    const chiudi = () => {
+      if (!aperto) return;
+      aperto = false;
+      H.classList.remove('mm-aperto', 'blocca');
+      btn.setAttribute('aria-expanded', 'false');
+      if (etichetta) etichetta.textContent = 'Apri il menu';
+      fuori.forEach(n => { n.inert = false; });
+      anim?.kill();
+      const fine = () => { mm.hidden = true; mm.classList.remove('is-aperto'); };
+      if (ANIM) anim = gsap.to(mm, { clipPath: 'inset(0% 0% 100% 0%)', duration: .5, ease: 'power3.inOut', onComplete: fine });
+      else fine();
+    };
+    btn.addEventListener('click', () => (aperto ? chiudi() : apri()));
+    D.addEventListener('keydown', e => { if (e.key === 'Escape' && aperto) { chiudi(); btn.focus(); } });
+    mm.addEventListener('click', e => { if (e.target.closest('a')) chiudi(); });
+    allaLarghezza.push(() => { if (innerWidth >= 1024) chiudi(); });
+    // accordion "Eventi"
+    const acc = $('[data-acc]', mm), sub = acc && $('#' + acc.getAttribute('aria-controls'));
+    acc?.addEventListener('click', () => {
+      const apre = acc.getAttribute('aria-expanded') !== 'true';
+      acc.setAttribute('aria-expanded', String(apre));
+      sub.hidden = !apre;
+      if (apre && ANIM) gsap.fromTo($$('li', sub), { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: .5, stagger: .04, ease: 'power3.out' });
+    });
+  }
+
+  function barraTelefono() {
+    const bar = $('[data-mbar]');
+    if (!bar) return;
+    const hero = $('[data-hero]');
+    if (hero && 'IntersectionObserver' in window) {
+      new IntersectionObserver(([e]) => bar.classList.toggle('is-su', !e.isIntersecting), { rootMargin: '0px 0px -80% 0px' }).observe(hero);
+    } else bar.classList.add('is-su');
+    // mentre si scrive nel modulo la barra si nasconde (non copre i campi)
+    let t = 0;
+    D.addEventListener('focusin', e => { if (e.target.matches('input, select, textarea')) { clearTimeout(t); B.classList.add('scrivendo'); } });
+    D.addEventListener('focusout', e => { if (e.target.matches('input, select, textarea')) t = setTimeout(() => B.classList.remove('scrivendo'), 250); });
+  }
+
+  /* =====================================================================
+     5. ORARI ("Rispondiamo ora" / "Ora chiusi")
+     ===================================================================== */
+  function orari() {
+    const g = S.orari?.giorni;
+    const el = $$('[data-stato]');
+    if (!g || !el.length) return;
+    const GIORNI = ['domenica', 'lunedì', 'martedì', 'mercoledì', 'giovedì', 'venerdì', 'sabato'];
+    const min = s => { const [h, m] = s.split(':').map(Number); return h * 60 + m; };
+    const ora = new Date(), oggi = ora.getDay(), adesso = ora.getHours() * 60 + ora.getMinutes();
+    const fascia = (g[oggi] || []).find(([a, b]) => adesso >= min(a) && adesso < min(b));
+    let testo;
+    if (fascia) testo = `Rispondiamo ora · fino alle ${fascia[1]}`;
+    else {
+      for (let i = 0; i < 8 && !testo; i++) {
+        const d = (oggi + i) % 7;
+        const f = (g[d] || []).find(([a]) => i > 0 || min(a) > adesso);
+        if (f) testo = `Ora chiusi · riapriamo ${i === 0 ? 'oggi' : i === 1 ? 'domani' : GIORNI[d]} alle ${f[0]}`;
+      }
+    }
+    el.forEach(n => { n.textContent = testo || ''; n.classList.toggle('is-aperto', !!fascia); });
+  }
+
+  /* =====================================================================
+     6. MAPPA (si carica solo al clic)
+     ===================================================================== */
+  function mappa() {
+    $$('[data-mappa-carica]').forEach(b => b.addEventListener('click', () => {
+      const box = b.closest('[data-mappa]');
+      const f = D.createElement('iframe');
+      f.src = `https://www.google.com/maps?q=${encodeURIComponent(indirizzo())}&output=embed`;
+      f.title = `Mappa: ${indirizzo()}`;
+      f.loading = 'lazy';
+      f.referrerPolicy = 'no-referrer-when-downgrade';
+      f.allowFullscreen = true;
+      box.replaceChildren(f);
+    }));
+  }
+
+  /* =====================================================================
+     7. MODULO PREVENTIVO (Web3Forms) + WhatsApp con messaggio pronto
+     ===================================================================== */
+  function modulo() {
+    const f = $('[data-modulo]');
+    if (!f) return;
+    const el = f.elements;
+    el.tipo.innerHTML = `<option value="">Scegli il tipo di evento</option>${EVENTI.map(e => `<option${e.chiave === CHIAVE ? ' selected' : ''}>${esc(e.nome)}</option>`).join('')}<option>Altro</option>`;
+    const iso = d => `${d.getFullYear()}-${due(d.getMonth() + 1)}-${due(d.getDate())}`;
+    const oggi = iso(new Date());
+    el.data.min = oggi;
+    const wa = $$('[data-wa-modulo]');
+    const aggiornaWa = () => wa.forEach(a => { a.href = linkWa(el.tipo.value, el.data.value, el.ospiti.value); });
+    aggiornaWa();
+    f.addEventListener('input', aggiornaWa);
+    f.addEventListener('change', aggiornaWa);
+
+    const stato = $('[data-stato-modulo]', f);
+    const mostra = (msg, tipo) => { stato.hidden = false; stato.dataset.tipo = tipo || ''; stato.textContent = msg; };
+    const errore = (campo, msg) => {
+      const box = campo.closest('.campo'); const e = box && $('.campo__errore', box);
+      campo.setAttribute('aria-invalid', msg ? 'true' : 'false');
+      if (e) { e.textContent = msg || ''; e.hidden = !msg; }
+    };
+    const regole = {
+      nome: v => (v.trim().length < 2 ? 'Scrivi il tuo nome.' : ''),
+      telefono: v => (v.replace(/[^\d]/g, '').length < 6 ? 'Scrivi un numero di telefono valido.' : ''),
+      email: v => (v && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v) ? "Controlla l'indirizzo email." : ''),
+      tipo: v => (!v ? 'Scegli il tipo di evento.' : ''),
+      data: v => (!v ? 'Scegli la data dell’evento.' : v < oggi ? 'La data non può essere già passata.' : ''),
+      ospiti: v => (v && (+v < 1 || !Number.isFinite(+v)) ? 'Scrivi un numero di ospiti valido.' : ''),
+    };
+    const valida = campo => { const r = regole[campo.name]; if (!r) return true; const m = r(campo.value); errore(campo, m); return !m; };
+    Object.keys(regole).forEach(n => el[n]?.addEventListener('blur', () => { if (el[n].value) valida(el[n]); }));
+    Object.keys(regole).forEach(n => el[n]?.addEventListener('input', () => { if (el[n].getAttribute('aria-invalid') === 'true') valida(el[n]); }));
+
+    f.addEventListener('submit', async ev => {
+      ev.preventDefault();
+      const campi = Object.keys(regole).map(n => el[n]).filter(Boolean);
+      const sbagliati = campi.filter(c => !valida(c));
+      if (sbagliati.length) { sbagliati[0].focus(); mostra('Controlla i campi evidenziati.', 'errore'); return; }
+      if (el.botcheck?.checked) return;
+      const chiave = String(S.web3formsKey || '');
+      if (!chiave || /INSERIRE|CHIAVE|xxxx/i.test(chiave)) {
+        // bozza: il modulo non invia nulla finché non c'è la chiave vera
+        mostra('Questa è una bozza: il modulo non è ancora collegato. Per ora scrivici su WhatsApp o chiamaci.', 'info');
+        return;
+      }
+      const invia = $('[type="submit"]', f);
+      invia.disabled = true;
+      mostra('Invio in corso…');
+      try {
+        const dati = Object.fromEntries(new FormData(f));
+        delete dati.botcheck;
+        const risp = await fetch('https://api.web3forms.com/submit', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+          body: JSON.stringify({ access_key: chiave, subject: `Richiesta preventivo: ${dati.tipo}`, from_name: `${S.nome} · sito`, ...dati }),
+        });
+        const j = await risp.json();
+        if (!j.success) throw new Error(j.message);
+        f.reset(); aggiornaWa();
+        mostra('Grazie! Abbiamo ricevuto la tua richiesta: ti rispondiamo al più presto.', 'ok');
+      } catch {
+        mostra('Invio non riuscito. Riprova tra poco oppure scrivici su WhatsApp.', 'errore');
+      } finally { invia.disabled = false; }
+    });
+  }
+
+  /* =====================================================================
+     8. VIDEO: parte solo quando è sullo schermo, uno alla volta
+     ===================================================================== */
+  let videoCorrente = null, heroVisibile = false, videoHero = null;
+  const suona = v => {
+    if (videoCorrente && videoCorrente !== v) videoCorrente.pause();
+    videoCorrente = v;
+    const p = v.play();
+    if (p) p.catch(() => {});
+  };
+  const ferma = v => { v.pause(); if (videoCorrente === v) videoCorrente = null; };
+
+  function heroVideo() {
+    const v = $('[data-video-hero]');
+    if (!v) return;
+    if (RIDOTTO || navigator.connection?.saveData) return; // resta il poster
+    videoHero = v;
+    v.muted = true; v.playsInline = true;
+    const scegli = () => {
+      const s = MQ_TEL.matches ? v.dataset.srcTel : v.dataset.srcPc;
+      if (v.dataset.attuale === s) return false;
+      v.dataset.attuale = s; v.classList.remove('is-on'); v.src = s; v.load();
+      return true;
+    };
+    scegli();
+    v.addEventListener('playing', () => v.classList.add('is-on'));
+    new IntersectionObserver(([e]) => {
+      heroVisibile = e.isIntersecting;
+      if (heroVisibile) suona(v); else ferma(v);
+    }, { threshold: 0.12 }).observe(v.closest('[data-hero]'));
+    allaLarghezza.push(() => { if (scegli() && heroVisibile) suona(v); });
+    D.addEventListener('visibilitychange', () => { if (D.hidden) v.pause(); else if (heroVisibile) suona(v); });
+  }
+
+  function anteprimeCard() {
+    if (!PUNTATORE.matches || RIDOTTO) return; // sul telefono solo foto
+    $$('[data-anteprima]').forEach(a => {
+      let v = null;
+      a.addEventListener('pointerenter', () => {
+        if (!v) {
+          v = D.createElement('video');
+          v.className = 'card__video'; v.muted = true; v.loop = true; v.playsInline = true; v.preload = 'auto';
+          v.setAttribute('aria-hidden', 'true');
+          v.src = a.dataset.anteprima;
+          v.addEventListener('playing', () => v.classList.add('is-on'));
+          $('.card__zoom', a).append(v);
+        }
+        suona(v);
+      });
+      a.addEventListener('pointerleave', () => {
+        if (!v) return;
+        v.classList.remove('is-on');
+        ferma(v);
+        if (videoHero && heroVisibile) suona(videoHero);
+      });
+    });
+  }
+
+  /* =====================================================================
+     9. STRISCE DI FOTO: scorrimento continuo (rAF + translate3d)
+     Non si fermano al passaggio del mouse. Si fermano solo fuori schermo
+     e con la lightbox aperta; ripartono da dove erano.
+     ===================================================================== */
+  const strisce = [];
+  let rafId = 0, tPrec = 0, lbAperta = false;
+  function ciclo(t) {
+    const dt = tPrec ? Math.min(0.05, (t - tPrec) / 1000) : 0;
+    tPrec = t;
+    let vive = 0;
+    for (const s of strisce) if (s.vai && s.visibile && !lbAperta) { s.passo(dt); vive++; }
+    if (vive) rafId = requestAnimationFrame(ciclo);
+    else { rafId = 0; tPrec = 0; }
+  }
+  const avvia = () => { if (!rafId) { tPrec = 0; rafId = requestAnimationFrame(ciclo); } };
+
+  class Striscia {
+    constructor(el) {
+      this.el = el;
+      this.vista = $('.striscia__vista', el);
+      this.dentro = $('.striscia__in', el);
+      this.traccia = $('.striscia__traccia', el);
+      this.dir = +el.dataset.dir || -1;
+      this.x = 0; this.spinta = 0; this.fattore = 1;
+      this.vai = false; this.visibile = false; this.trascina = false; this.bloccaClic = 0;
+      this.originali = $$('.striscia__item', this.traccia);
+      $('.striscia__freccia--next', el).addEventListener('click', () => this.spingi(-1));
+      $('.striscia__freccia--prev', el).addEventListener('click', () => this.spingi(1));
+      if (RIDOTTO) return;
+      this.costruisci();
+      this.trascinamento();
+      new IntersectionObserver(([e]) => { this.visibile = e.isIntersecting; if (this.visibile) avvia(); }, { rootMargin: '80px 0px' }).observe(el);
+    }
+    velocita() { return innerWidth < 768 ? 24 : 34; } // pixel al secondo
+    costruisci() {
+      $$('.is-clone', this.traccia).forEach(n => n.remove());
+      const gap = parseFloat(getComputedStyle(this.traccia).columnGap) || 0;
+      this.periodo = this.traccia.scrollWidth + gap;
+      const copie = Math.ceil(this.vista.clientWidth / this.periodo) + 1;
+      for (let k = 0; k < copie; k++) this.originali.forEach(n => {
+        const c = n.cloneNode(true);
+        c.classList.add('is-clone'); c.setAttribute('aria-hidden', 'true');
+        $$('button', c).forEach(b => { b.tabIndex = -1; });
+        this.traccia.append(c);
+      });
+      this.applica();
+    }
+    applica() {
+      const P = this.periodo;
+      if (!P) return;
+      this.x = ((this.x % P) - P) % P; // sempre tra -periodo e 0: giro infinito senza salti
+      this.traccia.style.transform = `translate3d(${this.x.toFixed(2)}px,0,0)`;
+    }
+    passo(dt) {
+      if (this.trascina) return;
+      const k = 1 - Math.exp(-dt * 5);
+      const d = this.spinta * k;
+      this.spinta -= d;
+      if (Math.abs(this.spinta) < 0.5) { this.spinta = 0; this.fattore = Math.min(1, this.fattore + dt * 0.8); }
+      this.x += this.dir * this.velocita() * this.fattore * dt + d;
+      this.applica();
+    }
+    spingi(verso) {
+      if (RIDOTTO) {
+        this.vista.scrollBy({ left: -verso * this.vista.clientWidth * 0.8, behavior: 'auto' });
+        this.traccia.animate([{ opacity: 0.35 }, { opacity: 1 }], { duration: 260, easing: 'ease-out' });
+        return;
+      }
+      this.spinta += verso * this.vista.clientWidth * 0.55;
+      this.fattore = 0;
+      if (!this.vai) { this.x += this.spinta; this.spinta = 0; this.applica(); }
+      avvia();
+    }
+    trascinamento() {
+      const v = this.vista;
+      let id = null, x0 = 0, xs = 0, ult = 0, tUlt = 0, vel = 0, mosso = false;
+      v.addEventListener('pointerdown', e => {
+        if (e.button !== 0) return;
+        if (e.pointerType === 'mouse') e.preventDefault();
+        id = e.pointerId; x0 = ult = e.clientX; xs = this.x; tUlt = performance.now(); vel = 0; mosso = false;
+      });
+      v.addEventListener('pointermove', e => {
+        if (e.pointerId !== id) return;
+        const dx = e.clientX - x0;
+        if (!mosso && Math.abs(dx) > 6) { mosso = true; this.trascina = true; v.setPointerCapture(id); v.classList.add('is-trascina'); }
+        if (!mosso) return;
+        this.x = xs + dx; this.applica();
+        const ora = performance.now();
+        vel = ((e.clientX - ult) / Math.max(1, ora - tUlt)) * 1000; ult = e.clientX; tUlt = ora;
+      });
+      const fine = e => {
+        if (e.pointerId !== id) return;
+        id = null;
+        if (!mosso) return;
+        this.trascina = false; v.classList.remove('is-trascina');
+        this.spinta = Math.max(-1600, Math.min(1600, vel)) * 0.28; this.fattore = 0; this.bloccaClic = performance.now();
+        avvia();
+      };
+      v.addEventListener('pointerup', fine);
+      v.addEventListener('pointercancel', fine);
+      v.addEventListener('click', e => { if (performance.now() - this.bloccaClic < 90) { e.preventDefault(); e.stopPropagation(); } }, true);
+    }
+    entra(ritardo = 0) {
+      if (!ANIM) { this.vai = true; avvia(); return; }
+      const voci = $$('.striscia__item', this.traccia).slice(0, 9);
+      const bottoni = voci.map(n => $('.striscia__btn', n));
+      const da = this.dir < 0 ? 1 : -1; // riga alta entra da destra, riga bassa da sinistra
+      gsap.timeline({ delay: ritardo, onComplete: () => { this.vai = true; avvia(); } })
+        .fromTo(this.dentro, { x: da * innerWidth * 0.2 }, { x: 0, duration: 1.7, ease: 'power3.out', clearProps: 'transform' }, 0)
+        .fromTo(voci, { clipPath: 'inset(100% 0% 0% 0%)' }, { clipPath: 'inset(0% 0% 0% 0%)', duration: 1.1, stagger: 0.09, ease: 'power3.inOut' }, 0)
+        .fromTo(bottoni, { scale: 1.12 }, { scale: 1, duration: 1.5, stagger: 0.09, ease: 'power3.out', clearProps: 'transform' }, 0.05);
+    }
+  }
+
+  function avviaStrisce() {
+    const box = $('[data-render="strisce"]');
+    if (!box) return;
+    if (RIDOTTO) box.classList.add('is-ferme');
+    $$('.striscia', box).forEach(el => strisce.push(new Striscia(el)));
+    allaLarghezza.push(() => strisce.forEach(s => !RIDOTTO && s.costruisci()));
+    // lightbox
+    box.addEventListener('click', e => {
+      const b = e.target.closest('[data-lb]');
+      if (b) apriLightbox(box.dataset.gruppo, box._foto, +b.dataset.lb, b);
+    });
+    // entrata quando la galleria arriva sullo schermo, poi lo scorrimento continuo
+    if (!ANIM) { strisce.forEach(s => s.entra()); return; }
+    strisce.forEach(s => {
+      gsap.set($$('.striscia__item', s.traccia).slice(0, 9), { clipPath: 'inset(100% 0% 0% 0%)' });
+    });
+    ScrollTrigger.create({ trigger: box, start: 'top 85%', once: true, onEnter: () => strisce.forEach((s, i) => s.entra(i * 0.18)) });
+  }
+
+  /* =====================================================================
+     10. LIGHTBOX
+     ===================================================================== */
+  const LB = { el: null, foto: [], g: '', i: 0, ritorno: null, img: null, conta: null, dida: null };
+  function creaLightbox() {
+    const el = D.createElement('div');
+    el.className = 'lb'; el.hidden = true;
+    el.setAttribute('role', 'dialog'); el.setAttribute('aria-modal', 'true'); el.setAttribute('aria-label', 'Galleria fotografica');
+    el.innerHTML = `
+      <div class="lb__barra"><p class="lb__conta" aria-live="polite"></p><button class="lb__chiudi" type="button" aria-label="Chiudi la galleria">${ICONA.x}</button></div>
+      <div class="lb__palco"><img class="lb__img" alt="" draggable="false">
+        <button class="lb__nav lb__nav--prev" type="button" aria-label="Foto precedente">${ICONA.sx}</button>
+        <button class="lb__nav lb__nav--next" type="button" aria-label="Foto successiva">${ICONA.dx}</button></div>
+      <p class="lb__dida"></p>`;
+    B.append(el);
+    Object.assign(LB, { el, img: $('.lb__img', el), conta: $('.lb__conta', el), dida: $('.lb__dida', el) });
+    $('.lb__chiudi', el).addEventListener('click', chiudiLightbox);
+    $('.lb__nav--prev', el).addEventListener('click', () => mostraFoto(LB.i - 1));
+    $('.lb__nav--next', el).addEventListener('click', () => mostraFoto(LB.i + 1));
+    el.addEventListener('keydown', e => {
+      if (e.key === 'Escape') chiudiLightbox();
+      else if (e.key === 'ArrowLeft') mostraFoto(LB.i - 1);
+      else if (e.key === 'ArrowRight') mostraFoto(LB.i + 1);
+      else if (e.key === 'Tab') {
+        const f = $$('button', el), i = f.indexOf(D.activeElement);
+        e.preventDefault();
+        f[(i + (e.shiftKey ? -1 : 1) + f.length) % f.length].focus();
+      }
+    });
+    const palco = $('.lb__palco', el);
+    let x0 = null, y0 = 0;
+    palco.addEventListener('pointerdown', e => { x0 = e.clientX; y0 = e.clientY; });
+    palco.addEventListener('pointerup', e => {
+      if (x0 == null) return;
+      const dx = e.clientX - x0, dy = e.clientY - y0; x0 = null;
+      if (Math.abs(dx) > 45 && Math.abs(dx) > Math.abs(dy)) mostraFoto(LB.i + (dx < 0 ? 1 : -1));
+    });
+    palco.addEventListener('click', e => { if (e.target === palco) chiudiLightbox(); });
+  }
+  function mostraFoto(i) {
+    const n = LB.foto.length;
+    LB.i = (i + n) % n;
+    const f = LB.foto[LB.i];
+    LB.img.classList.add('is-cambio');
+    const nuova = new Image();
+    nuova.sizes = '100vw';
+    nuova.srcset = srcset(LB.g, f);
+    nuova.src = src(LB.g, f, 1920);
+    const metti = () => {
+      LB.img.sizes = '100vw'; LB.img.srcset = nuova.srcset; LB.img.src = nuova.src;
+      LB.img.alt = f[3]; LB.img.width = f[1]; LB.img.height = f[2];
+      requestAnimationFrame(() => LB.img.classList.remove('is-cambio'));
+    };
+    if (nuova.decode) nuova.decode().then(metti, metti); else nuova.onload = metti;
+    LB.conta.textContent = `${LB.i + 1} / ${n}`;
+    LB.dida.textContent = f[3];
+    [LB.i + 1, LB.i - 1].forEach(k => { const p = LB.foto[(k + n) % n]; const im = new Image(); im.sizes = '100vw'; im.srcset = srcset(LB.g, p); });
+  }
+  function apriLightbox(g, foto, i, ritorno) {
+    if (!LB.el) creaLightbox();
+    Object.assign(LB, { g, foto, ritorno });
+    lbAperta = true;
+    H.classList.add('blocca');
+    LB.el.hidden = false;
+    mostraFoto(i);
+    requestAnimationFrame(() => LB.el.classList.add('is-aperto'));
+    $('.lb__chiudi', LB.el).focus();
+  }
+  function chiudiLightbox() {
+    if (!LB.el || LB.el.hidden) return;
+    LB.el.classList.remove('is-aperto');
+    H.classList.remove('blocca');
+    setTimeout(() => { LB.el.hidden = true; }, 360);
+    lbAperta = false;
+    avvia(); // le strisce ripartono da dove erano
+    LB.ritorno?.focus({ preventScroll: true });
+  }
+
+  /* =====================================================================
+     11. FAQ (apertura con dissolvenza)
+     ===================================================================== */
+  function faq() {
+    $$('.faq__i').forEach(d => d.addEventListener('toggle', () => {
+      if (d.open && ANIM) gsap.fromTo($('.faq__r', d), { opacity: 0, y: -8 }, { opacity: 1, y: 0, duration: .55, ease: 'power3.out' });
+    }));
+  }
+
+  /* =====================================================================
+     12. ANIMAZIONI (entrata hero + scorrimento)
+     ===================================================================== */
+  function entrata() {
+    const hero = $('[data-hero]');
+    const tl = gsap.timeline({ defaults: { ease: 'power4.out' } });
+    const scala = hero && $('.hero__scala', hero);
+    if (scala) tl.fromTo(scala, { scale: 1.08 }, { scale: 1, duration: 1.7, ease: 'power3.out' }, 0);
+    const lettere = $$('.hero .ch__in');
+    if (lettere.length) tl.fromTo(lettere, { yPercent: 118 }, { yPercent: 0, duration: 1.05, stagger: lettere.length > 10 ? 0.04 : 0.065 }, 0.12);
+    tl.fromTo('.hd__nav', { opacity: 0, y: -12 }, { opacity: 1, y: 0, duration: .8, ease: 'power3.out' }, 0.7);
+    const resto = $$('.hero [data-entra]');
+    if (resto.length) tl.fromTo(resto, { opacity: 0, y: 22 }, { opacity: 1, y: 0, duration: .9, stagger: .09, ease: 'power3.out' }, 0.82);
+    gsap.set('[data-entra]', { visibility: 'visible' });
+    return tl;
+  }
+
+  function scorrimento() {
+    const hero = $('[data-hero]');
+    if (hero) {
+      gsap.to($('.hero__media', hero), { yPercent: 8, ease: 'none', scrollTrigger: { trigger: hero, start: 'top top', end: 'bottom top', scrub: true } });
+      gsap.to($('.hero__nome', hero), { y: () => hero.offsetHeight * 0.3, opacity: 0, ease: 'none', scrollTrigger: { trigger: hero, start: 'top top', end: 'bottom 20%', scrub: true, invalidateOnRefresh: true } });
+      gsap.to($('.hero__basso', hero), { opacity: 0, y: -24, ease: 'none', scrollTrigger: { trigger: hero, start: '4% top', end: '38% top', scrub: true } });
+    }
+
+    // titoli: righe che salgono dietro una maschera
+    if (SplitText) {
+      $$('[data-titolo]').forEach(el => SplitText.create(el, {
+        type: 'lines', mask: 'lines', linesClass: 'riga', autoSplit: true,
+        onSplit: s => gsap.from(s.lines, { yPercent: 112, duration: 1.15, stagger: 0.1, ease: 'power4.out', scrollTrigger: { trigger: el, start: 'top 88%', once: true } }),
+      }));
+      // frase grande: si rivela riga per riga mentre si scorre
+      $$('[data-frase]').forEach(el => SplitText.create(el, {
+        type: 'lines', mask: 'lines', linesClass: 'riga', autoSplit: true,
+        onSplit: s => gsap.fromTo(s.lines, { yPercent: 100, opacity: 0.25 }, { yPercent: 0, opacity: 1, stagger: 0.22, ease: 'none', scrollTrigger: { trigger: el, start: 'top 88%', end: 'bottom 72%', scrub: 0.6 } }),
+      }));
+    }
+
+    // foto grandi: tendina dal basso + ritorno di scala, poi leggera parallasse
+    $$('[data-tenda]').forEach(el => {
+      const im = () => $('img', el);
+      if (!im()) return;
+      gsap.timeline({ scrollTrigger: { trigger: el, start: 'top 85%', once: true } })
+        .fromTo(el, { clipPath: 'inset(100% 0% 0% 0%)' }, { clipPath: 'inset(0% 0% 0% 0%)', duration: 1.25, ease: 'power3.inOut' })
+        .fromTo(im(), { scale: 1.18 }, { scale: 1, duration: 1.7, ease: 'power3.out' }, 0.08);
+      gsap.fromTo(im(), { yPercent: -5 }, { yPercent: 5, ease: 'none', scrollTrigger: { trigger: el, start: 'top bottom', end: 'bottom top', scrub: true } });
+    });
+
+    // testi e blocchi: comparsa morbida
+    const rivela = $$('[data-rivela]');
+    if (rivela.length) {
+      gsap.set(rivela, { opacity: 0, y: 26 });
+      ScrollTrigger.batch(rivela, { start: 'top 90%', once: true, onEnter: b => gsap.to(b, { opacity: 1, y: 0, duration: 1, stagger: 0.08, ease: 'power3.out', overwrite: true }) });
+    }
+
+    // card eventi: si rivelano dal basso, una dopo l'altra
+    const cards = $$('[data-card]');
+    if (cards.length) {
+      gsap.set(cards, { clipPath: 'inset(100% 0% 0% 0%)' });
+      ScrollTrigger.batch(cards, {
+        start: 'top 92%', once: true,
+        onEnter: b => {
+          gsap.to(b, { clipPath: 'inset(0% 0% 0% 0%)', duration: 1.2, stagger: 0.12, ease: 'power3.inOut' });
+          gsap.fromTo(b.map(c => $('.card__zoom', c)), { scale: 1.14 }, { scale: 1, duration: 1.6, stagger: 0.12, ease: 'power3.out' });
+        },
+      });
+    }
+
+    // passi: linea che si disegna con lo scorrimento
+    $$('.passi__corpo').forEach(c => {
+      gsap.fromTo($('.passi__linea-in', c), { scaleY: 0 }, { scaleY: 1, ease: 'none', scrollTrigger: { trigger: c, start: 'top 72%', end: 'bottom 72%', scrub: 0.4 } });
+      $$('.passo', c).forEach(p => gsap.from(p, { opacity: 0, y: 30, duration: 1, ease: 'power3.out', scrollTrigger: { trigger: p, start: 'top 82%', once: true } }));
+    });
+
+    // passaggio avorio → inchiostro: la fascia scura entra come una tavola
+    // con i margini e si allarga fino ai bordi (solo clip-path, nessun grigio a metà)
+    $$('[data-scuro]').forEach(z => {
+      const lato = () => Math.round(Math.min(innerWidth * 0.045, 64));
+      gsap.fromTo(z, { clipPath: () => `inset(0px ${lato()}px 0px ${lato()}px)` }, {
+        clipPath: 'inset(0px 0px 0px 0px)', ease: 'none',
+        onComplete: () => { z.style.clipPath = 'none'; }, // a tutta larghezza non ritaglia nulla
+        scrollTrigger: { trigger: z, start: 'top bottom', end: 'top 25%', scrub: 0.5, invalidateOnRefresh: true },
+      });
+    });
+  }
+
+  /* =====================================================================
+     AVVIO
+     ===================================================================== */
+  riempi();
+  rendi();
+  preparaGiganti();
+  header();
+  tendina();
+  menuTelefono();
+  barraTelefono();
+  orari();
+  mappa();
+  modulo();
+  faq();
+  heroVideo();
+  anteprimeCard();
+
+  const attesa = ms => new Promise(r => setTimeout(r, ms));
+  const fotoHero = $('.hero__media img');
+  const heroPronta = fotoHero?.decode ? Promise.race([fotoHero.decode().catch(() => {}), attesa(1600)]) : Promise.resolve();
+  Promise.all([fontPronti(), heroPronta]).then(() => {
+    adattaTutti();
+    allaLarghezza.unshift(adattaTutti);
+    avviaStrisce();
+    if (ANIM) {
+      entrata();
+      scorrimento();
+      ScrollTrigger.refresh();
+    } else {
+      $$('[data-entra]').forEach(n => { n.style.visibility = 'visible'; });
+    }
+  });
+})();
