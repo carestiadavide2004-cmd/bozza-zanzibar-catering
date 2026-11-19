@@ -410,8 +410,12 @@ html.mm-aperto .hd .hd__marchio { opacity: 1 !important; pointer-events: auto !i
 .card__media { position: relative; aspect-ratio: 4 / 5; overflow: hidden; border-radius: var(--r); background: var(--inchiostro-2); }
 .card__media img, .card__media video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
 .card__img { transition: transform 1.2s var(--ease); }
-.card__video { opacity: 0; transition: opacity .6s var(--ease); }
+.card__video { opacity: 0; transition: opacity .6s var(--ease); pointer-events: none; }
 .card__video.is-on { opacity: 1; }
+/* Niente pulsanti "play" di sistema (es. iPhone in Risparmio energetico): resta il poster */
+video::-webkit-media-controls { display: none !important; }
+video::-webkit-media-controls-start-playback-button { display: none !important; -webkit-appearance: none; }
+video::-webkit-media-controls-overlay-play-button { display: none !important; }
 @media (hover: hover) { .card__a:hover .card__img { transform: scale(1.045); } }
 .card__testo { display: grid; grid-template-columns: auto 1fr; column-gap: 16px; padding-top: 20px; }
 .card__n { grid-row: span 2; font: 600 12px/1 var(--f-testo); letter-spacing: .12em; color: var(--accento); padding-top: 9px; }

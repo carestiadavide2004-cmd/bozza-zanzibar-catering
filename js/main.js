@@ -104,10 +104,12 @@
      2. CONTENUTI RIPETUTI (liste, card, strisce…)
      ===================================================================== */
   const mini = e => `${BASE}assets/img/eventi/${e.chiave}-mini-200.webp`;
+  // video dell'anteprima: vuoto finché non serve (preload none, src in data-src); con "riduci movimento" non c'è
+  const videoCard = e => (RIDOTTO ? '' : `<video class="card__video" data-src="${BASE}assets/video/${e.chiave}-anteprima.mp4" muted loop playsinline preload="none" disablepictureinpicture disableremoteplayback aria-hidden="true" tabindex="-1"></video>`);
   const card = (e, i) => `
-    <li class="card" data-card><a class="card__a" href="${hrefEvento(e)}" data-anteprima="${BASE}assets/video/${e.chiave}-anteprima.mp4">
+    <li class="card" data-card><a class="card__a" href="${hrefEvento(e)}">
       <div class="card__media"><div class="card__zoom" style="position:absolute;inset:0">
-        <img class="card__img" src="${BASE}assets/img/eventi/${e.chiave}-card-480.webp" srcset="${BASE}assets/img/eventi/${e.chiave}-card-480.webp 480w, ${BASE}assets/img/eventi/${e.chiave}-card-720.webp 720w" sizes="(min-width: 1100px) 30vw, (min-width: 640px) 46vw, 78vw" width="720" height="900" alt="" loading="lazy" decoding="async">
+        <img class="card__img" src="${BASE}assets/img/eventi/${e.chiave}-card-480.webp" srcset="${BASE}assets/img/eventi/${e.chiave}-card-480.webp 480w, ${BASE}assets/img/eventi/${e.chiave}-card-720.webp 720w" sizes="(min-width: 1100px) 30vw, (min-width: 640px) 46vw, 78vw" width="720" height="900" alt="" loading="lazy" decoding="async">${videoCard(e)}
       </div></div>
       <div class="card__testo"><span class="card__n">${due(i + 1)}</span><h3 class="card__nome">${esc(e.nome)}</h3><p class="card__desc">${esc(e.breve)}</p><span class="card__vai">Scopri ${ICONA.freccia}</span></div>
     </a></li>`;
@@ -480,8 +482,10 @@
   const suona = v => {
     if (videoCorrente && videoCorrente !== v) videoCorrente.pause();
     videoCorrente = v;
+    v.muted = true;
     const p = v.play();
-    if (p) p.catch(() => {});
+    if (p) p.catch(() => {}); // autoplay bloccato: resta il poster, nessun errore in console
+    return p;
   };
   const ferma = v => { v.pause(); if (videoCorrente === v) videoCorrente = null; };
 
@@ -507,28 +511,120 @@
     D.addEventListener('visibilitychange', () => { if (D.hidden) v.pause(); else if (heroVisibile) suona(v); });
   }
 
-  function anteprimeCard() {
-    if (!PUNTATORE.matches || RIDOTTO) return; // sul telefono solo foto
-    $$('[data-anteprima]').forEach(a => {
-      let v = null;
-      a.addEventListener('pointerenter', () => {
-        if (!v) {
-          v = D.createElement('video');
-          v.className = 'card__video'; v.muted = true; v.loop = true; v.playsInline = true; v.preload = 'auto';
-          v.setAttribute('aria-hidden', 'true');
-          v.src = a.dataset.anteprima;
-          v.addEventListener('playing', () => v.classList.add('is-on'));
-          $('.card__zoom', a).append(v);
-        }
-        suona(v);
+  /* ---------- Anteprime delle card ----------
+     Il poster è il primo fotogramma della clip: il video compare in dissolvenza
+     solo quando il primo fotogramma è pronto e, quando si spegne, torna all'inizio. */
+  let autoplayBloccato = false; // es. iPhone in Risparmio energetico: restano i poster
+  const carica = v => {
+    if (!v || v.hasAttribute('src')) return;
+    const img = v.parentElement.querySelector('.card__img');
+    if (img) { if (img.loading === 'lazy') img.loading = 'eager'; if (img.currentSrc) v.poster = img.currentSrc; }
+    v.preload = 'auto';
+    v.src = v.dataset.src;
+  };
+  const accendi = v => {
+    carica(v);
+    clearTimeout(v._riavvolgi);
+    if (!v._ascolta) {
+      v._ascolta = true;
+      v.addEventListener('playing', () => {
+        const mostra = () => { if (videoCorrente === v && !v.paused) v.classList.add('is-on'); };
+        if (v.requestVideoFrameCallback) v.requestVideoFrameCallback(mostra);
+        setTimeout(mostra, 250); // riserva, se il fotogramma non viene segnalato
       });
-      a.addEventListener('pointerleave', () => {
-        if (!v) return;
-        v.classList.remove('is-on');
-        ferma(v);
+    }
+    const p = suona(v);
+    if (p) p.catch(err => { if (err && err.name === 'NotAllowedError') { autoplayBloccato = true; spegni(v, true); } });
+  };
+  const spegni = (v, riavvolgi) => {
+    v.classList.remove('is-on');
+    ferma(v);
+    clearTimeout(v._riavvolgi);
+    // dopo la dissolvenza (già invisibile) torna al primo fotogramma, uguale al poster
+    if (riavvolgi) v._riavvolgi = setTimeout(() => { if (v.paused) { try { v.currentTime = 0; } catch {} } }, 700);
+  };
+
+  // Computer: il video parte al passaggio del mouse (come prima)
+  function anteprimeCard() {
+    if (RIDOTTO) return; // solo foto
+    $$('.card__a').forEach(a => {
+      const v = $('.card__video', a);
+      if (!v) return;
+      a.addEventListener('pointerenter', e => {
+        if (e.pointerType !== 'mouse' || !PUNTATORE.matches) return; // sul touch decide lo scorrimento, non il tocco
+        accendi(v);
+      });
+      a.addEventListener('pointerleave', e => {
+        if (e.pointerType !== 'mouse' || !PUNTATORE.matches) return;
+        spegni(v, false);
         if (videoHero && heroVisibile) suona(videoHero);
       });
     });
+  }
+
+  // Telefono e tablet (touch): parte da sola la card più visibile e centrata.
+  // - un IntersectionObserver con root = carosello (soglia 0.6) dice quali card sono ben dentro il carosello;
+  // - un secondo, sullo schermo (soglia 0.6), controlla che la card sia davvero visibile anche in verticale.
+  // Un solo video alla volta, la card dopo si prepara in anticipo, il tocco apre sempre la pagina dell'evento.
+  function autoplayCard() {
+    if (RIDOTTO || navigator.connection?.saveData || !('IntersectionObserver' in window)) return; // solo poster
+    const aggiornatori = [];
+    $$('.carosello').forEach(car => {
+      const medie = $$('.card__media', car).filter(m => $('.card__video', m));
+      if (!medie.length) return;
+      const vid = m => $('.card__video', m);
+      const dentro = new Set(), aVista = new Set();
+      let attiva = null, tPrima = 0;
+      const segna = (insieme, voci) => voci.forEach(e => (e.isIntersecting && e.intersectionRatio >= 0.59 ? insieme.add(e.target) : insieme.delete(e.target)));
+      const scorre = () => car.scrollWidth > car.clientWidth + 2; // carosello (telefono) o griglia (tablet)
+      const candidate = () => medie.filter(m => dentro.has(m) && aVista.has(m));
+      const scegli = () => {
+        if (D.hidden || autoplayBloccato || PUNTATORE.matches) return null;
+        const c = candidate();
+        if (c.length < 2) return c[0] || null;
+        if (!scorre()) return c.includes(attiva) ? attiva : c[0]; // griglia: si va a turno (vedi sotto)
+        const r = car.getBoundingClientRect(), centro = r.left + r.width / 2;
+        const dist = m => { const q = m.getBoundingClientRect(); return Math.abs(q.left + q.width / 2 - centro); };
+        return c.reduce((x, y) => (dist(y) < dist(x) ? y : x));
+      };
+      const vai = nuova => {
+        if (nuova === attiva) { if (nuova && vid(nuova).paused) accendi(vid(nuova)); return; }
+        if (attiva) spegni(vid(attiva), true);
+        attiva = nuova; tPrima = 0;
+        if (!attiva) { if (videoHero && heroVisibile && !D.hidden) suona(videoHero); return; }
+        accendi(vid(attiva));
+        const dopo = medie[medie.indexOf(attiva) + 1];
+        if (dopo) carica(vid(dopo)); // prepara la card successiva
+      };
+      const aggiorna = () => vai(scegli());
+
+      const ioCarosello = new IntersectionObserver(v => { segna(dentro, v); aggiorna(); }, { root: car, threshold: [0, 0.6, 1] });
+      const ioSchermo = new IntersectionObserver(v => { segna(aVista, v); aggiorna(); }, { rootMargin: '-8% 0px -8% 0px', threshold: [0, 0.6, 1] });
+      medie.forEach(m => { ioCarosello.observe(m); ioSchermo.observe(m); });
+
+      // la prima clip si carica quando la sezione è a mezzo schermo di distanza
+      const ioVicino = new IntersectionObserver(([e]) => {
+        if (!e.isIntersecting || PUNTATORE.matches || autoplayBloccato) return;
+        carica(vid(medie[0])); ioVicino.disconnect();
+      }, { rootMargin: '0px 0px 50% 0px' });
+      ioVicino.observe(car);
+
+      // griglia (tablet, più card visibili insieme): a ogni giro della clip tocca alla card successiva
+      medie.forEach(m => vid(m).addEventListener('timeupdate', () => {
+        if (m !== attiva) return;
+        const t = vid(m).currentTime, giro = t + 0.25 < tPrima;
+        tPrima = t;
+        if (!giro || scorre()) return;
+        const c = candidate();
+        if (c.length > 1 && c.includes(m)) vai(c[(c.indexOf(m) + 1) % c.length]);
+      }));
+      aggiornatori.push(aggiorna);
+    });
+    if (!aggiornatori.length) return;
+    const tutti = () => aggiornatori.forEach(f => f());
+    D.addEventListener('visibilitychange', tutti);
+    PUNTATORE.addEventListener?.('change', tutti);
+    allaLarghezza.push(tutti);
   }
 
   /* =====================================================================
@@ -854,6 +950,7 @@
   faq();
   heroVideo();
   anteprimeCard();
+  autoplayCard();
 
   const attesa = ms => new Promise(r => setTimeout(r, ms));
   const fotoHero = $('.hero__media img');
