@@ -37,7 +37,7 @@ Tutte le foto e i video vengono da **Pexels** (licenza Pexels: uso gratuito, anc
 
 ## Comunioni, battesimi e cresime
 
-- **Video hero**: pranzo di famiglia in giardino, con la tavola piena di piatti — https://www.pexels.com/video/8769414/ (versioni 1920×1080 e 1080×1920, poster e anteprima della card)
+- **Video hero**: bambina con la veste bianca e la candela accesa, per mano alla mamma, durante la cerimonia in chiesa — https://www.pexels.com/video/10634855/ (versioni 1920×1080 e 1080×1920, poster e anteprima della card)
 - Famiglia che brinda durante un pranzo in giardino (brindisi-pranzo-in-giardino) — https://www.pexels.com/photo/8841472/
 - Biscotti decorati con angeli in un piatto di vetro (biscotti-angeli) — https://www.pexels.com/photo/37803973/
 - Torta bianca con un angelo e fiori per una festa in giardino (torta-bianca-angelo) — https://www.pexels.com/photo/37803978/
@@ -51,7 +51,7 @@ Tutte le foto e i video vengono da **Pexels** (licenza Pexels: uso gratuito, anc
 
 ## Compleanni e feste private
 
-- **Video hero**: cena in giardino, di sera, sotto le lucine — https://www.pexels.com/video/5617394/ (versioni 1920×1080 e 1080×1920, poster e anteprima della card)
+- **Video hero**: si accendono le candeline su una torta decorata con fiori, accanto a una candela scintillante — https://www.pexels.com/video/19356203/ (versioni 1920×1080 e 1080×1920, poster e anteprima della card)
 - Amici che brindano sotto le luci di una festa in giardino (brindisi-sotto-le-luci) — https://www.pexels.com/photo/5638814/
 - Si accendono le candeline sulla torta di compleanno (candeline-sulla-torta) — https://www.pexels.com/photo/33038785/
 - Signora sorridente a tavola durante una festa all'aperto (sorrisi-a-tavola) — https://www.pexels.com/photo/5638644/
@@ -65,7 +65,7 @@ Tutte le foto e i video vengono da **Pexels** (licenza Pexels: uso gratuito, anc
 
 ## Eventi aziendali
 
-- **Video hero**: cameriere in papillon al servizio durante un evento serale — https://www.pexels.com/video/8922356/ (versioni 1920×1080 e 1080×1920, poster e anteprima della card)
+- **Video hero**: chef che impiatta gli assaggi con la pinzetta, in cucina — https://www.pexels.com/video/39453040/ (versioni 1920×1080 e 1080×1920, poster e anteprima della card)
 - Professionisti che si servono al buffet in una sala luminosa (buffet-sala-luminosa) — https://www.pexels.com/photo/38460679/
 - Cameriere con un vassoio di flûte di spumante e succo (vassoio-flute-e-succhi) — https://www.pexels.com/photo/13375022/
 - Ospite che prende un assaggio da un vassoio (assaggio-dal-vassoio) — https://www.pexels.com/photo/32774004/
@@ -78,7 +78,7 @@ Tutte le foto e i video vengono da **Pexels** (licenza Pexels: uso gratuito, anc
 
 ## Aperitivi e buffet
 
-- **Video hero**: spumante versato nei calici, all'aperto — https://www.pexels.com/video/8531389/ (versioni 1920×1080 e 1080×1920, poster e anteprima della card)
+- **Video hero**: carrellata sul buffet dell'aperitivo: formaggi con noci e rosmarino, uva e crostini con prosciutto, brie e pomodorini — https://www.pexels.com/video/6658227/ (versioni 1920×1080 e 1080×1920, poster e anteprima della card)
 - Buffet sotto un gazebo con vasi in terracotta e fiori arancioni, la sera (buffet-terracotta-gazebo) — https://www.pexels.com/photo/37958133/
 - Spritz con foglia di basilico servito accanto a un'insalata (spritz-basilico) — https://www.pexels.com/photo/28618414/
 - Vassoio di finger food servito durante un evento (vassoio-finger-food) — https://www.pexels.com/photo/34321369/

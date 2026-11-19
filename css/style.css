@@ -319,6 +319,15 @@ html.mm-aperto .hd .hd__marchio { opacity: 1 !important; pointer-events: auto !i
     linear-gradient(180deg, rgba(14, 11, 9, .42) 0%, rgba(14, 11, 9, 0) 20%),
     linear-gradient(0deg, rgba(14, 11, 9, .82) 0%, rgba(14, 11, 9, .6) 26%, rgba(14, 11, 9, .3) 48%, rgba(14, 11, 9, .1) 62%, rgba(14, 11, 9, 0) 74%);
 }
+/* Compleanni e aperitivi: sul computer dietro il titolo c'è uno sfondo chiaro, l'ombra in alto scende fino alla base delle lettere */
+@media (min-width: 768px) and (orientation: landscape) {
+  body[data-evento="compleanni"] .hero--alto .hero__ombra,
+  body[data-evento="aperitivi"] .hero--alto .hero__ombra {
+    background:
+      linear-gradient(180deg, rgba(14, 11, 9, .64) 0%, rgba(14, 11, 9, .52) 16%, rgba(14, 11, 9, .46) 32%, rgba(14, 11, 9, .3) 42%, rgba(14, 11, 9, .1) 50%, rgba(14, 11, 9, 0) 58%),
+      linear-gradient(0deg, rgba(14, 11, 9, .8) 0%, rgba(14, 11, 9, .5) 17%, rgba(14, 11, 9, .17) 32%, rgba(14, 11, 9, 0) 45%);
+  }
+}
 .hero__nome { position: relative; z-index: 2; grid-row: 2; min-width: 0; padding-inline: var(--giant-m); padding-top: clamp(4px, 1.6vh, 22px); }
 .hero .giant { text-shadow: 0 .02em .14em rgba(14, 11, 9, .24); }
 .hero .etichetta { text-shadow: 0 1px 10px rgba(0, 0, 0, .3); }

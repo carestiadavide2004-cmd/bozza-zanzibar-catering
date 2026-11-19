@@ -264,7 +264,7 @@ window.SITO = (() => {
         pagina: "eventi-aziendali",
         nome: "Eventi aziendali",
         titolo: "Eventi aziendali",
-        posizioneTitolo: "basso",
+        posizioneTitolo: "alto",
         // TESTO DI ESEMPIO DA CONFERMARE (da qui fino a "faq")
         sopratitolo: "Coffee break, pranzi e cene",
         breve: "Coffee break, pranzi di lavoro, inaugurazioni e cene.",
@@ -298,7 +298,7 @@ window.SITO = (() => {
         pagina: "aperitivi-buffet",
         nome: "Aperitivi e buffet",
         titolo: "Aperitivi",
-        posizioneTitolo: "basso",
+        posizioneTitolo: "alto",
         // TESTO DI ESEMPIO DA CONFERMARE (da qui fino a "faq")
         sopratitolo: "Aperitivi e buffet",
         breve: "Finger food, taglieri e open bar, per feste in piedi.",
