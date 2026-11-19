@@ -33,7 +33,7 @@ window.SITO = (() => {
   return {
     nome: "Zanzibar",
     sottotitolo: "Catering & Eventi", // DA CONFERMARE (nome provvisorio)
-    descrizione: "Catering per matrimoni, cerimonie, feste private ed eventi aziendali tra Torre de' Passeri, Pescara e Chieti.", // TESTO DI ESEMPIO DA CONFERMARE
+    descrizione: "Catering per matrimoni, cerimonie, feste private ed eventi aziendali a Torre de' Passeri e dintorni.", // TESTO DI ESEMPIO DA CONFERMARE
     indirizzoSito: "https://carestiadavide2004-cmd.github.io/bozza-zanzibar-catering/", // indirizzo della bozza online
 
     contatti: {
@@ -94,7 +94,7 @@ window.SITO = (() => {
     home: { // TESTO DI ESEMPIO DA CONFERMARE (tutti i testi della home)
       meta: {
         titolo: "Zanzibar · Catering & Eventi a Torre de' Passeri",
-        descrizione: "Catering per matrimoni, comunioni, compleanni, eventi aziendali, aperitivi e lauree tra Torre de' Passeri, Pescara e Chieti.",
+        descrizione: "Catering per matrimoni, comunioni, compleanni, eventi aziendali, aperitivi e lauree a Torre de' Passeri e dintorni.",
       },
       heroSottotitolo: "Catering per matrimoni, cerimonie e feste",
       intro: {
@@ -162,7 +162,7 @@ window.SITO = (() => {
         heroSottotitolo: "Aperitivo, cena e torta: il vostro ricevimento, curato da chi conosce la cucina di qui.",
         meta: {
           titolo: "Catering per matrimoni · Zanzibar Catering & Eventi",
-          descrizione: "Catering per matrimoni tra Pescara, Chieti e provincia: aperitivo di benvenuto, menù su misura, servizio al tavolo e allestimento.",
+          descrizione: "Catering per matrimoni a Torre de' Passeri e dintorni: aperitivo di benvenuto, menù su misura, servizio al tavolo e allestimento.",
         },
         intro: {
           frase: "Il giorno del *sì* merita una tavola che vi somigli.",
@@ -199,7 +199,7 @@ window.SITO = (() => {
         heroSottotitolo: "Il pranzo della festa, curato da noi: voi godetevi la giornata con la famiglia.",
         meta: {
           titolo: "Catering per comunioni, battesimi e cresime · Zanzibar",
-          descrizione: "Catering per comunioni, battesimi e cresime tra Pescara e Chieti: pranzo in giardino o in sala, menù per grandi e bambini, torta e confettata.",
+          descrizione: "Catering per comunioni, battesimi e cresime a Torre de' Passeri e dintorni: pranzo in giardino o in sala, menù per grandi e bambini, torta e confettata.",
         },
         intro: {
           frase: "Una giornata di *famiglia*, senza pensieri per chi la organizza.",
@@ -236,7 +236,7 @@ window.SITO = (() => {
         heroSottotitolo: "Compleanni, anniversari e feste private: dalla cena in giardino al buffet in casa.",
         meta: {
           titolo: "Catering per compleanni e feste private · Zanzibar",
-          descrizione: "Catering per compleanni, anniversari e feste private tra Pescara e Chieti: buffet, cene in giardino, torta e open bar.",
+          descrizione: "Catering per compleanni, anniversari e feste private a Torre de' Passeri e dintorni: buffet, cene in giardino, torta e open bar.",
         },
         intro: {
           frase: "Voi pensate agli *invitati*, alla tavola pensiamo noi.",
@@ -271,7 +271,7 @@ window.SITO = (() => {
         heroSottotitolo: "Coffee break, pranzi di lavoro, inaugurazioni e cene: puntuali e discreti, come serve a un'azienda.",
         meta: {
           titolo: "Catering per eventi aziendali · Zanzibar Catering & Eventi",
-          descrizione: "Catering per aziende tra Pescara e Chieti: coffee break, pranzi di lavoro, inaugurazioni, convegni e cene di fine anno.",
+          descrizione: "Catering per aziende a Torre de' Passeri e dintorni: coffee break, pranzi di lavoro, inaugurazioni, convegni e cene di fine anno.",
         },
         intro: {
           frase: "Puntuali, *discreti*, sempre in ordine: il servizio che serve a chi lavora.",
@@ -305,7 +305,7 @@ window.SITO = (() => {
         heroSottotitolo: "Finger food, taglieri e open bar: una festa in piedi, tra un calice e un assaggio.",
         meta: {
           titolo: "Aperitivi e buffet a domicilio · Zanzibar Catering & Eventi",
-          descrizione: "Aperitivi a buffet, finger food, taglieri e open bar per feste, inaugurazioni ed eventi tra Pescara e Chieti.",
+          descrizione: "Aperitivi a buffet, finger food, taglieri e open bar per feste, inaugurazioni ed eventi a Torre de' Passeri e dintorni.",
         },
         intro: {
           frase: "Un calice in mano e qualcosa di *buono* sempre a portata.",
@@ -343,7 +343,7 @@ window.SITO = (() => {
         heroSottotitolo: "Un aperitivo in giardino, un buffet o una cena con tutti: la festa di laurea come la vuoi tu.",
         meta: {
           titolo: "Catering per feste di laurea · Zanzibar Catering & Eventi",
-          descrizione: "Catering per feste di laurea tra Pescara e Chieti: aperitivi, buffet e cene con amici e parenti, torta e confetti rossi.",
+          descrizione: "Catering per feste di laurea a Torre de' Passeri e dintorni: aperitivi, buffet e cene con amici e parenti, torta e confetti rossi.",
         },
         intro: {
           frase: "Il traguardo si festeggia *insieme*, con un brindisi all'altezza.",
