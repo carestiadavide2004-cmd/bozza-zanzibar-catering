@@ -22,10 +22,10 @@ mkdirSync(join(ROOT, 'assets/icone'), { recursive: true });
 const font = `@font-face{font-family:B;src:url(${f('fonts/bodoni-moda-latin.woff2')});font-weight:400 900}
 @font-face{font-family:M;src:url(${f('fonts/manrope-latin.woff2')});font-weight:200 800}`;
 const solo = process.argv.slice(2);
-const inBasso = new Set(['comunioni']); // il viso della bambina è al centro dell'immagine: il titolo scende sopra la veste
+const inBasso = new Set(['comunioni', 'lauree']); // viso al centro dell'immagine (bambina, neolaureato): il titolo scende più in basso
 const pagine = [
   { file: 'home', img: 'assets/img/home/hero-computer-1920.webp', titolo: S.nome, sopra: `${S.sottotitolo} · ${S.contatti.citta}`, pos: '50% 78%' },
-  ...S.eventi.map(e => ({ file: e.chiave, img: `assets/video/${e.chiave}-orizzontale-1920.webp`, titolo: e.titolo, sopra: `${S.nome} · ${S.sottotitolo}`, pos: '50% 50%', basso: inBasso.has(e.chiave) })),
+  ...S.eventi.map(e => ({ file: e.chiave, img: e.heroFoto ? `assets/img/${e.chiave}/hero-computer-1920.webp` : `assets/video/${e.chiave}-orizzontale-1920.webp`, titolo: e.titolo, sopra: `${S.nome} · ${S.sottotitolo}`, pos: e.heroFoto ? e.heroFoto.posPc : '50% 50%', basso: inBasso.has(e.chiave) })),
 ].filter(p => !solo.length || solo.includes(p.file));
 
 const browser = await chromium.launch();

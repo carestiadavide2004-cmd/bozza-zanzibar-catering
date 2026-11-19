@@ -306,6 +306,14 @@ html.mm-aperto .hd .hd__marchio { opacity: 1 !important; pointer-events: auto !i
 @media (max-width: 767px), (orientation: portrait) {
   .hero__media img, .hero__media video { object-position: var(--op-tel, 50% 50%); }
 }
+/* Foto al posto del video (Lauree): zoom lentissimo avanti e indietro, centrato su corona e viso.
+   Usa "scale", che si somma alle altre trasformazioni (entrata della hero, zoom della card al passaggio). */
+@keyframes respira { from { scale: 1; } to { scale: 1.06; } }
+@media (prefers-reduced-motion: no-preference) {
+  html:not(.no-anim) .respira { animation: respira 12s ease-in-out infinite alternate; }
+}
+.hero__foto { transform-origin: 46% 34%; } /* il viso del neolaureato: lo zoom non sposta corona e viso */
+.card__img.respira { transform-origin: 36% 30%; }
 .hero__media video { opacity: 0; transition: opacity 1s var(--ease); }
 .hero__media video.is-on { opacity: 1; }
 .hero__ombra { position: absolute; inset: 0; pointer-events: none; }
@@ -319,9 +327,8 @@ html.mm-aperto .hd .hd__marchio { opacity: 1 !important; pointer-events: auto !i
     linear-gradient(180deg, rgba(14, 11, 9, .42) 0%, rgba(14, 11, 9, 0) 20%),
     linear-gradient(0deg, rgba(14, 11, 9, .82) 0%, rgba(14, 11, 9, .6) 26%, rgba(14, 11, 9, .3) 48%, rgba(14, 11, 9, .1) 62%, rgba(14, 11, 9, 0) 74%);
 }
-/* Compleanni e aperitivi: sul computer dietro il titolo c'è uno sfondo chiaro, l'ombra in alto scende fino alla base delle lettere */
+/* Aperitivi: sul computer dietro il titolo c'è uno sfondo chiaro, l'ombra in alto scende fino alla base delle lettere */
 @media (min-width: 768px) and (orientation: landscape) {
-  body[data-evento="compleanni"] .hero--alto .hero__ombra,
   body[data-evento="aperitivi"] .hero--alto .hero__ombra {
     background:
       linear-gradient(180deg, rgba(14, 11, 9, .64) 0%, rgba(14, 11, 9, .52) 16%, rgba(14, 11, 9, .46) 32%, rgba(14, 11, 9, .3) 42%, rgba(14, 11, 9, .1) 50%, rgba(14, 11, 9, 0) 58%),

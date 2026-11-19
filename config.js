@@ -229,7 +229,7 @@ window.SITO = (() => {
         pagina: "compleanni-feste-private",
         nome: "Compleanni e feste private",
         titolo: "Compleanni",
-        posizioneTitolo: "alto",
+        posizioneTitolo: "basso",
         // TESTO DI ESEMPIO DA CONFERMARE (da qui fino a "faq")
         sopratitolo: "Compleanni e feste private",
         breve: "Feste in giardino, cene tra amici, anniversari.",
@@ -334,6 +334,9 @@ window.SITO = (() => {
         nome: "Lauree",
         titolo: "Lauree",
         posizioneTitolo: "basso",
+        // foto al posto del video (hero, card e tendina) · pexels 34311554
+        // posPc / posTel: punto della foto che resta sempre visibile (corona e viso)
+        heroFoto: { alt: "Neolaureato con la corona d'alloro festeggiato dagli amici, con un vassoio di stuzzichini", w: 7008, h: 4672, posPc: "44% 60%", posTel: "46% 30%" },
         // TESTO DI ESEMPIO DA CONFERMARE (da qui fino a "faq")
         sopratitolo: "Feste di laurea",
         breve: "La festa per il traguardo, tra amici e parenti.",
@@ -463,9 +466,9 @@ window.SITO = (() => {
       ["corona-d-alloro", 7008, 4672, "Neolaureato sorridente con la corona d'alloro"], // pexels 34311557
       ["neolaureati-tra-le-siepi", 7008, 4672, "Due neolaureati con la corona d'alloro su un sentiero tra le siepi"], // pexels 27823412
       ["la-corona-sistemata", 6130, 4087, "Un'amica sistema la corona d'alloro al neolaureato"], // pexels 34311549
-      ["brindisi-vino-bianco", 2560, 1707, "Amici che brindano con i calici di vino bianco"], // pexels 6132779
-      ["festa-con-stuzzichini", 7008, 4672, "Festa di laurea all'aperto con amici e un vassoio di stuzzichini"], // pexels 34311554
-      ["mani-che-brindano", 6240, 4160, "Mani che brindano sopra una tavola apparecchiata"], // pexels 4878011
+      ["bacio-al-neolaureato", 6144, 4096, "Un bacio al neolaureato con la corona d'alloro, tra gli amici"], // pexels 34311556
+      ["diploma-e-coriandoli", 4358, 6534, "Neolaureato con la corona d'alloro e il diploma, tra i coriandoli"], // pexels 19350046
+      ["corona-al-tramonto", 3084, 4626, "Neolaureata con la corona d'alloro nella luce del tramonto"], // pexels 37189713
       ["festeggiato-dagli-amici", 7008, 4672, "Neolaureato festeggiato dagli amici all'aperto"], // pexels 34311560
       ["uscita-dall-universita", 6959, 4639, "Neolaureato accolto da amici e parenti all'uscita dell'università"], // pexels 34311555
       ["spumante-nel-parco", 5304, 7952, "Neolaureato che stappa una bottiglia di spumante nel parco"], // foto dell'introduzione // pexels 19350056

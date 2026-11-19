@@ -319,8 +319,23 @@ function paginaEvento(e, n) {
   const k = e.chiave;
   const P = `eventi.${n}`;
   const MQ = '(max-width: 767px), (orientation: portrait)';
-  const pv = `../assets/video/${k}-verticale-720.webp 720w, ../assets/video/${k}-verticale-1080.webp 1080w`;
-  const po = `../assets/video/${k}-orizzontale-1280.webp 1280w, ../assets/video/${k}-orizzontale-1920.webp 1920w`;
+  // hero con foto (heroFoto in config.js) o con video
+  const F = e.heroFoto;
+  const pv = F ? [720, 1080, 1440].map(w => `../assets/img/${k}/hero-telefono-${w}.webp ${w}w`).join(', ')
+    : `../assets/video/${k}-verticale-720.webp 720w, ../assets/video/${k}-verticale-1080.webp 1080w`;
+  const po = F ? [1280, 1920, 2560].map(w => `../assets/img/${k}/hero-computer-${w}.webp ${w}w`).join(', ')
+    : `../assets/video/${k}-orizzontale-1280.webp 1280w, ../assets/video/${k}-orizzontale-1920.webp 1920w`;
+  const media = F
+    ? `<picture>
+        <source media="${MQ}" srcset="${pv}" sizes="100vw">
+        <img class="hero__foto respira" src="../assets/img/${k}/hero-computer-1920.webp" srcset="${po}" sizes="100vw" width="${F.w}" height="${F.h}" alt="${esc(F.alt)}" fetchpriority="high" decoding="async">
+      </picture>`
+    : `<picture>
+        <source media="${MQ}" srcset="${pv}" sizes="100vw">
+        <img src="../assets/video/${k}-orizzontale-1920.webp" srcset="${po}" sizes="100vw" width="1920" height="1080" alt="" fetchpriority="high" decoding="async">
+      </picture>
+      <video data-video-hero data-src-pc="../assets/video/${k}-orizzontale.mp4" data-src-tel="../assets/video/${k}-verticale.mp4" muted playsinline loop preload="none" aria-hidden="true" tabindex="-1"></video>`;
+  const stileFoto = F ? ` style="--op-pc:${F.posPc};--op-tel:${F.posTel}"` : '';
   const extra = `<link rel="preload" as="image" imagesrcset="${pv}" imagesizes="100vw" media="${MQ}" fetchpriority="high">
 <link rel="preload" as="image" imagesrcset="${po}" imagesizes="100vw" media="(min-width: 768px) and (orientation: landscape)" fetchpriority="high">
 `;
@@ -328,13 +343,9 @@ function paginaEvento(e, n) {
 <body class="pagina-evento" data-pagina="evento" data-evento="${k}">
 ${intestazione({ base, evento: true })}
 <main id="contenuto">
-  <section class="hero hero--evento hero--${e.posizioneTitolo}" data-hero aria-label="${esc(e.nome)}">
+  <section class="hero hero--evento hero--${e.posizioneTitolo}${F ? ' hero--foto' : ''}" data-hero aria-label="${esc(e.nome)}"${stileFoto}>
     <div class="hero__media"><div class="hero__scala">
-      <picture>
-        <source media="${MQ}" srcset="${pv}" sizes="100vw">
-        <img src="../assets/video/${k}-orizzontale-1920.webp" srcset="${po}" sizes="100vw" width="1920" height="1080" alt="" fetchpriority="high" decoding="async">
-      </picture>
-      <video data-video-hero data-src-pc="../assets/video/${k}-orizzontale.mp4" data-src-tel="../assets/video/${k}-verticale.mp4" muted playsinline loop preload="none" aria-hidden="true" tabindex="-1"></video>
+      ${media}
     </div></div>
     <div class="hero__ombra" aria-hidden="true"></div>
     <div class="hero__nome">

@@ -22,8 +22,8 @@
 <link rel="apple-touch-icon" href="../assets/icone/apple-touch-icon.png">
 <link rel="preload" href="../fonts/bodoni-moda-latin.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="../fonts/manrope-latin.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="preload" as="image" imagesrcset="../assets/video/lauree-verticale-720.webp 720w, ../assets/video/lauree-verticale-1080.webp 1080w" imagesizes="100vw" media="(max-width: 767px), (orientation: portrait)" fetchpriority="high">
-<link rel="preload" as="image" imagesrcset="../assets/video/lauree-orizzontale-1280.webp 1280w, ../assets/video/lauree-orizzontale-1920.webp 1920w" imagesizes="100vw" media="(min-width: 768px) and (orientation: landscape)" fetchpriority="high">
+<link rel="preload" as="image" imagesrcset="../assets/img/lauree/hero-telefono-720.webp 720w, ../assets/img/lauree/hero-telefono-1080.webp 1080w, ../assets/img/lauree/hero-telefono-1440.webp 1440w" imagesizes="100vw" media="(max-width: 767px), (orientation: portrait)" fetchpriority="high">
+<link rel="preload" as="image" imagesrcset="../assets/img/lauree/hero-computer-1280.webp 1280w, ../assets/img/lauree/hero-computer-1920.webp 1920w, ../assets/img/lauree/hero-computer-2560.webp 2560w" imagesizes="100vw" media="(min-width: 768px) and (orientation: landscape)" fetchpriority="high">
 <link rel="stylesheet" href="../css/style.css">
 <script>document.documentElement.classList.add('js')</script>
 <script src="../config.js" defer></script>
@@ -68,13 +68,12 @@
   </div>
 </nav>
 <main id="contenuto">
-  <section class="hero hero--evento hero--basso" data-hero aria-label="Lauree">
+  <section class="hero hero--evento hero--basso hero--foto" data-hero aria-label="Lauree" style="--op-pc:44% 60%;--op-tel:46% 30%">
     <div class="hero__media"><div class="hero__scala">
       <picture>
-        <source media="(max-width: 767px), (orientation: portrait)" srcset="../assets/video/lauree-verticale-720.webp 720w, ../assets/video/lauree-verticale-1080.webp 1080w" sizes="100vw">
-        <img src="../assets/video/lauree-orizzontale-1920.webp" srcset="../assets/video/lauree-orizzontale-1280.webp 1280w, ../assets/video/lauree-orizzontale-1920.webp 1920w" sizes="100vw" width="1920" height="1080" alt="" fetchpriority="high" decoding="async">
+        <source media="(max-width: 767px), (orientation: portrait)" srcset="../assets/img/lauree/hero-telefono-720.webp 720w, ../assets/img/lauree/hero-telefono-1080.webp 1080w, ../assets/img/lauree/hero-telefono-1440.webp 1440w" sizes="100vw">
+        <img class="hero__foto respira" src="../assets/img/lauree/hero-computer-1920.webp" srcset="../assets/img/lauree/hero-computer-1280.webp 1280w, ../assets/img/lauree/hero-computer-1920.webp 1920w, ../assets/img/lauree/hero-computer-2560.webp 2560w" sizes="100vw" width="7008" height="4672" alt="Neolaureato con la corona d&#39;alloro festeggiato dagli amici, con un vassoio di stuzzichini" fetchpriority="high" decoding="async">
       </picture>
-      <video data-video-hero data-src-pc="../assets/video/lauree-orizzontale.mp4" data-src-tel="../assets/video/lauree-verticale.mp4" muted playsinline loop preload="none" aria-hidden="true" tabindex="-1"></video>
     </div></div>
     <div class="hero__ombra" aria-hidden="true"></div>
     <div class="hero__nome">

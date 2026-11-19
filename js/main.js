@@ -105,11 +105,11 @@
      ===================================================================== */
   const mini = e => `${BASE}assets/img/eventi/${e.chiave}-mini-200.webp`;
   // video dell'anteprima: vuoto finché non serve (preload none, src in data-src); con "riduci movimento" non c'è
-  const videoCard = e => (RIDOTTO ? '' : `<video class="card__video" data-src="${BASE}assets/video/${e.chiave}-anteprima.mp4" muted loop playsinline preload="none" disablepictureinpicture disableremoteplayback aria-hidden="true" tabindex="-1"></video>`);
+  const videoCard = e => (RIDOTTO || e.heroFoto ? '' : `<video class="card__video" data-src="${BASE}assets/video/${e.chiave}-anteprima.mp4" muted loop playsinline preload="none" disablepictureinpicture disableremoteplayback aria-hidden="true" tabindex="-1"></video>`);
   const card = (e, i) => `
     <li class="card" data-card><a class="card__a" href="${hrefEvento(e)}">
       <div class="card__media"><div class="card__zoom" style="position:absolute;inset:0">
-        <img class="card__img" src="${BASE}assets/img/eventi/${e.chiave}-card-480.webp" srcset="${BASE}assets/img/eventi/${e.chiave}-card-480.webp 480w, ${BASE}assets/img/eventi/${e.chiave}-card-720.webp 720w" sizes="(min-width: 1100px) 30vw, (min-width: 640px) 46vw, 78vw" width="720" height="900" alt="" loading="lazy" decoding="async">${videoCard(e)}
+        <img class="card__img${e.heroFoto ? ' respira' : ''}" src="${BASE}assets/img/eventi/${e.chiave}-card-480.webp" srcset="${BASE}assets/img/eventi/${e.chiave}-card-480.webp 480w, ${BASE}assets/img/eventi/${e.chiave}-card-720.webp 720w" sizes="(min-width: 1100px) 30vw, (min-width: 640px) 46vw, 78vw" width="720" height="900" alt="" loading="lazy" decoding="async">${videoCard(e)}
       </div></div>
       <div class="card__testo"><span class="card__n">${due(i + 1)}</span><h3 class="card__nome">${esc(e.nome)}</h3><p class="card__desc">${esc(e.breve)}</p><span class="card__vai">Scopri ${ICONA.freccia}</span></div>
     </a></li>`;

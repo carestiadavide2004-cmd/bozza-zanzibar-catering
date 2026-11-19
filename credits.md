@@ -51,7 +51,7 @@ Tutte le foto e i video vengono da **Pexels** (licenza Pexels: uso gratuito, anc
 
 ## Compleanni e feste private
 
-- **Video hero**: si accendono le candeline su una torta decorata con fiori, accanto a una candela scintillante — https://www.pexels.com/video/19356203/ (versioni 1920×1080 e 1080×1920, poster e anteprima della card)
+- **Video hero**: tre amiche festeggiano davanti alla tavola allestita (torta con due fontane di scintille, cupcake, regali, calici di rosé e cappellini) — https://www.pexels.com/video/7583361/ (versioni 1920×1080 e 1080×1920, poster e anteprima della card)
 - Amici che brindano sotto le luci di una festa in giardino (brindisi-sotto-le-luci) — https://www.pexels.com/photo/5638814/
 - Si accendono le candeline sulla torta di compleanno (candeline-sulla-torta) — https://www.pexels.com/photo/33038785/
 - Signora sorridente a tavola durante una festa all'aperto (sorrisi-a-tavola) — https://www.pexels.com/photo/5638644/
@@ -92,13 +92,13 @@ Tutte le foto e i video vengono da **Pexels** (licenza Pexels: uso gratuito, anc
 
 ## Lauree
 
-- **Video hero**: tre amiche brindano con lo spumante in giardino, nella luce calda del tramonto — https://www.pexels.com/video/8530982/ (versioni 1920×1080 e 1080×1920, poster e anteprima della card)
+- **Foto hero** (al posto del video): neolaureato con la corona d'alloro festeggiato dagli amici, con un vassoio di stuzzichini — https://www.pexels.com/photo/34311554/ (taglio orizzontale e verticale, card e miniatura della tendina)
 - Neolaureato sorridente con la corona d'alloro (corona-d-alloro) — https://www.pexels.com/photo/34311557/
 - Due neolaureati con la corona d'alloro su un sentiero tra le siepi (neolaureati-tra-le-siepi) — https://www.pexels.com/photo/27823412/
 - Un'amica sistema la corona d'alloro al neolaureato (la-corona-sistemata) — https://www.pexels.com/photo/34311549/
-- Amici che brindano con i calici di vino bianco (brindisi-vino-bianco) — https://www.pexels.com/photo/6132779/
-- Festa di laurea all'aperto con amici e un vassoio di stuzzichini (festa-con-stuzzichini) — https://www.pexels.com/photo/34311554/
-- Mani che brindano sopra una tavola apparecchiata (mani-che-brindano) — https://www.pexels.com/photo/4878011/
+- Un bacio al neolaureato con la corona d'alloro, tra gli amici (bacio-al-neolaureato) — https://www.pexels.com/photo/34311556/
+- Neolaureato con la corona d'alloro e il diploma, tra i coriandoli (diploma-e-coriandoli) — https://www.pexels.com/photo/19350046/
+- Neolaureata con la corona d'alloro nella luce del tramonto (corona-al-tramonto) — https://www.pexels.com/photo/37189713/
 - Neolaureato festeggiato dagli amici all'aperto (festeggiato-dagli-amici) — https://www.pexels.com/photo/34311560/
 - Neolaureato accolto da amici e parenti all'uscita dell'università (uscita-dall-universita) — https://www.pexels.com/photo/34311555/
 - Neolaureato che stappa una bottiglia di spumante nel parco (spumante-nel-parco) — https://www.pexels.com/photo/19350056/
