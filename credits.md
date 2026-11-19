@@ -23,7 +23,7 @@ Tutte le foto e i video vengono da **Pexels** (licenza Pexels: uso gratuito, anc
 
 ## Matrimoni
 
-- **Video hero**: https://www.pexels.com/video/37964387/ (versioni 1920×1080 e 1080×1920, poster e anteprima della card)
+- **Video hero**: ricevimento sotto un porticato: gli invitati sventolano i tovaglioli e gli sposi brindano — https://www.pexels.com/video/37964387/ (versioni 1920×1080 e 1080×1920, poster e anteprima della card)
 - Sposi e invitati brindano sotto le luci, all'aperto (brindisi-sotto-le-luci) — https://www.pexels.com/photo/6119578/
 - Torta nuziale bianca decorata con fiori, nella luce del tramonto (torta-al-tramonto) — https://www.pexels.com/photo/19869787/
 - Lunga tavola all'aperto con candele e limoni, al crepuscolo (tavola-limoni-crepuscolo) — https://www.pexels.com/photo/4622288/
@@ -37,7 +37,7 @@ Tutte le foto e i video vengono da **Pexels** (licenza Pexels: uso gratuito, anc
 
 ## Comunioni, battesimi e cresime
 
-- **Video hero**: https://www.pexels.com/video/8769414/ (versioni 1920×1080 e 1080×1920, poster e anteprima della card)
+- **Video hero**: pranzo di famiglia in giardino, con la tavola piena di piatti — https://www.pexels.com/video/8769414/ (versioni 1920×1080 e 1080×1920, poster e anteprima della card)
 - Famiglia che brinda durante un pranzo in giardino (brindisi-pranzo-in-giardino) — https://www.pexels.com/photo/8841472/
 - Biscotti decorati con angeli in un piatto di vetro (biscotti-angeli) — https://www.pexels.com/photo/37803973/
 - Torta bianca con un angelo e fiori per una festa in giardino (torta-bianca-angelo) — https://www.pexels.com/photo/37803978/
@@ -51,7 +51,7 @@ Tutte le foto e i video vengono da **Pexels** (licenza Pexels: uso gratuito, anc
 
 ## Compleanni e feste private
 
-- **Video hero**: https://www.pexels.com/video/5617394/ (versioni 1920×1080 e 1080×1920, poster e anteprima della card)
+- **Video hero**: cena in giardino, di sera, sotto le lucine — https://www.pexels.com/video/5617394/ (versioni 1920×1080 e 1080×1920, poster e anteprima della card)
 - Amici che brindano sotto le luci di una festa in giardino (brindisi-sotto-le-luci) — https://www.pexels.com/photo/5638814/
 - Si accendono le candeline sulla torta di compleanno (candeline-sulla-torta) — https://www.pexels.com/photo/33038785/
 - Signora sorridente a tavola durante una festa all'aperto (sorrisi-a-tavola) — https://www.pexels.com/photo/5638644/
@@ -65,7 +65,7 @@ Tutte le foto e i video vengono da **Pexels** (licenza Pexels: uso gratuito, anc
 
 ## Eventi aziendali
 
-- **Video hero**: https://www.pexels.com/video/8922356/ (versioni 1920×1080 e 1080×1920, poster e anteprima della card)
+- **Video hero**: cameriere in papillon al servizio durante un evento serale — https://www.pexels.com/video/8922356/ (versioni 1920×1080 e 1080×1920, poster e anteprima della card)
 - Professionisti che si servono al buffet in una sala luminosa (buffet-sala-luminosa) — https://www.pexels.com/photo/38460679/
 - Cameriere con un vassoio di flûte di spumante e succo (vassoio-flute-e-succhi) — https://www.pexels.com/photo/13375022/
 - Ospite che prende un assaggio da un vassoio (assaggio-dal-vassoio) — https://www.pexels.com/photo/32774004/
@@ -78,7 +78,7 @@ Tutte le foto e i video vengono da **Pexels** (licenza Pexels: uso gratuito, anc
 
 ## Aperitivi e buffet
 
-- **Video hero**: https://www.pexels.com/video/8531389/ (versioni 1920×1080 e 1080×1920, poster e anteprima della card)
+- **Video hero**: spumante versato nei calici, all'aperto — https://www.pexels.com/video/8531389/ (versioni 1920×1080 e 1080×1920, poster e anteprima della card)
 - Buffet sotto un gazebo con vasi in terracotta e fiori arancioni, la sera (buffet-terracotta-gazebo) — https://www.pexels.com/photo/37958133/
 - Spritz con foglia di basilico servito accanto a un'insalata (spritz-basilico) — https://www.pexels.com/photo/28618414/
 - Vassoio di finger food servito durante un evento (vassoio-finger-food) — https://www.pexels.com/photo/34321369/
@@ -92,7 +92,7 @@ Tutte le foto e i video vengono da **Pexels** (licenza Pexels: uso gratuito, anc
 
 ## Lauree
 
-- **Video hero**: https://www.pexels.com/video/8530982/ (versioni 1920×1080 e 1080×1920, poster e anteprima della card)
+- **Video hero**: tre amiche brindano con lo spumante in giardino, nella luce calda del tramonto — https://www.pexels.com/video/8530982/ (versioni 1920×1080 e 1080×1920, poster e anteprima della card)
 - Neolaureato sorridente con la corona d'alloro (corona-d-alloro) — https://www.pexels.com/photo/34311557/
 - Due neolaureati con la corona d'alloro su un sentiero tra le siepi (neolaureati-tra-le-siepi) — https://www.pexels.com/photo/27823412/
 - Un'amica sistema la corona d'alloro al neolaureato (la-corona-sistemata) — https://www.pexels.com/photo/34311549/
