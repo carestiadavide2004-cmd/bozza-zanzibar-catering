@@ -96,7 +96,7 @@ window.SITO = (() => {
         titolo: "Zanzibar · Catering & Eventi a Torre de' Passeri",
         descrizione: "Catering per matrimoni, comunioni, compleanni, eventi aziendali, aperitivi e lauree tra Torre de' Passeri, Pescara e Chieti.",
       },
-      heroSottotitolo: "Catering per matrimoni, cerimonie e feste, tra Pescara e Chieti.",
+      heroSottotitolo: "Catering per matrimoni, cerimonie e feste",
       intro: {
         etichetta: "Il catering dello Zanzibar",
         frase: "Portiamo la cucina di casa dove si festeggia, con il servizio di una *sala* elegante.",
