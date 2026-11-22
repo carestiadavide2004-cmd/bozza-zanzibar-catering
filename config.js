@@ -69,9 +69,9 @@ window.SITO = (() => {
       testo: "Lun–Ven 9–13 e 15:30–19:30 · Sab 9–13",
     },
 
-    social: { // DA CONFERMARE (indirizzi delle pagine vere)
-      instagram: "https://www.instagram.com/",
-      facebook: "https://www.facebook.com/",
+    social: {
+      instagram: "https://www.instagram.com/zanzibar_torre/",
+      facebook: "https://www.facebook.com/zanzibarpub/",
     },
 
     legale: { // DA CONFERMARE: tutti i dati legali

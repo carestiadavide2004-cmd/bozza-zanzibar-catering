@@ -82,6 +82,7 @@
   /* =====================================================================
      1. TESTI E DATI DA config.js
      ===================================================================== */
+  const NOMI_SOCIAL = { instagram: 'Instagram', facebook: 'Facebook', tiktok: 'TikTok' };
   function riempi() {
     $$('[data-t]').forEach(el => { const v = prendi(el.dataset.t); if (v != null) el.textContent = v; });
     $$('[data-h]').forEach(el => { const v = prendi(el.dataset.h); if (v != null) el.innerHTML = enfasi(v); });
@@ -90,6 +91,16 @@
     $$('[data-anno]').forEach(el => { el.textContent = new Date().getFullYear(); });
     $$('[data-link]').forEach(a => {
       const t = a.dataset.link;
+      // social: link veri da config.js; se il link è vuoto il pulsante non compare
+      if (NOMI_SOCIAL[t]) {
+        const url = S.social?.[t];
+        const box = /^(P|LI)$/.test(a.parentElement.tagName) && a.parentElement.children.length === 1 ? a.parentElement : a;
+        box.hidden = !url;
+        if (!url) { a.removeAttribute('href'); return; }
+        a.href = url; a.target = '_blank'; a.rel = 'noopener noreferrer';
+        a.setAttribute('aria-label', `${S.nome || 'Zanzibar'} su ${NOMI_SOCIAL[t]}`);
+        return;
+      }
       if (t === 'tel') a.href = `tel:${C.telefonoLink || ''}`;
       else if (t === 'mail') a.href = `mailto:${C.email || ''}`;
       else if (t === 'mail-privacy') a.href = `mailto:${S.legale?.emailPrivacy || ''}`;
