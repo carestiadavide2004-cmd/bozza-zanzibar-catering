@@ -1,5 +1,5 @@
 /* =====================================================================
-   Zanzibar · Catering & Eventi — style.css
+   Zeta Catering — style.css
    Direzione: maison di paese. Avorio, inchiostro, Bodoni gigante.
    Animazioni: solo transform, opacity, clip-path.
    ===================================================================== */
@@ -96,7 +96,6 @@ em { font-style: italic; }
 .scuro .etichetta, .hero .etichetta { color: var(--pietra); }
 .scuro .etichetta::before, .hero .etichetta::before { background: var(--accento-scuro); }
 .hero .etichetta { color: rgba(251, 248, 242, .86); }
-@media (max-width: 519px) { .hero__citta { display: none; } }
 
 .titolo {
   font-family: var(--f-titoli); font-weight: 450; font-size: clamp(38px, 5.6vw, 84px);
@@ -338,6 +337,13 @@ html.mm-aperto .hd .hd__marchio { opacity: 1 !important; pointer-events: auto !i
 .hero__nome { position: relative; z-index: 2; grid-row: 2; min-width: 0; padding-inline: var(--giant-m); padding-top: clamp(4px, 1.6vh, 22px); }
 .hero .giant { text-shadow: 0 .02em .14em rgba(14, 11, 9, .24); }
 .hero .etichetta { text-shadow: 0 1px 10px rgba(0, 0, 0, .3); }
+.hero__marchio-sotto {
+  display: flex; align-items: center; gap: clamp(14px, 1.6vw, 24px); margin-top: clamp(10px, 1.6vh, 20px);
+  margin-left: var(--giant-sx, 0px); width: var(--giant-w, auto); max-width: 100%;
+  font: 500 clamp(12px, 1.25vw, 18px)/1 var(--f-testo); letter-spacing: .62em; text-transform: uppercase;
+  color: var(--bianco-foto); text-shadow: 0 1px 12px rgba(0, 0, 0, .35);
+}
+.hero__marchio-sotto::after { content: ""; flex: 1; height: 1px; background: rgba(251, 248, 242, .38); }
 .hero--basso .hero__nome { grid-row: 3; align-self: end; padding-top: 0; }
 .hero__sopra { padding-left: calc(var(--margine) - var(--giant-m)); margin-bottom: clamp(6px, 1.2vh, 14px); }
 .hero__basso {
@@ -655,9 +661,6 @@ textarea.pg__input { min-height: 112px; resize: vertical; }
 .cont__riga dd { font-size: 17px; }
 .cont__riga dd a { text-decoration: none; font-weight: 600; }
 .cont__riga dd a:hover { text-decoration: underline; text-underline-offset: 4px; }
-.stato-orari { display: inline-flex; align-items: center; gap: 8px; font-size: 14px; font-weight: 600; margin-top: 6px; }
-.stato-orari::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: var(--pietra); }
-.stato-orari.is-aperto::before { background: #4F8A55; box-shadow: 0 0 0 4px rgba(79, 138, 85, .16); }
 .cont__social { margin-top: 28px; display: flex; gap: 24px; }
 
 .mappa { position: relative; min-height: 440px; border-radius: var(--r); overflow: hidden; background: var(--inchiostro); color: var(--avorio); }
@@ -699,6 +702,41 @@ textarea.pg__input { min-height: 112px; resize: vertical; }
 .menu-carta__sez ul { margin-top: 14px; display: grid; gap: 8px; }
 .menu-carta__sez li { font: 400 clamp(18px, 1.6vw, 21px)/1.4 var(--f-titoli); }
 .menu-carta__nota { margin: clamp(32px, 4vw, 48px) auto 0; max-width: 40ch; font-size: 13.5px; color: var(--grigio); }
+/* Crea il tuo menù: una portata per riga, campo libero + proposte */
+.mc__riga h3 label { cursor: pointer; }
+.mc__campo {
+  display: block; width: 100%; margin-top: 12px; padding: 8px 4px 10px; resize: none; overflow: hidden;
+  font: 400 clamp(19px, 1.7vw, 22px)/1.4 var(--f-titoli); color: var(--inchiostro); text-align: center;
+  background: transparent; border: 0; border-bottom: 1px solid var(--linea-forte); border-radius: 0;
+  -webkit-appearance: none; appearance: none; transition: border-color .4s var(--ease);
+}
+.mc__campo::placeholder { font: italic 400 17px/1.4 var(--f-titoli); color: #8C857B; }
+.mc__campo:focus { outline: none; border-bottom-color: var(--inchiostro); }
+.mc__campo:focus-visible { box-shadow: 0 2px 0 -1px var(--inchiostro), 0 6px 0 -2px rgba(166, 70, 31, .3); }
+.mc__pillole { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; margin-top: 16px; }
+.mc__pillola {
+  position: relative; display: inline-flex; align-items: center; gap: 9px; min-height: 40px; padding: 0 16px 0 13px;
+  border-radius: 999px; box-shadow: inset 0 0 0 1px var(--linea-forte); background: transparent;
+  font: 500 14.5px/1.2 var(--f-testo); color: var(--inchiostro); text-align: left;
+  transition: background-color .45s var(--ease), color .45s var(--ease), box-shadow .45s var(--ease);
+  -webkit-tap-highlight-color: transparent; touch-action: manipulation;
+}
+.mc__pillola::before { content: ""; flex: none; width: 9px; height: 9px; background: linear-gradient(currentColor, currentColor) 50% / 100% 1.3px no-repeat, linear-gradient(currentColor, currentColor) 50% / 1.3px 100% no-repeat; transition: transform .5s var(--ease); }
+.mc__pillola[aria-pressed="true"] { background: var(--inchiostro); color: var(--avorio); box-shadow: inset 0 0 0 1px var(--inchiostro); }
+.mc__pillola[aria-pressed="true"]::before { transform: rotate(45deg); }
+@media (hover: hover) { .mc__pillola:hover { box-shadow: inset 0 0 0 1px var(--inchiostro); } }
+.mc__pillola:focus-visible { outline: 2px solid var(--accento); outline-offset: 2px; }
+.mc__invio { margin-top: clamp(34px, 4.4vw, 52px); display: grid; gap: 14px; justify-items: center; }
+.mc__wa { width: 100%; min-height: 62px; padding-inline: 14px; gap: 10px; font-size: clamp(15px, 4vw, 16px); white-space: normal; line-height: 1.25; }
+.mc__wa svg { width: 22px; height: 22px; }
+.mc__wa[aria-disabled="true"] { opacity: .38; cursor: not-allowed; }
+.mc__wa[aria-disabled="true"]::before { transform: scaleY(0) !important; }
+@media (hover: hover) { .mc__wa:hover svg { transform: none; } }
+.mc__avviso { font-size: 14.5px; color: var(--grigio); }
+.mc__privacy { max-width: 46ch; }
+@media (prefers-reduced-motion: reduce) { .mc__pillola, .mc__pillola::before, .mc__campo { transition: none; } }
+.pg__menu { display: grid; gap: 4px; }
+.pg__menu b { font-weight: 600; }
 
 .faq__lista { margin-top: clamp(36px, 5vw, 56px); border-top: 1px solid var(--linea); max-width: 900px; }
 .faq__i { border-bottom: 1px solid var(--linea); }
@@ -730,7 +768,6 @@ textarea.pg__input { min-height: 112px; resize: vertical; }
 .pie__lista { display: grid; gap: 10px; font-size: 15.5px; }
 .pie__lista a { text-decoration: none; }
 .pie__lista a:hover { text-decoration: underline; text-underline-offset: 4px; }
-.pie__lista .stato-orari { color: var(--pietra); font-weight: 500; }
 .pie__legale { margin-top: clamp(56px, 7vw, 96px); padding-block: 24px; border-top: 1px solid var(--linea-chiara); display: flex; flex-wrap: wrap; gap: 10px 28px; justify-content: space-between; font-size: 13px; color: var(--pietra); }
 .pie__legale a { color: var(--avorio); }
 .pie__gigante { padding-inline: var(--giant-m); margin-top: 8px; margin-bottom: calc(-.2 * var(--fit-px, 120px)); pointer-events: none; user-select: none; }

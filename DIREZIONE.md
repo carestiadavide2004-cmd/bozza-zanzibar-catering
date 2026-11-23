@@ -1,4 +1,4 @@
-# Direzione artistica — Zanzibar · Catering & Eventi
+# Direzione artistica — Zeta Catering
 
 Bozza per un cliente vero (bar di Torre de' Passeri). Sito separato dal menù digitale.
 

@@ -1,5 +1,5 @@
 /* =====================================================================
-   ZANZIBAR · CATERING & EVENTI — config.js
+   ZETA CATERING — config.js
    Qui ci sono TUTTI i dati e i testi del sito: per il cliente vero
    si cambia solo questo file.
    - "// DA CONFERMARE" = dato segnaposto da chiedere al cliente.
@@ -13,65 +13,52 @@ window.SITO = (() => {
   /* Voci di "Cosa possiamo curare", uguali per tutti gli eventi
      (ogni evento può cambiarne qualcuna più sotto). */
   const CURA = { // TESTO DI ESEMPIO DA CONFERMARE
-    aperitivo: ["Aperitivo di benvenuto", "Calici, analcolici e assaggi caldi per accogliere gli ospiti appena arrivano."],
+    braccio: ["Servizio al braccio (tray service)", "Camerieri che passano tra gli ospiti con vassoi di assaggi caldi e freddi e calici."],
     buffet: ["Buffet", "Isole di antipasti, primi o dolci, sempre in ordine e rinnovate durante la festa."],
     tavolo: ["Servizio al tavolo", "Portate servite dal nostro personale, con i tempi giusti tra un piatto e l'altro."],
     torta: ["Torta", "La torta della festa, con il momento del taglio e il servizio al tavolo."],
     bar: ["Open bar", "Un angolo bar con chi prepara spritz, cocktail e analcolici per tutta la serata."],
     allestimento: ["Allestimento", "Tavoli, tovagliato, piatti, bicchieri e posate; su richiesta fiori e luci."],
-    personale: ["Personale", "Camerieri e cuochi in divisa, coordinati da un responsabile per tutto l'evento."],
+    showCooking: ["Show cooking", "Piatti preparati al momento davanti agli ospiti, da una postazione dedicata."],
+    intrattenimento: ["Intrattenimento", "Su richiesta, musica e animazione coordinate con i tempi del servizio."],
+    location: ["Location", "Vi aiutiamo a individuare il luogo più adatto al numero di ospiti e al tipo di evento."],
   };
 
   /* Domande frequenti, uguali per tutti gli eventi */
   const FAQ = { // TESTO DI ESEMPIO DA CONFERMARE
     ospiti: ["C'è un numero minimo di ospiti?", "Dipende dal tipo di servizio. Scrivici il numero indicativo di invitati e ti diciamo subito quale formula è adatta."],
-    zone: ["In quali zone lavorate?", "Partiamo da Torre de' Passeri e lavoriamo a Pescara, Chieti e nelle rispettive province. Per altre zone chiedici: valutiamo caso per caso."],
+    zone: ["In quali zone lavorate?", "Lavoriamo in tutto l'Abruzzo e nelle regioni limitrofe. Per altre zone chiedici: valutiamo caso per caso."],
     anticipo: ["Con quanto anticipo bisogna prenotare?", "Prima ci contatti, più date troviamo libere, soprattutto per i fine settimana da maggio a settembre. Scrivici appena hai la data."],
     allergie: ["Gestite allergie e intolleranze?", "Sì: indicale nella richiesta di preventivo. Prepariamo piatti dedicati, serviti a parte e ben riconoscibili."],
   };
 
   return {
-    nome: "Zanzibar",
-    sottotitolo: "Catering & Eventi", // DA CONFERMARE (nome provvisorio)
-    descrizione: "Catering per matrimoni, cerimonie, feste private ed eventi aziendali a Torre de' Passeri e dintorni.", // TESTO DI ESEMPIO DA CONFERMARE
+    nome: "Zeta Catering",
+    marchio: "Zeta",          // la parola gigante nella hero e nel footer
+    sottotitolo: "Catering",  // sotto il marchio, in maiuscoletto
+    descrizione: "Catering per matrimoni, cerimonie, feste private ed eventi aziendali in tutto l'Abruzzo e nelle regioni limitrofe.", // TESTO DI ESEMPIO DA CONFERMARE
     indirizzoSito: "https://carestiadavide2004-cmd.github.io/bozza-zanzibar-catering/", // indirizzo della bozza online
 
     contatti: {
-      telefono: "000 000 0000",        // DA CONFERMARE
-      telefonoLink: "+390000000000",   // DA CONFERMARE (lo stesso numero, senza spazi)
-      whatsapp: "390000000000",        // DA CONFERMARE (39 + numero, senza + e senza spazi)
-      email: "info@esempio.it",        // DA CONFERMARE
-      indirizzo: "Via Esempio 1",      // DA CONFERMARE
-      cap: "65029",                    // DA CONFERMARE
+      telefono: "+39 392 285 0875",
+      telefonoLink: "+393922850875",   // lo stesso numero, senza spazi
+      whatsapp: "393922850875",        // 39 + numero, senza + e senza spazi
+      email: "cristiano.favara@gmail.com",
+      indirizzo: "Via Garibaldi 4",
+      cap: "65029",                    // VERIFICARE CAP E CITTÀ
       citta: "Torre de' Passeri",
       provincia: "PE",
     },
 
-    zona: { // DA CONFERMARE
-      testo: "Torre de' Passeri, Pescara, Chieti e provincia",
-      luoghi: ["Torre de' Passeri", "Pescara e provincia", "Chieti e provincia"],
+    zona: {
+      testo: "Tutto l'Abruzzo e le regioni limitrofe",
+      luoghi: ["Abruzzo", "Regioni limitrofe"],
       nota: "Per altre zone chiedici: valutiamo caso per caso.", // TESTO DI ESEMPIO DA CONFERMARE
     },
 
-    /* Orari in cui rispondiamo (servono per "Rispondiamo ora / Ora chiusi").
-       0 = domenica, 1 = lunedì … 6 = sabato. [] = chiuso. */
-    orari: { // DA CONFERMARE
-      etichetta: "Rispondiamo al telefono",
-      giorni: {
-        1: [["09:00", "13:00"], ["15:30", "19:30"]],
-        2: [["09:00", "13:00"], ["15:30", "19:30"]],
-        3: [["09:00", "13:00"], ["15:30", "19:30"]],
-        4: [["09:00", "13:00"], ["15:30", "19:30"]],
-        5: [["09:00", "13:00"], ["15:30", "19:30"]],
-        6: [["09:00", "13:00"]],
-        0: [],
-      },
-      testo: "Lun–Ven 9–13 e 15:30–19:30 · Sab 9–13",
-    },
-
     social: {
-      instagram: "https://www.instagram.com/zanzibar_torre/",
-      facebook: "https://www.facebook.com/zanzibarpub/",
+      instagram: "https://www.instagram.com/zeta_catering/",
+      facebook: "", // vuoto = pulsante nascosto
     },
 
     legale: { // DA CONFERMARE: tutti i dati legali
@@ -99,8 +86,8 @@ window.SITO = (() => {
         { nome: "Laurea", evento: "lauree" },
         { nome: "Altro" },
       ],
-      servizi: ["Buffet", "Servizio al tavolo", "Aperitivo e finger food", "Open bar"],
-      extra: ["Torta", "Allestimento", "Personale di sala", "Noleggio stoviglie"],
+      servizi: ["Buffet", "Servizio al tavolo", "Servizio al braccio (tray service)", "Show cooking", "Open bar"],
+      extra: ["Torta", "Allestimento", "Noleggio stoviglie", "Intrattenimento", "Location"],
       esigenze: ["Vegetariani", "Vegani", "Celiaci"],
       /* Titolo di ogni passo e voce usata nel riepilogo e nel messaggio */
       passi: {
@@ -116,24 +103,24 @@ window.SITO = (() => {
     },
 
     /* Messaggio già scritto per WhatsApp: {evento} diventa il tipo di evento scelto */
-    whatsappMessaggio: "Ciao Zanzibar! Vorrei un preventivo per {evento}.", // TESTO DI ESEMPIO DA CONFERMARE
+    whatsappMessaggio: "Ciao Zeta Catering! Vorrei un preventivo per {evento}.", // TESTO DI ESEMPIO DA CONFERMARE
 
     home: { // TESTO DI ESEMPIO DA CONFERMARE (tutti i testi della home)
       meta: {
-        titolo: "Zanzibar · Catering & Eventi a Torre de' Passeri",
-        descrizione: "Catering per matrimoni, comunioni, compleanni, eventi aziendali, aperitivi e lauree a Torre de' Passeri e dintorni.",
+        titolo: "Zeta Catering · Catering per matrimoni ed eventi in Abruzzo",
+        descrizione: "Catering per matrimoni, comunioni, compleanni, eventi aziendali, aperitivi e lauree in tutto l'Abruzzo e nelle regioni limitrofe.",
       },
       heroSottotitolo: "Catering per matrimoni, cerimonie e feste",
       intro: {
-        etichetta: "Il catering dello Zanzibar",
+        etichetta: "Zeta Catering",
         frase: "Portiamo la cucina di casa dove si festeggia, con il servizio di una *sala* elegante.",
-        testo: "Siamo lo Zanzibar di Torre de' Passeri. Oltre al bar, prepariamo catering per matrimoni, cerimonie, feste private ed eventi aziendali. Ogni proposta nasce da un incontro: ascoltiamo, assaggiamo insieme e poi pensiamo a tutto noi.",
+        testo: "Siamo Zeta Catering, di Torre de' Passeri. Prepariamo catering per matrimoni, cerimonie, feste private ed eventi aziendali. Ogni proposta nasce da un incontro: ascoltiamo, vi presentiamo i piatti e poi pensiamo a tutto noi.",
         foto: "antipasti-nei-calici",
       },
       eventi: {
         etichetta: "Eventi",
         titolo: "Ogni festa ha il suo *sapore*",
-        testo: "Scegli il tuo evento: per ognuno trovi come lavoriamo, cosa possiamo curare e una proposta di esempio.",
+        testo: "Scegli il tuo evento: per ognuno trovi l'organizzazione, i servizi e il menù da comporre.",
       },
       passi: {
         etichetta: "Come lavoriamo",
@@ -142,7 +129,7 @@ window.SITO = (() => {
         lista: [
           ["Primo contatto", "Ci racconti data, luogo, numero di ospiti e che festa hai in mente. Ti rispondiamo con le prime idee."],
           ["Sopralluogo", "Veniamo a vedere il posto: spazi, cucina d'appoggio, percorsi del servizio, luce e orari."],
-          ["Degustazione", "Assaggi i piatti proposti, così scegli con calma e con il palato, non solo sulla carta."],
+          ["Esposizione dei piatti", "Presentiamo i piatti proposti, allestiti come il giorno dell'evento, per valutarne insieme presentazione e servizio."],
           ["Menù su misura", "Mettiamo per iscritto menù, allestimento, personale e tempi della giornata."],
           ["Il giorno dell'evento", "Arriviamo prima degli ospiti, allestiamo, serviamo e lasciamo tutto in ordine."],
         ],
@@ -188,30 +175,22 @@ window.SITO = (() => {
         breve: "Il ricevimento, dall'aperitivo al taglio della torta.",
         heroSottotitolo: "Aperitivo, cena e torta: il vostro ricevimento, curato da chi conosce la cucina di qui.",
         meta: {
-          titolo: "Catering per matrimoni · Zanzibar Catering & Eventi",
-          descrizione: "Catering per matrimoni a Torre de' Passeri e dintorni: aperitivo di benvenuto, menù su misura, servizio al tavolo e allestimento.",
+          titolo: "Catering per matrimoni · Zeta Catering",
+          descrizione: "Catering per matrimoni in Abruzzo e nelle regioni limitrofe: aperitivo di benvenuto, menù su misura, servizio al tavolo e allestimento.",
         },
         intro: {
           frase: "Il giorno del *sì* merita una tavola che vi somigli.",
-          testo: "Partiamo da voi: il luogo, il numero di invitati, i piatti che vi raccontano. Costruiamo il ricevimento passo dopo passo, con una degustazione prima di decidere e una squadra in sala che segue il ritmo della festa, dal brindisi al taglio della torta.",
+          testo: "Partiamo da voi: il luogo, il numero di invitati, i piatti che vi raccontano. Costruiamo il ricevimento passo dopo passo, con l'esposizione dei piatti prima di decidere e una squadra in sala che segue il ritmo della festa, dal brindisi al taglio della torta.",
           foto: "tavola-sotto-il-porticato",
         },
-        passi: [
-          ["Il primo incontro", "Ci raccontate data, location, numero di invitati e lo stile che avete in mente."],
-          ["Il sopralluogo", "Visitiamo la location con voi: cucina d'appoggio, spazi per il buffet, percorsi del servizio."],
-          ["La degustazione", "Assaggiate le proposte e scegliete il menù con calma, piatto per piatto."],
-          ["Gli ultimi dettagli", "Fissiamo tempi, allestimento, tavolo degli sposi e personale in sala."],
-          ["Il giorno del matrimonio", "Arriviamo per primi e andiamo via per ultimi: voi pensate solo a festeggiare."],
+        passi: [ // TESTO DI ESEMPIO DA CONFERMARE
+          ["Il primo colloquio", "Raccogliamo le vostre indicazioni: data, location, numero di invitati e stile del ricevimento."],
+          ["Il sopralluogo", "Visitiamo la location insieme a voi per valutare cucina di supporto, spazi del buffet e percorsi di servizio."],
+          ["L'esposizione dei piatti", "Vi presentiamo le proposte allestite come il giorno del ricevimento, per definire il menù con la massima cura."],
+          ["La definizione dei dettagli", "Concordiamo tempi, allestimento, tavolo degli sposi e personale di servizio."],
+          ["Il giorno del matrimonio", "Il nostro staff giunge in anticipo e lascia la sala per ultimo: a voi resta soltanto la festa."],
         ],
-        cura: [CURA.aperitivo, CURA.buffet, CURA.tavolo, ["Torta nuziale", "Il taglio della torta come momento della festa, con servizio al tavolo e brindisi."], CURA.bar, CURA.allestimento, CURA.personale],
-        proposta: [
-          ["Aperitivo di benvenuto", ["Bollicine, cocktail analcolici e acqua aromatizzata", "Arrosticini cotti al momento", "Pallotte cacio e uova, olive ripiene e fritti caldi", "Salumi e pecorini del territorio"]],
-          ["Antipasto", ["Tartare di manzo con insalatina e scaglie di pecorino"]],
-          ["Primi", ["Maccheroni alla chitarra con ragù bianco", "Risotto allo zafferano dell'Aquila"]],
-          ["Secondo", ["Agnello al forno con patate al rosmarino"]],
-          ["Dolce", ["Torta nuziale a vostra scelta", "Confettata con confetti di Sulmona"]],
-          ["In tavola", ["Vini d'Abruzzo: Pecorino, Trebbiano e Montepulciano", "Acqua, caffè e amari"]],
-        ],
+        cura: [CURA.braccio, CURA.buffet, CURA.tavolo, CURA.showCooking, ["Torta nuziale", "Il taglio della torta come momento della festa, con servizio al tavolo e brindisi."], CURA.bar, CURA.allestimento, CURA.intrattenimento, CURA.location],
         faq: [FAQ.ospiti, FAQ.zone, FAQ.anticipo, FAQ.allergie],
       },
       {
@@ -225,30 +204,22 @@ window.SITO = (() => {
         breve: "Il pranzo di famiglia, in giardino o in sala.",
         heroSottotitolo: "Il pranzo della festa, curato da noi: voi godetevi la giornata con la famiglia.",
         meta: {
-          titolo: "Catering per comunioni, battesimi e cresime · Zanzibar",
-          descrizione: "Catering per comunioni, battesimi e cresime a Torre de' Passeri e dintorni: pranzo in giardino o in sala, menù per grandi e bambini, torta e confettata.",
+          titolo: "Catering per comunioni, battesimi e cresime · Zeta Catering",
+          descrizione: "Catering per comunioni, battesimi e cresime in Abruzzo e nelle regioni limitrofe: pranzo in giardino o in sala, menù per grandi e bambini, torta e confettata.",
         },
         intro: {
           frase: "Una giornata di *famiglia*, senza pensieri per chi la organizza.",
           testo: "Comunione, battesimo o cresima: a casa, in giardino o in sala, prepariamo un pranzo che mette d'accordo nonni e bambini. Pensiamo noi a cucina, servizio e confettata, così voi restate con i vostri ospiti.",
           foto: "abito-della-comunione",
         },
-        passi: [
-          ["Primo contatto", "Ci dite data, luogo e numero di ospiti, bambini compresi."],
-          ["Sopralluogo", "Se la festa è a casa o in giardino, veniamo a vedere spazi e cucina d'appoggio."],
-          ["Assaggio", "Assaggiate le proposte e scegliete il menù per grandi e piccoli."],
-          ["Menù e allestimento", "Definiamo menù, tavolo dei dolci, confettata e orari."],
-          ["Il giorno della festa", "Allestiamo, serviamo e alla fine sistemiamo tutto."],
+        passi: [ // TESTO DI ESEMPIO DA CONFERMARE
+          ["Il primo contatto", "Raccogliamo data, luogo e numero degli ospiti, con l'indicazione dei bambini presenti."],
+          ["Il sopralluogo", "Per i ricevimenti in casa o in giardino verifichiamo spazi e cucina di supporto."],
+          ["L'esposizione dei piatti", "Presentiamo le proposte per adulti e bambini, così da comporre il menù con serenità."],
+          ["Menù e allestimento", "Definiamo menù, tavolo dei dolci, confettata e orari del ricevimento."],
+          ["Il giorno della cerimonia", "Curiamo allestimento e servizio e, al termine, riconsegniamo gli spazi in perfetto ordine."],
         ],
-        cura: [CURA.aperitivo, CURA.buffet, CURA.tavolo, ["Torta e confettata", "La torta della cerimonia e un tavolo di confetti e piccoli dolci."], ["Bevande", "Succhi, analcolici e vini per gli adulti, serviti al tavolo o al buffet."], CURA.allestimento, CURA.personale],
-        proposta: [
-          ["Aperitivo", ["Succhi di frutta, bollicine e analcolici", "Rustici, pizzette e sfogliatine calde"]],
-          ["Antipasto", ["Salumi e formaggi del territorio con verdure sott'olio", "Frittatine alle erbe e ricotta fresca"]],
-          ["Primi", ["Lasagna al forno con ragù di carne", "Gnocchi al pomodoro fresco e basilico"]],
-          ["Secondo", ["Arrosto di vitello con patate al forno"]],
-          ["Per i bambini", ["Pasta al pomodoro", "Cotoletta con patate al forno"]],
-          ["Dolce", ["Torta della cerimonia", "Confettata con confetti di Sulmona"]],
-        ],
+        cura: [CURA.braccio, CURA.buffet, CURA.tavolo, CURA.showCooking, ["Torta e confettata", "La torta della cerimonia e un tavolo di confetti e piccoli dolci."], ["Bevande", "Succhi, analcolici e vini per gli adulti, serviti al tavolo o al buffet."], CURA.allestimento, CURA.intrattenimento, CURA.location],
         faq: [FAQ.ospiti, FAQ.zone, FAQ.anticipo, FAQ.allergie],
       },
       {
@@ -262,28 +233,22 @@ window.SITO = (() => {
         breve: "Feste in giardino, cene tra amici, anniversari.",
         heroSottotitolo: "Compleanni, anniversari e feste private: dalla cena in giardino al buffet in casa.",
         meta: {
-          titolo: "Catering per compleanni e feste private · Zanzibar",
-          descrizione: "Catering per compleanni, anniversari e feste private a Torre de' Passeri e dintorni: buffet, cene in giardino, torta e open bar.",
+          titolo: "Catering per compleanni e feste private · Zeta Catering",
+          descrizione: "Catering per compleanni, anniversari e feste private in Abruzzo e nelle regioni limitrofe: buffet, cene in giardino, torta e open bar.",
         },
         intro: {
           frase: "Voi pensate agli *invitati*, alla tavola pensiamo noi.",
           testo: "Un compleanno importante, un anniversario, una cena tra amici in giardino: portiamo cucina, personale e tutto il necessario, dal primo calice alla torta con le candeline.",
           foto: "calici-alzati-candele",
         },
-        passi: [
-          ["Due parole al telefono", "Ci dici che festa è, quanti siete e dove."],
-          ["La proposta", "Ti mandiamo un'idea di menù: buffet, cena servita o aperitivo lungo."],
-          ["Assaggio e scelte", "Su richiesta assaggi i piatti, poi scegli torta e bevande."],
-          ["Allestimento", "Prepariamo tavoli, luci e angolo bar secondo lo spazio."],
-          ["La festa", "Serviamo, teniamo tutto in ordine e al momento giusto arriva la torta."],
+        passi: [ // TESTO DI ESEMPIO DA CONFERMARE
+          ["Il primo contatto", "Raccogliamo le informazioni essenziali: ricorrenza, numero di ospiti e luogo."],
+          ["La proposta", "Elaboriamo un'idea di menù: buffet, cena servita o aperitivo prolungato."],
+          ["Le scelte", "Definiamo insieme torta, bevande e ogni dettaglio del servizio."],
+          ["L'allestimento", "Predisponiamo tavoli, illuminazione e angolo bar in base agli spazi disponibili."],
+          ["La festa", "Curiamo il servizio con discrezione, fino al momento della torta."],
         ],
-        cura: [CURA.aperitivo, CURA.buffet, CURA.tavolo, ["Torta di compleanno", "La torta con le candeline, portata al momento giusto e servita a tutti."], CURA.bar, CURA.allestimento, CURA.personale],
-        proposta: [
-          ["Aperitivo", ["Spritz, bollicine e cocktail analcolici", "Olive, taralli e chips di verdure"]],
-          ["Buffet", ["Arrosticini cotti al momento", "Pizza al taglio e focacce farcite", "Taglieri di salumi e formaggi", "Insalate di stagione"]],
-          ["Dolce", ["Torta di compleanno su ordinazione", "Frutta fresca a pezzi"]],
-          ["Al bar", ["Vini d'Abruzzo, birra, acqua e caffè"]],
-        ],
+        cura: [CURA.braccio, CURA.buffet, CURA.tavolo, CURA.showCooking, ["Torta di compleanno", "La torta con le candeline, portata al momento giusto e servita a tutti."], CURA.bar, CURA.allestimento, CURA.intrattenimento, CURA.location],
         faq: [FAQ.ospiti, FAQ.zone, FAQ.anticipo, FAQ.allergie],
       },
       {
@@ -297,27 +262,22 @@ window.SITO = (() => {
         breve: "Coffee break, pranzi di lavoro, inaugurazioni e cene.",
         heroSottotitolo: "Coffee break, pranzi di lavoro, inaugurazioni e cene: puntuali e discreti, come serve a un'azienda.",
         meta: {
-          titolo: "Catering per eventi aziendali · Zanzibar Catering & Eventi",
-          descrizione: "Catering per aziende a Torre de' Passeri e dintorni: coffee break, pranzi di lavoro, inaugurazioni, convegni e cene di fine anno.",
+          titolo: "Catering per eventi aziendali · Zeta Catering",
+          descrizione: "Catering per aziende in Abruzzo e nelle regioni limitrofe: coffee break, pranzi di lavoro, inaugurazioni, convegni e cene di fine anno.",
         },
         intro: {
           frase: "Puntuali, *discreti*, sempre in ordine: il servizio che serve a chi lavora.",
           testo: "Convegni, inaugurazioni, pranzi con i clienti, cene di fine anno: organizziamo il catering rispettando orari e programma, con personale in divisa e allestimenti sobri. Ti mandiamo una proposta chiara, con tutto quello che è incluso.",
           foto: "tagliere-tra-gli-ospiti",
         },
-        passi: [
-          ["La richiesta", "Ci indichi data, orari, numero di partecipanti e tipo di evento."],
-          ["Il sopralluogo", "Verifichiamo spazi, accessi, prese di corrente e tempi di allestimento."],
-          ["La proposta", "Menù, personale e allestimento in un preventivo chiaro."],
-          ["La logistica", "Concordiamo orari di arrivo, montaggio e smontaggio."],
-          ["Il giorno dell'evento", "Serviamo secondo il programma e lasciamo gli spazi in ordine."],
+        passi: [ // TESTO DI ESEMPIO DA CONFERMARE
+          ["La richiesta", "Riceviamo data, orari, numero di partecipanti e natura dell'evento."],
+          ["Il sopralluogo", "Verifichiamo spazi, accessi, alimentazione elettrica e tempi di allestimento."],
+          ["La proposta", "Presentiamo menù, personale e allestimento in un preventivo chiaro e dettagliato."],
+          ["La logistica", "Concordiamo orari di arrivo, montaggio e smontaggio nel rispetto del programma."],
+          ["Il giorno dell'evento", "Il servizio segue puntualmente il programma; al termine gli spazi vengono riconsegnati in ordine."],
         ],
-        cura: [CURA.aperitivo, CURA.buffet, CURA.tavolo, ["Coffee break", "Caffè, tè, spremute e lievitati per la pausa del mattino o del pomeriggio."], CURA.bar, CURA.allestimento, CURA.personale],
-        proposta: [
-          ["Coffee break", ["Caffè, tè e spremute", "Cornetti, biscotti e piccola pasticceria", "Frutta fresca"]],
-          ["Pranzo a buffet", ["Insalata di farro con verdure", "Paccheri al pomodoro e basilico", "Bocconcini di pollo alle erbe", "Verdure grigliate"]],
-          ["Aperitivo di chiusura", ["Calici di bollicine e analcolici", "Finger food caldi e freddi"]],
-        ],
+        cura: [CURA.braccio, CURA.buffet, CURA.tavolo, CURA.showCooking, ["Coffee break", "Caffè, tè, spremute e lievitati per la pausa del mattino o del pomeriggio."], CURA.bar, CURA.allestimento, CURA.intrattenimento, CURA.location],
         faq: [FAQ.ospiti, FAQ.zone, FAQ.anticipo, FAQ.allergie],
       },
       {
@@ -331,28 +291,22 @@ window.SITO = (() => {
         breve: "Finger food, taglieri e open bar, per feste in piedi.",
         heroSottotitolo: "Finger food, taglieri e open bar: una festa in piedi, tra un calice e un assaggio.",
         meta: {
-          titolo: "Aperitivi e buffet a domicilio · Zanzibar Catering & Eventi",
-          descrizione: "Aperitivi a buffet, finger food, taglieri e open bar per feste, inaugurazioni ed eventi a Torre de' Passeri e dintorni.",
+          titolo: "Aperitivi e buffet a domicilio · Zeta Catering",
+          descrizione: "Aperitivi a buffet, finger food, taglieri e open bar per feste, inaugurazioni ed eventi in Abruzzo e nelle regioni limitrofe.",
         },
         intro: {
           frase: "Un calice in mano e qualcosa di *buono* sempre a portata.",
           testo: "Per un'inaugurazione, una festa in giardino o un dopo-cerimonia, l'aperitivo a buffet è il modo più semplice di stare insieme. Prepariamo finger food, taglieri e un angolo bar, con chi versa e chi serve.",
           foto: "spritz-tavolo-legno",
         },
-        passi: [
-          ["La richiesta", "Ci dici quanti siete, dove e a che ora."],
-          ["La formula", "Scegliamo insieme: aperitivo breve, apericena o buffet completo."],
-          ["Il bar", "Decidiamo bevande, cocktail e analcolici."],
-          ["L'allestimento", "Tavoli, tovagliato e angolo bar secondo lo spazio."],
-          ["La festa", "Serviamo caldo quello che va caldo e rinnoviamo il buffet."],
+        passi: [ // TESTO DI ESEMPIO DA CONFERMARE
+          ["La richiesta", "Raccogliamo numero di ospiti, luogo e orario del ricevimento."],
+          ["La formula", "Individuiamo insieme la soluzione più adatta: aperitivo, apericena o buffet completo."],
+          ["Il bar", "Selezioniamo bevande, cocktail e proposte analcoliche."],
+          ["L'allestimento", "Predisponiamo tavoli, tovagliato e angolo bar in base agli spazi."],
+          ["Il ricevimento", "Serviamo al momento le preparazioni calde e rinnoviamo il buffet per tutta la durata dell'evento."],
         ],
-        cura: [CURA.aperitivo, CURA.buffet, ["Servizio tra gli ospiti", "Camerieri che passano con vassoi di assaggi caldi e freddi."], CURA.torta, CURA.bar, CURA.allestimento, CURA.personale],
-        proposta: [
-          ["Al bar", ["Spritz e cocktail della casa", "Bollicine e vini d'Abruzzo", "Cocktail analcolici e succhi"]],
-          ["Finger food", ["Tartine e crostini misti", "Mozzarelline e olive ripiene fritte", "Arrosticini cotti al momento"]],
-          ["Taglieri", ["Ventricina, salsicce secche e prosciutto", "Pecorini del territorio con miele e confetture"]],
-          ["Per chiudere", ["Piccola pasticceria e frutta"]],
-        ],
+        cura: [CURA.braccio, CURA.buffet, CURA.showCooking, CURA.torta, CURA.bar, CURA.allestimento, CURA.intrattenimento, CURA.location],
         faq: [FAQ.ospiti, FAQ.zone, FAQ.anticipo, FAQ.allergie],
       },
       {
@@ -369,39 +323,51 @@ window.SITO = (() => {
         breve: "La festa per il traguardo, tra amici e parenti.",
         heroSottotitolo: "Un aperitivo in giardino, un buffet o una cena con tutti: la festa di laurea come la vuoi tu.",
         meta: {
-          titolo: "Catering per feste di laurea · Zanzibar Catering & Eventi",
-          descrizione: "Catering per feste di laurea a Torre de' Passeri e dintorni: aperitivi, buffet e cene con amici e parenti, torta e confetti rossi.",
+          titolo: "Catering per feste di laurea · Zeta Catering",
+          descrizione: "Catering per feste di laurea in Abruzzo e nelle regioni limitrofe: aperitivi, buffet e cene con amici e parenti, torta e confetti rossi.",
         },
         intro: {
           frase: "Il traguardo si festeggia *insieme*, con un brindisi all'altezza.",
           testo: "Dopo la proclamazione, la festa: amici, parenti, compagni di corso. Prepariamo aperitivi, buffet o cene servite e pensiamo noi a bollicine, torta e confetti rossi.",
           foto: "spumante-nel-parco",
         },
-        passi: [
-          ["La data", "Ci dici giorno e ora della proclamazione e dove volete festeggiare."],
-          ["La formula", "Aperitivo, buffet o cena: scegliamo in base agli invitati."],
-          ["Il menù", "Componiamo il menù e scegliamo torta e bevande."],
-          ["L'allestimento", "Prepariamo lo spazio, anche all'aperto."],
-          ["La festa", "Il brindisi è pronto quando arrivi con la corona d'alloro."],
+        passi: [ // TESTO DI ESEMPIO DA CONFERMARE
+          ["La data", "Raccogliamo giorno e ora della proclamazione e il luogo scelto per i festeggiamenti."],
+          ["La formula", "Aperitivo, buffet o cena servita: individuiamo la soluzione più adatta agli invitati."],
+          ["Il menù", "Componiamo il menù e definiamo torta e bevande."],
+          ["L'allestimento", "Prepariamo gli spazi, anche all'aperto."],
+          ["La festa", "Il brindisi è pronto all'arrivo del neolaureato con la corona d'alloro."],
         ],
-        cura: [CURA.aperitivo, CURA.buffet, CURA.tavolo, ["Torta di laurea", "La torta del traguardo, con i confetti rossi della tradizione."], CURA.bar, CURA.allestimento, CURA.personale],
-        proposta: [
-          ["Brindisi", ["Bollicine e cocktail analcolici", "Spritz per gli amici"]],
-          ["Buffet", ["Rustici e pizzette calde", "Arrosticini cotti al momento", "Taglieri di salumi e formaggi", "Insalate di riso e di pasta"]],
-          ["Dolce", ["Torta di laurea", "Confetti rossi"]],
-        ],
+        cura: [CURA.braccio, CURA.buffet, CURA.tavolo, CURA.showCooking, ["Torta di laurea", "La torta del traguardo, con i confetti rossi della tradizione."], CURA.bar, CURA.allestimento, CURA.intrattenimento, CURA.location],
         faq: [FAQ.ospiti, FAQ.zone, FAQ.anticipo, FAQ.allergie],
       },
     ],
 
+    /* CREA IL TUO MENÙ (pagine evento): proposte uguali per tutti gli eventi.
+       Toccando una proposta si aggiunge al campo della portata; ritoccandola si toglie.
+       Non usare virgole nel testo di una proposta (separano le scelte). */
+    menu: { // TESTO DI ESEMPIO DA CONFERMARE
+      etichetta: "Il tuo menù",
+      titolo: "Crea il tuo *menù*",
+      testo: "Per ogni portata scrivi ciò che desideri o tocca le proposte. Inviaci il menù su WhatsApp: lo perfezioneremo insieme.",
+      messaggioInizio: "Ciao! Ecco la proposta di menù per il mio evento.",
+      segnaposto: "Scrivi o scegli tra le proposte",
+      vuoto: "Componi almeno una portata per inviare la proposta.",
+      portate: [
+        ["Aperitivo", ["Bollicine e analcolici", "Acque profumate", "Piccola frittura", "Mignon salati"]],
+        ["Antipasto", ["Finger food", "Salumi e formaggi del territorio", "Show cooking (caciocavallo impiccato)", "Antipasti caldi al coccio"]],
+        ["Primi", ["Un primo", "Due primi", "Show cooking"]],
+        ["Secondi", ["Giro arrosto", "Griglia", "Braciere"]],
+        ["Dolce", ["Buffet di dolci", "Fontana di cioccolato", "Tagliata di frutta"]],
+        ["Cocktail bar", ["Cocktail bar"]],
+      ],
+    },
+
     /* Testi comuni delle pagine evento */ // TESTO DI ESEMPIO DA CONFERMARE
     paginaEvento: {
-      passiTitolo: "Come lo *organizziamo*",
+      passiTitolo: "*Organizzazione*",
       curaTitolo: "Cosa possiamo *curare*",
       curaTesto: "Scegli tu cosa affidarci: possiamo occuparci di tutto o solo di una parte.",
-      propostaTitolo: "Una proposta di *esempio*",
-      propostaEtichetta: "Proposta di esempio",
-      propostaNota: "Il menù vero si costruisce insieme, in base a stagione, luogo e gusti degli ospiti.",
       galleriaTitolo: "Momenti di *festa*",
       faqTitolo: "Domande *frequenti*",
       altriTitolo: "Altri *eventi*",

@@ -31,6 +31,10 @@ const I = {
 const dl = x => `<span class="dl"><span>${x}</span><span aria-hidden="true">${x}</span></span>`;
 
 /* ---------------- parti comuni ---------------- */
+const NOMI_SOCIAL = { instagram: 'Instagram', facebook: 'Facebook', tiktok: 'TikTok' };
+// solo i social con un link in config.js (link vuoto = pulsante nascosto)
+const social = (avvolgi, cls = '') => Object.entries(NOMI_SOCIAL).filter(([k]) => S.social?.[k])
+  .map(([k, n]) => avvolgi(`<a${cls ? ` class="${cls}"` : ''} data-link="${k}" href="${esc(S.social[k])}" target="_blank" rel="noopener noreferrer" aria-label="${esc(S.nome)} su ${n}">${n}</a>`)).join('');
 function testa({ titolo, descrizione, base, og, percorso, extra = '' }) {
   return `<!doctype html>
 <html lang="it" data-base="${base}">
@@ -43,7 +47,7 @@ function testa({ titolo, descrizione, base, og, percorso, extra = '' }) {
 <meta name="theme-color" content="#15120F">
 <meta property="og:type" content="website">
 <meta property="og:locale" content="it_IT">
-<meta property="og:site_name" content="${esc(S.nome)} · ${esc(S.sottotitolo)}">
+<meta property="og:site_name" content="${esc(S.nome)}">
 <meta property="og:title" content="${esc(titolo)}">
 <meta property="og:description" content="${esc(descrizione)}">
 <meta property="og:url" content="${URL_SITO}${percorso}">
@@ -77,7 +81,7 @@ function intestazione({ base, home, evento }) {
       <a class="hd__link" href="${sez('come-lavoriamo')}">${dl('Come lavoriamo')}</a>
       <a class="hd__link" href="${sez('galleria')}">${dl('Galleria')}</a>
     </div>
-    <a class="hd__marchio" href="${base}index.html" aria-label="${esc(S.nome)}, torna alla pagina principale">${dl(`${esc(S.nome)}<small>${esc(S.sottotitolo)}</small>`)}</a>
+    <a class="hd__marchio" href="${base}index.html" aria-label="${esc(S.nome)}, torna alla pagina principale">${dl(`${esc(S.marchio)}<small>${esc(S.sottotitolo)}</small>`)}</a>
     <div class="hd__dx">
       <a class="hd__link solo-pc" href="${sez('contatti')}">${dl('Contatti')}</a>
       <a class="btn btn--piccolo hd__cta" href="${sez('preventivo')}"><span class="btn__fondi" aria-hidden="true"></span>${dl('Preventivo')}</a>
@@ -108,7 +112,7 @@ function piede({ base, evento }) {
   return `<footer class="pie"${evento ? ' id="contatti"' : ''}>
   <div class="wrap pie__griglia">
     <div>
-      <p class="pie__marchio" data-t="nome">${t('nome')}</p>
+      <p class="pie__marchio" data-t="marchio">${t('marchio')}</p>
       <p class="pie__sotto" data-t="sottotitolo">${t('sottotitolo')}</p>
       <p class="pie__frase" data-t="descrizione">${t('descrizione')}</p>
     </div>
@@ -119,7 +123,6 @@ function piede({ base, evento }) {
         <li><a data-link="wa" href="https://wa.me/${esc(C.whatsapp)}">WhatsApp</a></li>
         <li><a data-link="mail" href="mailto:${esc(C.email)}" data-t="contatti.email">${t('contatti.email')}</a></li>
         <li data-indirizzo>${esc(indirizzo)}</li>
-        <li><span class="stato-orari" data-stato></span></li>
       </ul>
     </div>
     <div>
@@ -129,8 +132,7 @@ function piede({ base, evento }) {
     <div>
       <h3>Seguici</h3>
       <ul class="pie__lista">
-        <li><a data-link="instagram" href="${esc(S.social.instagram)}" target="_blank" rel="noopener noreferrer" aria-label="${esc(S.nome)} su Instagram">Instagram</a></li>
-        <li><a data-link="facebook" href="${esc(S.social.facebook)}" target="_blank" rel="noopener noreferrer" aria-label="${esc(S.nome)} su Facebook">Facebook</a></li>
+        ${social(s => `<li>${s}</li>`)}
       </ul>
     </div>
   </div>
@@ -138,7 +140,7 @@ function piede({ base, evento }) {
     <p>© <span data-anno>2026</span> <span data-t="legale.ragioneSociale">${t('legale.ragioneSociale')}</span> · P.IVA <span data-t="legale.piva">${t('legale.piva')}</span> · Sede legale: <span data-t="legale.sedeLegale">${t('legale.sedeLegale')}</span></p>
     <p><a href="${base}privacy.html">Privacy e cookie</a></p>
   </div>
-  <div class="pie__gigante" aria-hidden="true"><p class="giant" data-giant="nome" data-max="9"><span class="giant__parola" style="--fit-k:${fitK(S.nome)}">${esc(S.nome)}</span></p></div>
+  <div class="pie__gigante" aria-hidden="true"><p class="giant" data-giant="nome" data-max="9"><span class="giant__parola" style="--fit-k:${fitK(S.marchio)}">${esc(S.marchio)}</span></p></div>
 </footer>
 <nav class="mbar" aria-label="Contatti rapidi" data-mbar>
   <a data-link="tel" href="tel:${esc(C.telefonoLink)}">${I.tel}Chiama</a>
@@ -196,7 +198,7 @@ function paginaHome() {
   const extra = `<link rel="preload" as="image" imagesrcset="${ht}" imagesizes="100vw" media="${MQ}" fetchpriority="high">
 <link rel="preload" as="image" imagesrcset="${hc}" imagesizes="100vw" media="(min-width: 768px) and (orientation: landscape)" fetchpriority="high">
 <script type="application/ld+json">${JSON.stringify({
-    '@context': 'https://schema.org', '@type': 'FoodEstablishment', name: `${S.nome} · ${S.sottotitolo}`,
+    '@context': 'https://schema.org', '@type': 'FoodEstablishment', name: S.nome,
     description: S.descrizione, url: URL_SITO, telephone: C.telefonoLink, email: C.email,
     address: { '@type': 'PostalAddress', streetAddress: C.indirizzo, postalCode: C.cap, addressLocality: C.citta, addressRegion: C.provincia, addressCountry: 'IT' },
     areaServed: S.zona.luoghi, image: `${URL_SITO}assets/og/home.jpg`,
@@ -206,7 +208,7 @@ function paginaHome() {
 <body class="pagina-home" data-pagina="home">
 ${intestazione({ base, home: true })}
 <main id="contenuto">
-  <section class="hero hero--alto" data-hero aria-label="${esc(S.nome)}, ${esc(S.sottotitolo)}" style="--op-pc: 50% 72%; --op-tel: 50% 58%">
+  <section class="hero hero--alto" data-hero aria-label="${esc(S.nome)}" style="--op-pc: 50% 72%; --op-tel: 50% 58%">
     <div class="hero__media"><div class="hero__scala">
       <picture>
         <source media="${MQ}" srcset="${ht}" sizes="100vw">
@@ -215,14 +217,12 @@ ${intestazione({ base, home: true })}
     </div></div>
     <div class="hero__ombra" aria-hidden="true"></div>
     <div class="hero__nome">
-      <h1 class="giant" data-giant="nome"><span class="sr-only">${esc(S.nome)} · ${esc(S.sottotitolo)} a ${esc(C.citta)}</span><span class="giant__parola" style="--fit-k:${fitK(S.nome)}">${esc(S.nome)}</span></h1>
+      <h1 class="giant" data-giant="nome"><span class="sr-only">${esc(S.nome)}</span><span class="giant__parola" style="--fit-k:${fitK(S.marchio)}">${esc(S.marchio)}</span></h1>
+      <p class="hero__marchio-sotto" data-entra aria-hidden="true" data-t="sottotitolo">${t('sottotitolo')}</p>
     </div>
     <div class="hero__basso wrap">
       <div class="hero__testo">
-        <div>
-          <p class="etichetta" data-entra><span><span data-t="sottotitolo">${t('sottotitolo')}</span><span class="hero__citta">&nbsp;·&nbsp;<span data-t="contatti.citta">${t('contatti.citta')}</span></span></span></p>
-          <p class="hero__sub" data-entra data-t="home.heroSottotitolo" style="margin-top:12px">${t('home.heroSottotitolo')}</p>
-        </div>
+        <p class="hero__sub" data-entra data-t="home.heroSottotitolo">${t('home.heroSottotitolo')}</p>
         <a class="btn btn--chiaro" href="#preventivo" data-entra>Richiedi un preventivo ${I.freccia}</a>
       </div>
       <a class="hero__scorri" href="#intro" data-entra>Scorri<i aria-hidden="true"></i></a>
@@ -276,14 +276,13 @@ ${intestazione({ base, home: true })}
         <h2 class="titolo" data-titolo data-h="home.contatti.titolo">${h('home.contatti.titolo')}</h2>
         <p class="testo-lead" data-t="home.contatti.testo">${t('home.contatti.testo')}</p>
         <dl class="cont__dati">
-          <div class="cont__riga"><dt>Telefono</dt><dd><a data-link="tel" href="tel:${esc(C.telefonoLink)}" data-t="contatti.telefono">${t('contatti.telefono')}</a><br><span class="stato-orari" data-stato></span></dd></div>
+          <div class="cont__riga"><dt>Telefono</dt><dd><a data-link="tel" href="tel:${esc(C.telefonoLink)}" data-t="contatti.telefono">${t('contatti.telefono')}</a></dd></div>
           <div class="cont__riga"><dt>WhatsApp</dt><dd><a data-link="wa" href="https://wa.me/${esc(C.whatsapp)}">Scrivici un messaggio</a></dd></div>
           <div class="cont__riga"><dt>Email</dt><dd><a data-link="mail" href="mailto:${esc(C.email)}" data-t="contatti.email">${t('contatti.email')}</a></dd></div>
           <div class="cont__riga"><dt>Indirizzo</dt><dd><a data-link="maps" href="#" data-indirizzo>${esc(indirizzo)}</a></dd></div>
           <div class="cont__riga"><dt>Zona servita</dt><dd data-t="zona.testo">${t('zona.testo')}</dd></div>
-          <div class="cont__riga"><dt>Orari</dt><dd data-t="orari.testo">${t('orari.testo')}</dd></div>
         </dl>
-        <p class="cont__social"><a class="link-sottile" data-link="instagram" href="${esc(S.social.instagram)}" target="_blank" rel="noopener noreferrer" aria-label="${esc(S.nome)} su Instagram">Instagram</a><a class="link-sottile" data-link="facebook" href="${esc(S.social.facebook)}" target="_blank" rel="noopener noreferrer" aria-label="${esc(S.nome)} su Facebook">Facebook</a></p>
+        <p class="cont__social">${social(s => s, 'link-sottile')}</p>
       </div>
       <div class="mappa" data-mappa>
         <div class="mappa__box">
@@ -337,7 +336,7 @@ ${intestazione({ base, evento: true })}
     <div class="hero__ombra" aria-hidden="true"></div>
     <div class="hero__nome">
       <p class="etichetta hero__sopra" data-entra data-ev="sopratitolo">${esc(e.sopratitolo)}</p>
-      <h1 class="giant" data-giant="evento"><span class="sr-only">${esc(e.nome)} · ${esc(S.nome)} ${esc(S.sottotitolo)}</span><span class="giant__parola" style="--fit-k:${fitK(e.titolo)}">${esc(e.titolo)}</span></h1>
+      <h1 class="giant" data-giant="evento"><span class="sr-only">${esc(e.nome)} · ${esc(S.nome)}</span><span class="giant__parola" style="--fit-k:${fitK(e.titolo)}">${esc(e.titolo)}</span></h1>
     </div>
     <div class="hero__basso wrap">
       <div class="hero__testo">
@@ -354,7 +353,7 @@ ${intestazione({ base, evento: true })}
         <p class="etichetta" data-t="${P}.nome">${esc(e.nome)}</p>
         <p class="intro__frase" data-frase data-h="${P}.intro.frase">${h(`${P}.intro.frase`)}</p>
         <p class="intro__p" data-rivela data-t="${P}.intro.testo">${t(`${P}.intro.testo`)}</p>
-        <div class="intro__azioni" data-rivela><a class="btn" href="#preventivo">Richiedi un preventivo ${I.freccia}</a><a class="link-sottile" href="#proposta">Guarda la proposta di esempio</a></div>
+        <div class="intro__azioni" data-rivela><a class="btn" href="#preventivo">Richiedi un preventivo ${I.freccia}</a><a class="link-sottile" href="#menu">Crea il tuo menù</a></div>
       </div>
       <figure class="intro__foto foto-tenda" data-tenda data-render="intro-foto"></figure>
     </div>
@@ -372,14 +371,16 @@ ${intestazione({ base, evento: true })}
   </section>
 
   <div class="scuro" data-scuro>
-    <section class="proposta sez" id="proposta">
+    <section class="proposta sez" id="menu">
       <div class="wrap proposta__griglia">
         <div class="proposta__testa">
-          <p class="etichetta" data-t="paginaEvento.propostaEtichetta">${t('paginaEvento.propostaEtichetta')}</p>
-          <h2 class="titolo" data-titolo data-h="paginaEvento.propostaTitolo">${h('paginaEvento.propostaTitolo')}</h2>
-          <p class="testo-lead" data-rivela>Un esempio di come potrebbe essere il menù. Nessun prezzo: lo costruiamo insieme dopo il primo incontro.</p>
+          <p class="etichetta" data-t="menu.etichetta">${t('menu.etichetta')}</p>
+          <h2 class="titolo" data-titolo data-h="menu.titolo">${h('menu.titolo')}</h2>
+          <p class="testo-lead" data-rivela data-t="menu.testo">${t('menu.testo')}</p>
         </div>
-        <div class="menu-carta" data-rivela data-render="proposta"></div>
+        <div class="menu-carta" data-rivela data-menu data-privacy="${base}privacy.html">
+          <p class="menu-carta__nota">Per comporre il menù scrivici su WhatsApp o chiamaci.</p>
+        </div>
       </div>
     </section>
     ${strisce('Galleria', 'paginaEvento.galleriaTitolo')}
@@ -413,7 +414,7 @@ function paginaPrivacy() {
   const mail = `<a data-link="mail-privacy" href="mailto:${esc(L.emailPrivacy)}">${d('legale.emailPrivacy')}</a>`;
   const pec = `<a href="mailto:${esc(L.pec)}">${d('legale.pec')}</a>`;
   const tel = `<a data-link="tel" href="tel:${esc(C.telefonoLink)}">${d('contatti.telefono')}</a>`;
-  return `${testa({ titolo: `Informativa privacy · ${S.nome} ${S.sottotitolo}`, descrizione: `Come ${S.nome} tratta i dati personali di chi visita il sito o chiede un preventivo.`, base, og: 'home', percorso: 'privacy.html' })}
+  return `${testa({ titolo: `Informativa privacy · ${S.nome}`, descrizione: `Come ${S.nome} tratta i dati personali di chi visita il sito o chiede un preventivo.`, base, og: 'home', percorso: 'privacy.html' })}
 <body class="pagina-semplice" data-pagina="privacy">
 ${intestazione({ base })}
 <main id="contenuto">
@@ -424,7 +425,7 @@ ${intestazione({ base })}
 
       <h2>Chi è il titolare del trattamento</h2>
       <p>Il titolare è chi decide come e perché vengono usati i dati:</p>
-      <p><strong>${d('legale.ragioneSociale')}</strong> (${d('nome')} ${d('sottotitolo')})<br>
+      <p><strong>${d('legale.ragioneSociale')}</strong> (${d('nome')})<br>
       P.IVA ${d('legale.piva')} · C.F. ${d('legale.codiceFiscale')}<br>
       Sede legale: ${d('legale.sedeLegale')}<br>
       Email ${mail}<br>
@@ -435,7 +436,7 @@ ${intestazione({ base })}
       <p>Raccogliamo solo i dati che servono:</p>
       <ul>
         <li><strong>Dati di navigazione.</strong> Quando visitate il sito, il servizio che lo ospita registra in automatico alcuni dati tecnici: indirizzo IP, tipo di browser e di dispositivo, pagina richiesta, data e ora. Servono a far funzionare il sito e a proteggerlo, non a capire chi siete.</li>
-        <li><strong>Dati del preventivo guidato.</strong> Le scelte che fate nel preventivo (tipo di evento, data, numero di ospiti, luogo, servizi, extra, esigenze alimentari, nome e note) restano solo nel vostro browser e servono a preparare il messaggio WhatsApp. Il sito non le salva e non le invia a nessuno: le riceviamo solo se decidete voi di inviare il messaggio su WhatsApp.</li>
+        <li><strong>Dati del preventivo guidato e di "Crea il tuo menù".</strong> Le scelte che fate nel preventivo (tipo di evento, data, numero di ospiti, luogo, servizi, extra, esigenze alimentari, nome e note) e le portate del menù restano solo nel vostro browser e servono a preparare il messaggio WhatsApp. Il sito non le invia a nessuno: le riceviamo solo se decidete voi di inviare il messaggio su WhatsApp.</li>
         <li><strong>Dati dei contatti diretti.</strong> Se ci scrivete per email, su WhatsApp o ci telefonate, usiamo i dati che ci comunicate (per esempio nome, numero, indirizzo email e testo del messaggio).</li>
       </ul>
       <p>Le esigenze alimentari (per esempio celiachia o allergie) possono riguardare la salute: indicatele solo se volete e solo quanto serve per preparare il menù. Vi chiediamo di non inserire altri dati non necessari.</p>
@@ -461,7 +462,7 @@ ${intestazione({ base })}
       <ul>
         <li><strong>GitHub Pages</strong> (GitHub, Inc.): è il servizio che ospita il sito. Come ogni server web, registra dati tecnici delle visite (indirizzo IP, browser, pagina richiesta) per sicurezza e funzionamento. <a href="https://docs.github.com/it/site-policy/privacy-policies/github-general-privacy-statement" target="_blank" rel="noopener">Informativa di GitHub</a>.</li>
         <li><strong>Google Maps</strong>: la mappa si carica <em>solo se premete</em> il pulsante "Mostra la mappa". Da quel momento Google riceve dati di navigazione (come l'indirizzo IP) e può usare propri cookie. Lo stesso vale se aprite il link "Apri in Google Maps". <a href="https://policies.google.com/privacy?hl=it" target="_blank" rel="noopener">Informativa di Google</a>.</li>
-        <li><strong>WhatsApp</strong>: solo se scegliete di scriverci premendo un pulsante WhatsApp, compreso "Invia la richiesta su WhatsApp" alla fine del preventivo guidato. Il pulsante apre WhatsApp con il messaggio già scritto e siete voi a decidere se inviarlo. Da quel momento la conversazione passa attraverso WhatsApp (Meta), che ne tratta i dati secondo la propria informativa. <a href="https://www.whatsapp.com/legal/privacy-policy-eea" target="_blank" rel="noopener">Informativa di WhatsApp</a>.</li>
+        <li><strong>WhatsApp</strong>: solo se scegliete di scriverci premendo un pulsante WhatsApp, compresi "Invia la richiesta su WhatsApp" alla fine del preventivo guidato e "Invia la proposta su WhatsApp" in "Crea il tuo menù". Il pulsante apre WhatsApp con il messaggio già scritto e siete voi a decidere se inviarlo. Da quel momento la conversazione passa attraverso WhatsApp (Meta), che ne tratta i dati secondo la propria informativa. <a href="https://www.whatsapp.com/legal/privacy-policy-eea" target="_blank" rel="noopener">Informativa di WhatsApp</a>.</li>
       </ul>
       <p>I link ai nostri profili social sono semplici collegamenti: i social ricevono dati solo se li aprite.</p>
       <p>Quando serve, i dati possono essere comunicati anche ai consulenti che ci assistono (per esempio il commercialista, per gli obblighi fiscali) e alle autorità, se lo prevede la legge.</p>
@@ -471,6 +472,7 @@ ${intestazione({ base })}
 
       <h2>Cookie</h2>
       <p>Questo sito <strong>non usa cookie</strong>: né di profilazione, né di statistica, né tecnici.</p>
+      <p>Usa solo la memoria di sessione del browser (sessionStorage) per ricordare il menù che componete in "Crea il tuo menù", così lo ritrovate nel riepilogo del preventivo. Questi dati restano sul vostro dispositivo, non vengono inviati a noi né ad altri e si cancellano da soli quando chiudete la scheda. Si tratta di uno strumento tecnico, necessario al servizio che richiedete, quindi non serve il consenso.</p>
       <p>I caratteri tipografici sono caricati dal nostro sito, senza collegamenti a Google Fonts, e non ci sono video incorporati da altri servizi, pixel, pubblicità o strumenti di statistica. Per questo non trovate un banner dei cookie.</p>
       <p>Solo se attivate la mappa di Google Maps, Google può impostare propri cookie, secondo la sua informativa.</p>
 

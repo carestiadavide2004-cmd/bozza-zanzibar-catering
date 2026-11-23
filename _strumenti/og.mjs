@@ -24,8 +24,8 @@ const font = `@font-face{font-family:B;src:url(${f('fonts/bodoni-moda-latin.woff
 const solo = process.argv.slice(2);
 const inBasso = new Set(['comunioni', 'lauree']); // viso al centro dell'immagine (bambina, neolaureato): il titolo scende più in basso
 const pagine = [
-  { file: 'home', img: 'assets/img/home/hero-computer-1920.webp', titolo: S.nome, sopra: `${S.sottotitolo} · ${S.contatti.citta}`, pos: '50% 78%' },
-  ...S.eventi.map(e => ({ file: e.chiave, img: e.heroFoto ? `assets/img/${e.chiave}/hero-computer-1920.webp` : `assets/video/${e.chiave}-orizzontale-1920.webp`, titolo: e.titolo, sopra: `${S.nome} · ${S.sottotitolo}`, pos: e.heroFoto ? e.heroFoto.posPc : '50% 50%', basso: inBasso.has(e.chiave) })),
+  { file: 'home', img: 'assets/img/home/hero-computer-1920.webp', titolo: S.nome, sopra: `${S.contatti.citta} · Abruzzo`, pos: '50% 78%' },
+  ...S.eventi.map(e => ({ file: e.chiave, img: e.heroFoto ? `assets/img/${e.chiave}/hero-computer-1920.webp` : `assets/video/${e.chiave}-orizzontale-1920.webp`, titolo: e.titolo, sopra: S.nome, pos: e.heroFoto ? e.heroFoto.posPc : '50% 50%', basso: inBasso.has(e.chiave) })),
 ].filter(p => !solo.length || solo.includes(p.file));
 
 const browser = await chromium.launch();

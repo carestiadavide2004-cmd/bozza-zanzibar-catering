@@ -1,5 +1,5 @@
 /* =====================================================================
-   Zanzibar · Catering & Eventi — main.js
+   Zeta Catering — main.js
    Testi e dati arrivano da config.js (window.SITO).
    Animazioni con GSAP + ScrollTrigger + SplitText (in js/vendor, locali).
    Regole: solo transform / opacity / clip-path, nessuno scroll-jacking,
@@ -98,7 +98,7 @@
         box.hidden = !url;
         if (!url) { a.removeAttribute('href'); return; }
         a.href = url; a.target = '_blank'; a.rel = 'noopener noreferrer';
-        a.setAttribute('aria-label', `${S.nome || 'Zanzibar'} su ${NOMI_SOCIAL[t]}`);
+        a.setAttribute('aria-label', `${S.nome || ''} su ${NOMI_SOCIAL[t]}`);
         return;
       }
       if (t === 'tel') a.href = `tel:${C.telefonoLink || ''}`;
@@ -153,19 +153,10 @@
     // cosa possiamo curare
     if ((el = r('cura')) && EVENTO) el.innerHTML = EVENTO.cura.map(([t, p], i) => `<li class="cura__i" data-rivela><span class="cura__n">${due(i + 1)}</span><h3 class="cura__t">${esc(t)}</h3><p class="cura__p">${esc(p)}</p></li>`).join('');
 
-    // proposta di esempio
-    if ((el = r('proposta')) && EVENTO) {
-      const pe = S.paginaEvento || {};
-      el.innerHTML = `<span class="menu-carta__etichetta">${esc(pe.propostaEtichetta || 'Proposta di esempio')}</span>
-        <p class="menu-carta__titolo">${esc(EVENTO.nome)}</p>
-        ${EVENTO.proposta.map(([t, piatti]) => `<div class="menu-carta__sez"><h3>${esc(t)}</h3><ul>${piatti.map(p => `<li>${esc(p)}</li>`).join('')}</ul></div>`).join('')}
-        <p class="menu-carta__nota">${esc(pe.propostaNota || '')}</p>`;
-    }
-
     // domande frequenti
     if ((el = r('faq')) && EVENTO) el.innerHTML = EVENTO.faq.map(([q, a]) => `<details class="faq__i"><summary class="faq__q">${esc(q)}<span class="mm__piu" aria-hidden="true"></span></summary><p class="faq__r">${esc(a)}</p></details>`).join('');
 
-    // zona servita e orari
+    // zona servita
     if ((el = r('zona'))) el.textContent = S.zona?.testo || '';
 
     // strisce di foto
@@ -202,7 +193,7 @@
   function preparaGiganti() {
     $$('[data-giant]').forEach(g => {
       const tipo = g.dataset.giant;
-      const testo = tipo === 'evento' ? EVENTO?.titolo : S.nome;
+      const testo = tipo === 'evento' ? EVENTO?.titolo : (S.marchio || S.nome);
       const p = $('.giant__parola', g);
       if (!p || !testo) return;
       p.innerHTML = [...testo].map(c => `<span class="ch"><span class="ch__in">${c === ' ' ? '&nbsp;' : esc(c)}</span></span>`).join('');
@@ -239,13 +230,16 @@
     p.style.setProperty('--sposta', sposta.toFixed(2) + 'px');
     g.style.setProperty('--fit-px', fs.toFixed(1) + 'px');
     g.parentElement.style.setProperty('--fit-px', fs.toFixed(1) + 'px');
+    // bordi reali della parola: "Catering" della hero si allinea sotto, dalla prima all'ultima lettera
+    g.parentElement.style.setProperty('--giant-sx', Math.max(0, (disp - m.w) / 2).toFixed(1) + 'px');
+    g.parentElement.style.setProperty('--giant-w', m.w.toFixed(1) + 'px');
     g.classList.add('is-pronto');
   }
   const adattaTutti = () => $$('[data-giant]').forEach(adatta);
 
   function fontPronti() {
     if (!D.fonts?.load) return Promise.resolve();
-    const prova = [...new Set($$('[data-giant]').map(g => g.textContent.trim()))].join('') || 'Zanzibar';
+    const prova = [...new Set($$('[data-giant]').map(g => g.textContent.trim()))].join('') || 'Zeta';
     const attesa = Promise.all([
       D.fonts.load('500 100px "Bodoni Moda"', prova),
       D.fonts.load('400 17px "Manrope"'),
@@ -379,26 +373,84 @@
   }
 
   /* =====================================================================
-     5. ORARI ("Rispondiamo ora" / "Ora chiusi")
+     5. CREA IL TUO MENÙ (pagine evento)
+        Proposte in config.js (S.menu). Le scelte restano nel browser
+        (sessionStorage, solo per la scheda aperta) e finiscono nel
+        messaggio WhatsApp e nel riepilogo del preventivo.
      ===================================================================== */
-  function orari() {
-    const g = S.orari?.giorni;
-    const el = $$('[data-stato]');
-    if (!g || !el.length) return;
-    const GIORNI = ['domenica', 'lunedì', 'martedì', 'mercoledì', 'giovedì', 'venerdì', 'sabato'];
-    const min = s => { const [h, m] = s.split(':').map(Number); return h * 60 + m; };
-    const ora = new Date(), oggi = ora.getDay(), adesso = ora.getHours() * 60 + ora.getMinutes();
-    const fascia = (g[oggi] || []).find(([a, b]) => adesso >= min(a) && adesso < min(b));
-    let testo;
-    if (fascia) testo = `Rispondiamo ora · fino alle ${fascia[1]}`;
-    else {
-      for (let i = 0; i < 8 && !testo; i++) {
-        const d = (oggi + i) % 7;
-        const f = (g[d] || []).find(([a]) => i > 0 || min(a) > adesso);
-        if (f) testo = `Ora chiusi · riapriamo ${i === 0 ? 'oggi' : i === 1 ? 'domani' : GIORNI[d]} alle ${f[0]}`;
+  const CHIAVE_MENU = 'zeta-menu';
+  const pezzi = v => String(v || '').split(',').map(x => x.replace(/\s+/g, ' ').trim()).filter(Boolean);
+  function leggiMenu() {
+    try { const m = JSON.parse(sessionStorage.getItem(CHIAVE_MENU) || 'null'); return m && Array.isArray(m.righe) ? m : null; } catch { return null; }
+  }
+  function salvaMenu(m) {
+    try { if (m.righe.length) sessionStorage.setItem(CHIAVE_MENU, JSON.stringify(m)); else sessionStorage.removeItem(CHIAVE_MENU); } catch { /* memoria non disponibile: il menù funziona lo stesso */ }
+    D.dispatchEvent(new CustomEvent('zeta:menu'));
+  }
+  const tipoEvento = () => (S.preventivo?.tipiEvento || []).find(t => t.evento && t.evento === CHIAVE)?.nome || EVENTO?.nome || '';
+
+  function creaMenu() {
+    const box = $('[data-menu]');
+    const M = S.menu;
+    if (!box || !M || !EVENTO) return;
+    const WA = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4.2 19.8l1.1-3.9A8.3 8.3 0 1 1 8.4 19l-4.2.8Z" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><path d="M9.2 8.4c.2-.5.5-.5.8-.5h.5c.2 0 .4 0 .5.4l.7 1.6c.1.2 0 .4-.1.6l-.5.6c-.1.1-.2.3 0 .5a6 6 0 0 0 2.6 2.2c.2.1.4.1.5-.1l.6-.7c.2-.2.4-.2.6-.1l1.6.8c.2.1.4.2.4.4 0 .7-.4 1.4-1 1.7-.7.3-1.6.4-3.3-.4a8.5 8.5 0 0 1-3.6-3.6c-.6-1.2-.6-2.3.1-3.4Z" fill="currentColor"/></svg>';
+    const portate = M.portate || [];
+    const prima = leggiMenu();
+    const iniziali = prima?.pagina === EVENTO.pagina ? Object.fromEntries(prima.righe) : {};
+    box.innerHTML = `<span class="menu-carta__etichetta">${esc(M.etichetta || 'Il tuo menù')}</span>
+      <p class="menu-carta__titolo">${esc(EVENTO.nome)}</p>
+      ${portate.map(([nome, proposte], i) => `<div class="menu-carta__sez mc__riga">
+        <h3><label for="mc-${i}">${esc(nome)}</label></h3>
+        <textarea class="mc__campo" id="mc-${i}" rows="1" data-portata="${esc(nome)}" autocomplete="off" spellcheck="false" placeholder="${esc(M.segnaposto || '')}" aria-describedby="mc-p-${i}">${esc(iniziali[nome] || '')}</textarea>
+        <div class="mc__pillole" id="mc-p-${i}" role="group" aria-label="Proposte per ${esc(nome)}">${proposte.map(p => `<button class="mc__pillola" type="button" aria-pressed="false" data-voce="${esc(p)}">${esc(p)}</button>`).join('')}</div>
+      </div>`).join('')}
+      <div class="mc__invio">
+        <a class="btn mc__wa" data-menu-wa target="_blank" rel="noopener" aria-describedby="mc-avviso">${WA}Invia la proposta su WhatsApp</a>
+        <p class="mc__avviso" id="mc-avviso" data-menu-avviso>${esc(M.vuoto || '')}</p>
+        <p class="modulo__privacy mc__privacy">I dati che inserisci servono solo a preparare il messaggio WhatsApp e non vengono inviati al sito: restano nel tuo browser finché non chiudi la scheda. <a href="${esc(box.dataset.privacy || `${BASE}privacy.html`)}">Leggi l'informativa privacy</a></p>
+      </div>`;
+
+    const campi = $$('.mc__campo', box);
+    const wa = $('[data-menu-wa]', box), avviso = $('[data-menu-avviso]', box);
+    const alza = c => { c.style.height = 'auto'; c.style.height = c.scrollHeight + 'px'; };
+    function aggiorna(salva = true) {
+      const righe = [];
+      campi.forEach(c => {
+        const scelte = pezzi(c.value).map(x => x.toLowerCase());
+        $$('.mc__pillola', c.parentElement).forEach(b => b.setAttribute('aria-pressed', String(scelte.includes(b.dataset.voce.toLowerCase()))));
+        const testo = pezzi(c.value).join(', ');
+        if (testo) righe.push([c.dataset.portata, testo]);
+      });
+      const pieno = righe.length > 0;
+      if (pieno) {
+        const msg = [M.messaggioInizio || 'Ciao! Ecco la proposta di menù per il mio evento.', `Evento: ${tipoEvento()}`, ...righe.map(([p, t]) => `${p}: ${t}`)].join('\n');
+        wa.href = `https://wa.me/${C.whatsapp || ''}?text=${encodeURIComponent(msg)}`;
+        wa.removeAttribute('aria-disabled');
+      } else {
+        wa.removeAttribute('href');
+        wa.setAttribute('aria-disabled', 'true');
       }
+      avviso.hidden = pieno;
+      if (salva) salvaMenu({ pagina: EVENTO.pagina, evento: tipoEvento(), righe });
     }
-    el.forEach(n => { n.textContent = testo || ''; n.classList.toggle('is-aperto', !!fascia); });
+    box.addEventListener('click', e => {
+      const b = e.target.closest('.mc__pillola');
+      if (!b) return;
+      const c = $('.mc__campo', b.closest('.mc__riga'));
+      const lista = pezzi(c.value);
+      const i = lista.findIndex(x => x.toLowerCase() === b.dataset.voce.toLowerCase());
+      if (i >= 0) lista.splice(i, 1); else lista.push(b.dataset.voce);
+      c.value = lista.join(', ');
+      alza(c);
+      aggiorna();
+    });
+    campi.forEach(c => {
+      c.addEventListener('input', () => { alza(c); aggiorna(); });
+      c.addEventListener('keydown', e => { if (e.key === 'Enter') e.preventDefault(); }); // una riga per portata
+      alza(c);
+    });
+    allaLarghezza.push(() => campi.forEach(alza));
+    aggiorna(false);
   }
 
   /* =====================================================================
@@ -526,10 +578,14 @@
     }
     function riepilogo() {
       const v = voci();
-      $('[data-pg-lista]', f).innerHTML = v.map(([k, voce, val]) => `<div class="pg__riga"><dt>${esc(voce)}</dt><dd>${esc(val)}</dd><button class="pg__modifica" type="button" data-vai="${k}">Modifica<span class="sr-only"> ${esc(voce.toLowerCase())}</span></button></div>`).join('');
-      $('[data-pg-solo]', f).hidden = v.length !== 1;
-      $('[data-pg-wa]', f).href = `https://wa.me/${C.whatsapp || ''}?text=${encodeURIComponent(messaggio(v))}`;
+      const menu = leggiMenu()?.righe || [];
+      $('[data-pg-lista]', f).innerHTML = v.map(([k, voce, val]) => `<div class="pg__riga"><dt>${esc(voce)}</dt><dd>${esc(val)}</dd><button class="pg__modifica" type="button" data-vai="${k}">Modifica<span class="sr-only"> ${esc(voce.toLowerCase())}</span></button></div>`).join('')
+        + (menu.length ? `<div class="pg__riga"><dt>Menù</dt><dd class="pg__menu">${menu.map(([p, t]) => `<span><b>${esc(p)}</b> ${esc(t)}</span>`).join('')}</dd><a class="pg__modifica" href="${esc(`${BASE}eventi/${leggiMenu().pagina}.html#menu`)}">Modifica<span class="sr-only"> menù</span></a></div>` : '');
+      $('[data-pg-solo]', f).hidden = v.length !== 1 || menu.length > 0;
+      const testo = messaggio(v) + (menu.length ? `\nMenù:\n${menu.map(([p, t]) => `${p}: ${t}`).join('\n')}` : '');
+      $('[data-pg-wa]', f).href = `https://wa.me/${C.whatsapp || ''}?text=${encodeURIComponent(testo)}`;
     }
+    D.addEventListener('zeta:menu', () => { if (corrente === 'riepilogo') riepilogo(); });
 
     function vai(k, dir = 1) {
       const nuovo = passi[k];
@@ -1052,7 +1108,7 @@
   tendina();
   menuTelefono();
   barraTelefono();
-  orari();
+  creaMenu();
   mappa();
   preventivoGuidato();
   faq();
