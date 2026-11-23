@@ -217,7 +217,7 @@ ${intestazione({ base, home: true })}
     </div></div>
     <div class="hero__ombra" aria-hidden="true"></div>
     <div class="hero__nome">
-      <h1 class="giant" data-giant="nome"><span class="sr-only">${esc(S.nome)}</span><span class="giant__parola" style="--fit-k:${fitK(S.nome)}">${esc(S.nome)}</span></h1>
+      <h1 class="giant" data-giant="nome"><span class="sr-only">${esc(S.nomeHero || S.nome)}</span><span class="giant__parola" style="--fit-k:${fitK(S.nomeHero || S.nome)}">${esc(S.nomeHero || S.nome)}</span></h1>
     </div>
     <div class="hero__basso wrap">
       <div class="hero__testo">

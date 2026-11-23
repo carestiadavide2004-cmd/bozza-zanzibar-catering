@@ -34,7 +34,8 @@ window.SITO = (() => {
 
   return {
     nome: "Zeta Catering",
-    marchio: "Zeta",          // la parola gigante nella hero e nel footer
+    nomeHero: "ZETA Catering", // il nome gigante nella hero della home (maiuscole scritte qui, non con il CSS)
+    marchio: "Zeta",          // la parola gigante nel footer
     sottotitolo: "Catering",  // sotto il marchio, in maiuscoletto
     descrizione: "Catering per matrimoni, cerimonie, feste private ed eventi aziendali in tutto l'Abruzzo e nelle regioni limitrofe.", // TESTO DI ESEMPIO DA CONFERMARE
     indirizzoSito: "https://carestiadavide2004-cmd.github.io/bozza-zanzibar-catering/", // indirizzo della bozza online

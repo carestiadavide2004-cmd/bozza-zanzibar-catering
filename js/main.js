@@ -194,7 +194,7 @@
     $$('[data-giant]').forEach(g => {
       const tipo = g.dataset.giant;
       // hero della home: il nome intero su una riga · footer: solo il marchio
-      const testo = tipo === 'evento' ? EVENTO?.titolo : tipo === 'marchio' ? (S.marchio || S.nome) : S.nome;
+      const testo = tipo === 'evento' ? EVENTO?.titolo : tipo === 'marchio' ? (S.marchio || S.nome) : (S.nomeHero || S.nome);
       const p = $('.giant__parola', g);
       if (!p || !testo) return;
       p.innerHTML = [...testo].map(c => `<span class="ch"><span class="ch__in">${c === ' ' ? '&nbsp;' : esc(c)}</span></span>`).join('');
