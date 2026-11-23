@@ -140,7 +140,7 @@ function piede({ base, evento }) {
     <p>© <span data-anno>2026</span> <span data-t="legale.ragioneSociale">${t('legale.ragioneSociale')}</span> · P.IVA <span data-t="legale.piva">${t('legale.piva')}</span> · Sede legale: <span data-t="legale.sedeLegale">${t('legale.sedeLegale')}</span></p>
     <p><a href="${base}privacy.html">Privacy e cookie</a></p>
   </div>
-  <div class="pie__gigante" aria-hidden="true"><p class="giant" data-giant="nome" data-max="9"><span class="giant__parola" style="--fit-k:${fitK(S.marchio)}">${esc(S.marchio)}</span></p></div>
+  <div class="pie__gigante" aria-hidden="true"><p class="giant" data-giant="marchio" data-max="9"><span class="giant__parola" style="--fit-k:${fitK(S.marchio)}">${esc(S.marchio)}</span></p></div>
 </footer>
 <nav class="mbar" aria-label="Contatti rapidi" data-mbar>
   <a data-link="tel" href="tel:${esc(C.telefonoLink)}">${I.tel}Chiama</a>
@@ -217,8 +217,7 @@ ${intestazione({ base, home: true })}
     </div></div>
     <div class="hero__ombra" aria-hidden="true"></div>
     <div class="hero__nome">
-      <h1 class="giant" data-giant="nome"><span class="sr-only">${esc(S.nome)}</span><span class="giant__parola" style="--fit-k:${fitK(S.marchio)}">${esc(S.marchio)}</span></h1>
-      <p class="hero__marchio-sotto" data-entra aria-hidden="true" data-t="sottotitolo">${t('sottotitolo')}</p>
+      <h1 class="giant" data-giant="nome"><span class="sr-only">${esc(S.nome)}</span><span class="giant__parola" style="--fit-k:${fitK(S.nome)}">${esc(S.nome)}</span></h1>
     </div>
     <div class="hero__basso wrap">
       <div class="hero__testo">
@@ -436,7 +435,7 @@ ${intestazione({ base })}
       <p>Raccogliamo solo i dati che servono:</p>
       <ul>
         <li><strong>Dati di navigazione.</strong> Quando visitate il sito, il servizio che lo ospita registra in automatico alcuni dati tecnici: indirizzo IP, tipo di browser e di dispositivo, pagina richiesta, data e ora. Servono a far funzionare il sito e a proteggerlo, non a capire chi siete.</li>
-        <li><strong>Dati del preventivo guidato e di "Crea il tuo menù".</strong> Le scelte che fate nel preventivo (tipo di evento, data, numero di ospiti, luogo, servizi, extra, esigenze alimentari, nome e note) e le portate del menù restano solo nel vostro browser e servono a preparare il messaggio WhatsApp. Il sito non le invia a nessuno: le riceviamo solo se decidete voi di inviare il messaggio su WhatsApp.</li>
+        <li><strong>Dati del preventivo guidato e di "Crea il tuo menù".</strong> Le scelte che fate nel preventivo (tipo di evento, data, numero di ospiti, luogo, servizi, extra, esigenze alimentari, nome e note) e le portate del menù con il vostro nome restano solo nel vostro browser e servono a preparare il messaggio WhatsApp. Il sito non le invia a nessuno: le riceviamo solo se decidete voi di inviare il messaggio su WhatsApp.</li>
         <li><strong>Dati dei contatti diretti.</strong> Se ci scrivete per email, su WhatsApp o ci telefonate, usiamo i dati che ci comunicate (per esempio nome, numero, indirizzo email e testo del messaggio).</li>
       </ul>
       <p>Le esigenze alimentari (per esempio celiachia o allergie) possono riguardare la salute: indicatele solo se volete e solo quanto serve per preparare il menù. Vi chiediamo di non inserire altri dati non necessari.</p>
@@ -472,7 +471,7 @@ ${intestazione({ base })}
 
       <h2>Cookie</h2>
       <p>Questo sito <strong>non usa cookie</strong>: né di profilazione, né di statistica, né tecnici.</p>
-      <p>Usa solo la memoria di sessione del browser (sessionStorage) per ricordare il menù che componete in "Crea il tuo menù", così lo ritrovate nel riepilogo del preventivo. Questi dati restano sul vostro dispositivo, non vengono inviati a noi né ad altri e si cancellano da soli quando chiudete la scheda. Si tratta di uno strumento tecnico, necessario al servizio che richiedete, quindi non serve il consenso.</p>
+      <p>Usa solo la memoria di sessione del browser (sessionStorage) per ricordare il menù che componete in "Crea il tuo menù" e il nome che scrivete lì, così li ritrovate nel riepilogo del preventivo senza riscriverli. Questi dati restano sul vostro dispositivo, non vengono inviati a noi né ad altri e si cancellano da soli quando chiudete la scheda. Si tratta di uno strumento tecnico, necessario al servizio che richiedete, quindi non serve il consenso.</p>
       <p>I caratteri tipografici sono caricati dal nostro sito, senza collegamenti a Google Fonts, e non ci sono video incorporati da altri servizi, pixel, pubblicità o strumenti di statistica. Per questo non trovate un banner dei cookie.</p>
       <p>Solo se attivate la mappa di Google Maps, Google può impostare propri cookie, secondo la sua informativa.</p>
 

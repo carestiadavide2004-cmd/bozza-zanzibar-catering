@@ -337,13 +337,6 @@ html.mm-aperto .hd .hd__marchio { opacity: 1 !important; pointer-events: auto !i
 .hero__nome { position: relative; z-index: 2; grid-row: 2; min-width: 0; padding-inline: var(--giant-m); padding-top: clamp(4px, 1.6vh, 22px); }
 .hero .giant { text-shadow: 0 .02em .14em rgba(14, 11, 9, .24); }
 .hero .etichetta { text-shadow: 0 1px 10px rgba(0, 0, 0, .3); }
-.hero__marchio-sotto {
-  display: flex; align-items: center; gap: clamp(14px, 1.6vw, 24px); margin-top: clamp(10px, 1.6vh, 20px);
-  margin-left: var(--giant-sx, 0px); width: var(--giant-w, auto); max-width: 100%;
-  font: 500 clamp(12px, 1.25vw, 18px)/1 var(--f-testo); letter-spacing: .62em; text-transform: uppercase;
-  color: var(--bianco-foto); text-shadow: 0 1px 12px rgba(0, 0, 0, .35);
-}
-.hero__marchio-sotto::after { content: ""; flex: 1; height: 1px; background: rgba(251, 248, 242, .38); }
 .hero--basso .hero__nome { grid-row: 3; align-self: end; padding-top: 0; }
 .hero__sopra { padding-left: calc(var(--margine) - var(--giant-m)); margin-bottom: clamp(6px, 1.2vh, 14px); }
 .hero__basso {

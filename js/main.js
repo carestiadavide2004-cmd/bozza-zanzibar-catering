@@ -193,7 +193,8 @@
   function preparaGiganti() {
     $$('[data-giant]').forEach(g => {
       const tipo = g.dataset.giant;
-      const testo = tipo === 'evento' ? EVENTO?.titolo : (S.marchio || S.nome);
+      // hero della home: il nome intero su una riga · footer: solo il marchio
+      const testo = tipo === 'evento' ? EVENTO?.titolo : tipo === 'marchio' ? (S.marchio || S.nome) : S.nome;
       const p = $('.giant__parola', g);
       if (!p || !testo) return;
       p.innerHTML = [...testo].map(c => `<span class="ch"><span class="ch__in">${c === ' ' ? '&nbsp;' : esc(c)}</span></span>`).join('');
@@ -230,9 +231,6 @@
     p.style.setProperty('--sposta', sposta.toFixed(2) + 'px');
     g.style.setProperty('--fit-px', fs.toFixed(1) + 'px');
     g.parentElement.style.setProperty('--fit-px', fs.toFixed(1) + 'px');
-    // bordi reali della parola: "Catering" della hero si allinea sotto, dalla prima all'ultima lettera
-    g.parentElement.style.setProperty('--giant-sx', Math.max(0, (disp - m.w) / 2).toFixed(1) + 'px');
-    g.parentElement.style.setProperty('--giant-w', m.w.toFixed(1) + 'px');
     g.classList.add('is-pronto');
   }
   const adattaTutti = () => $$('[data-giant]').forEach(adatta);
@@ -384,9 +382,12 @@
     try { const m = JSON.parse(sessionStorage.getItem(CHIAVE_MENU) || 'null'); return m && Array.isArray(m.righe) ? m : null; } catch { return null; }
   }
   function salvaMenu(m) {
-    try { if (m.righe.length) sessionStorage.setItem(CHIAVE_MENU, JSON.stringify(m)); else sessionStorage.removeItem(CHIAVE_MENU); } catch { /* memoria non disponibile: il menù funziona lo stesso */ }
+    try { if (m.righe.length || m.nome) sessionStorage.setItem(CHIAVE_MENU, JSON.stringify(m)); else sessionStorage.removeItem(CHIAVE_MENU); } catch { /* memoria non disponibile: il menù funziona lo stesso */ }
     D.dispatchEvent(new CustomEvent('zeta:menu'));
   }
+  // inizio comune dei messaggi WhatsApp: saluto e, se c'è, il nome
+  const saluto = nome => [S.messaggioSaluto || 'Ciao! Ho visto il tuo sito di catering.', ...(nome ? [(S.messaggioNome || 'Sono {nome}.').replace('{nome}', nome)] : [])];
+  const pulisci = v => String(v || '').replace(/\s+/g, ' ').trim();
   const tipoEvento = () => (S.preventivo?.tipiEvento || []).find(t => t.evento && t.evento === CHIAVE)?.nome || EVENTO?.nome || '';
 
   function creaMenu() {
@@ -404,13 +405,18 @@
         <textarea class="mc__campo" id="mc-${i}" rows="1" data-portata="${esc(nome)}" autocomplete="off" spellcheck="false" placeholder="${esc(M.segnaposto || '')}" aria-describedby="mc-p-${i}">${esc(iniziali[nome] || '')}</textarea>
         <div class="mc__pillole" id="mc-p-${i}" role="group" aria-label="Proposte per ${esc(nome)}">${proposte.map(p => `<button class="mc__pillola" type="button" aria-pressed="false" data-voce="${esc(p)}">${esc(p)}</button>`).join('')}</div>
       </div>`).join('')}
+      <div class="menu-carta__sez mc__nome">
+        <h3><label for="mc-nome">${esc(M.nomeEtichetta || 'Il tuo nome')}</label></h3>
+        <input class="mc__campo" id="mc-nome" name="nome" required aria-required="true" autocomplete="name" maxlength="80" placeholder="${esc(M.nomeSegnaposto || '')}" value="${esc(prima?.nome || '')}" aria-describedby="mc-avviso">
+      </div>
       <div class="mc__invio">
         <a class="btn mc__wa" data-menu-wa target="_blank" rel="noopener" aria-describedby="mc-avviso">${WA}Invia la proposta su WhatsApp</a>
         <p class="mc__avviso" id="mc-avviso" data-menu-avviso>${esc(M.vuoto || '')}</p>
         <p class="modulo__privacy mc__privacy">I dati che inserisci servono solo a preparare il messaggio WhatsApp e non vengono inviati al sito: restano nel tuo browser finché non chiudi la scheda. <a href="${esc(box.dataset.privacy || `${BASE}privacy.html`)}">Leggi l'informativa privacy</a></p>
       </div>`;
 
-    const campi = $$('.mc__campo', box);
+    const campi = $$('textarea.mc__campo', box);
+    const nome = $('#mc-nome', box);
     const wa = $('[data-menu-wa]', box), avviso = $('[data-menu-avviso]', box);
     const alza = c => { c.style.height = 'auto'; c.style.height = c.scrollHeight + 'px'; };
     function aggiorna(salva = true) {
@@ -421,9 +427,10 @@
         const testo = pezzi(c.value).join(', ');
         if (testo) righe.push([c.dataset.portata, testo]);
       });
-      const pieno = righe.length > 0;
+      const chi = pulisci(nome.value);
+      const pieno = righe.length > 0 && !!chi;
       if (pieno) {
-        const msg = [M.messaggioInizio || 'Ciao! Ecco la proposta di menù per il mio evento.', `Evento: ${tipoEvento()}`, ...righe.map(([p, t]) => `${p}: ${t}`)].join('\n');
+        const msg = [...saluto(chi), M.messaggioInizio || 'Ecco la proposta di menù per il mio evento.', `Evento: ${tipoEvento()}`, ...righe.map(([p, t]) => `${p}: ${t}`)].join('\n');
         wa.href = `https://wa.me/${C.whatsapp || ''}?text=${encodeURIComponent(msg)}`;
         wa.removeAttribute('aria-disabled');
       } else {
@@ -431,7 +438,8 @@
         wa.setAttribute('aria-disabled', 'true');
       }
       avviso.hidden = pieno;
-      if (salva) salvaMenu({ pagina: EVENTO.pagina, evento: tipoEvento(), righe });
+      avviso.textContent = pieno ? '' : !righe.length && !chi ? M.vuoto : !righe.length ? M.senzaPortate : M.senzaNome;
+      if (salva) salvaMenu({ pagina: EVENTO.pagina, evento: tipoEvento(), righe, nome: chi });
     }
     box.addEventListener('click', e => {
       const b = e.target.closest('.mc__pillola');
@@ -449,6 +457,8 @@
       c.addEventListener('keydown', e => { if (e.key === 'Enter') e.preventDefault(); }); // una riga per portata
       alza(c);
     });
+    nome.addEventListener('input', () => aggiorna());
+    nome.addEventListener('keydown', e => { if (e.key === 'Enter') e.preventDefault(); });
     allaLarghezza.push(() => campi.forEach(alza));
     aggiorna(false);
   }
@@ -555,11 +565,12 @@
       metti('extra', T.extra?.voce || 'Extra', valori('extra').join(', '));
       metti('esigenze', T.esigenze?.voce || 'Esigenze alimentari', valori('esigenze').join(', '));
       metti('esigenze', T.esigenze?.voceAllergie || 'Allergie', pulito('allergie'));
-      metti('note', T.note?.voce || 'Nome', pulito('nome'));
+      metti('nome', T.note?.voce || 'Nome', pulito('nome'));
       metti('note', T.note?.voceNote || 'Note', pulito('note'));
       return v;
     }
-    const messaggio = v => [P.messaggioInizio || 'Ciao! Vorrei un preventivo per il catering.', ...v.map(([, voce, val]) => `${voce}: ${val}`)].join('\n');
+    // il nome va nel saluto ("Sono …"), non si ripete nell'elenco
+    const messaggio = v => [...saluto(pulito('nome')), P.messaggioInizio || 'Vorrei un preventivo per il catering.', ...v.filter(([k]) => k !== 'nome').map(([, voce, val]) => `${voce}: ${val}`)].join('\n');
 
     function aggiornaPulsanti() {
       const ok = !!evento();
@@ -579,13 +590,21 @@
     function riepilogo() {
       const v = voci();
       const menu = leggiMenu()?.righe || [];
-      $('[data-pg-lista]', f).innerHTML = v.map(([k, voce, val]) => `<div class="pg__riga"><dt>${esc(voce)}</dt><dd>${esc(val)}</dd><button class="pg__modifica" type="button" data-vai="${k}">Modifica<span class="sr-only"> ${esc(voce.toLowerCase())}</span></button></div>`).join('')
+      $('[data-pg-lista]', f).innerHTML = v.map(([k, voce, val]) => `<div class="pg__riga"><dt>${esc(voce)}</dt><dd>${esc(val)}</dd><button class="pg__modifica" type="button" data-vai="${k === 'nome' ? 'note' : k}">Modifica<span class="sr-only"> ${esc(voce.toLowerCase())}</span></button></div>`).join('')
         + (menu.length ? `<div class="pg__riga"><dt>Menù</dt><dd class="pg__menu">${menu.map(([p, t]) => `<span><b>${esc(p)}</b> ${esc(t)}</span>`).join('')}</dd><a class="pg__modifica" href="${esc(`${BASE}eventi/${leggiMenu().pagina}.html#menu`)}">Modifica<span class="sr-only"> menù</span></a></div>` : '');
       $('[data-pg-solo]', f).hidden = v.length !== 1 || menu.length > 0;
       const testo = messaggio(v) + (menu.length ? `\nMenù:\n${menu.map(([p, t]) => `${p}: ${t}`).join('\n')}` : '');
       $('[data-pg-wa]', f).href = `https://wa.me/${C.whatsapp || ''}?text=${encodeURIComponent(testo)}`;
     }
-    D.addEventListener('zeta:menu', () => { if (corrente === 'riepilogo') riepilogo(); });
+    // il nome scritto nel menù compare già nel preventivo (finché non lo cambi qui)
+    let nomeDalMenu = '';
+    const prendiNome = () => {
+      const n = leggiMenu()?.nome || '';
+      if (n && (!el.nome.value || el.nome.value === nomeDalMenu)) el.nome.value = n;
+      nomeDalMenu = n;
+    };
+    prendiNome();
+    D.addEventListener('zeta:menu', () => { prendiNome(); if (corrente === 'riepilogo') riepilogo(); });
 
     function vai(k, dir = 1) {
       const nuovo = passi[k];

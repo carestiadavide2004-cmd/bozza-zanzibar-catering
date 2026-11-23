@@ -75,8 +75,13 @@ window.SITO = (() => {
        Per aggiungere o togliere una scelta basta cambiare le liste qui sotto.
        Nei tipi di evento, "evento" = chiave della pagina evento (così nella
        pagina di quell'evento la scelta è già selezionata). */
+    /* Inizio di tutti i messaggi WhatsApp del preventivo e del menù.
+       {nome} diventa il nome scritto dal cliente (la riga compare solo se c'è). */
+    messaggioSaluto: "Ciao! Ho visto il tuo sito di catering.", // TESTO DI ESEMPIO DA CONFERMARE
+    messaggioNome: "Sono {nome}.",
+
     preventivo: { // TESTO DI ESEMPIO DA CONFERMARE
-      messaggioInizio: "Ciao! Vorrei un preventivo per il catering.",
+      messaggioInizio: "Vorrei un preventivo per il catering.",
       tipiEvento: [
         { nome: "Matrimonio", evento: "matrimoni" },
         { nome: "Comunione, battesimo o cresima", evento: "comunioni" },
@@ -350,9 +355,13 @@ window.SITO = (() => {
       etichetta: "Il tuo menù",
       titolo: "Crea il tuo *menù*",
       testo: "Per ogni portata scrivi ciò che desideri o tocca le proposte. Inviaci il menù su WhatsApp: lo perfezioneremo insieme.",
-      messaggioInizio: "Ciao! Ecco la proposta di menù per il mio evento.",
+      messaggioInizio: "Ecco la proposta di menù per il mio evento.",
       segnaposto: "Scrivi o scegli tra le proposte",
-      vuoto: "Componi almeno una portata per inviare la proposta.",
+      nomeEtichetta: "Il tuo nome",
+      nomeSegnaposto: "Nome e cognome",
+      vuoto: "Componi almeno una portata e scrivi il tuo nome per inviare la proposta.",
+      senzaPortate: "Componi almeno una portata per inviare la proposta.",
+      senzaNome: "Scrivi il tuo nome per inviare la proposta.",
       portate: [
         ["Aperitivo", ["Bollicine e analcolici", "Acque profumate", "Piccola frittura", "Mignon salati"]],
         ["Antipasto", ["Finger food", "Salumi e formaggi del territorio", "Show cooking (caciocavallo impiccato)", "Antipasti caldi al coccio"]],
