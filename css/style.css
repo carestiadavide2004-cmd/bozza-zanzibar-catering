@@ -543,7 +543,7 @@ main { position: relative; z-index: 0; }
 .rec__chi strong { color: var(--inchiostro); font-weight: 600; }
 
 /* =====================================================================
-   PREVENTIVO (modulo)
+   PREVENTIVO (guidato)
    ===================================================================== */
 .preventivo { background: var(--sabbia); }
 .prev__griglia { display: grid; gap: 48px; }
@@ -551,31 +551,97 @@ main { position: relative; z-index: 0; }
 .prev__alt { margin-top: 36px; display: grid; gap: 14px; justify-items: start; }
 .prev__alt p { font-size: 14px; color: var(--grigio); }
 .prev__alt p a { color: var(--inchiostro); font-weight: 600; }
-.modulo { display: grid; grid-template-columns: 1fr; gap: 20px 20px; }
-@media (min-width: 640px) { .modulo { grid-template-columns: 1fr 1fr; } .campo--largo { grid-column: 1 / -1; } }
-.campo { display: grid; gap: 8px; align-content: start; }
-.campo label { font: 600 13px/1.3 var(--f-testo); letter-spacing: .04em; }
-.campo label span { font-weight: 400; color: var(--grigio); letter-spacing: 0; }
-.campo input, .campo select, .campo textarea {
-  width: 100%; min-height: 54px; padding: 14px 16px; border-radius: var(--r);
-  font: 400 17px/1.35 var(--f-testo); color: var(--inchiostro);
-  background: var(--carta); border: 1px solid var(--linea-forte);
-  -webkit-appearance: none; appearance: none;
-}
-.campo textarea { min-height: 128px; resize: vertical; }
-.campo select { padding-right: 44px; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1.5l5 5 5-5' fill='none' stroke='%2315120F' stroke-width='1.5'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 18px center; }
-.campo input[type="date"] { min-height: 54px; }
-.campo input:focus, .campo select:focus, .campo textarea:focus { outline: none; border-color: var(--inchiostro); box-shadow: 0 0 0 1px var(--inchiostro); }
-.campo input:focus-visible, .campo select:focus-visible, .campo textarea:focus-visible { box-shadow: 0 0 0 1px var(--inchiostro), 0 0 0 4px rgba(166, 70, 31, .25); }
-.campo [aria-invalid="true"] { border-color: var(--accento); box-shadow: 0 0 0 1px var(--accento); }
-.campo__errore { font-size: 13.5px; color: var(--accento); min-height: 0; }
-.modulo__invia { grid-column: 1 / -1; display: grid; gap: 14px; justify-items: start; margin-top: 6px; }
 .modulo__privacy { font-size: 13.5px; color: var(--grigio); }
 .modulo__privacy a { color: var(--inchiostro); }
-.modulo__stato { grid-column: 1 / -1; font-size: 15px; padding: 14px 16px; border-radius: var(--r); background: var(--carta); box-shadow: inset 3px 0 0 var(--inchiostro); }
-.modulo__stato[data-tipo="ok"] { box-shadow: inset 3px 0 0 #3F6B43; }
-.modulo__stato[data-tipo="errore"], .modulo__stato[data-tipo="info"] { box-shadow: inset 3px 0 0 var(--accento); }
-.trappola { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
+/* Preventivo guidato (passi → riepilogo → WhatsApp) */
+.pg { min-width: 0; }
+.pg__senza-js { font-size: 17px; color: var(--grigio); max-width: 46ch; }
+.pg__form { background: var(--carta); border-radius: var(--r); box-shadow: 0 0 0 1px var(--linea); padding: clamp(20px, 3.4vw, 48px); }
+.pg__testa { margin-bottom: clamp(26px, 3vw, 38px); }
+.pg__conta { display: flex; justify-content: space-between; gap: 16px; font: 600 12px/1.3 var(--f-testo); letter-spacing: .16em; text-transform: uppercase; }
+.pg__conta span + span { color: var(--grigio); letter-spacing: .1em; }
+.pg__barra { margin-top: 14px; height: 1px; background: var(--linea); overflow: hidden; }
+.pg__barra span { display: block; height: 100%; background: var(--inchiostro); transform: scaleX(0); transform-origin: 0 50%; transition: transform .8s var(--ease); }
+.pg__palco { min-height: 0; }
+@media (min-width: 1024px) { .pg__palco { min-height: 330px; } }
+.pg__passo { border: 0; margin: 0; padding: 0; min-width: 0; display: grid; gap: 18px; align-content: start; }
+.pg__passo[hidden] { display: none; }
+.pg__titolo { font: 450 clamp(28px, 2.7vw, 38px)/1.08 var(--f-titoli); letter-spacing: -.012em; text-wrap: balance; }
+.pg__titolo em { font-weight: 400; }
+.pg__titolo:focus { outline: none; }
+.pg__aiuto { font-size: 15px; color: var(--grigio); margin-top: -8px; }
+/* scelte (radio e checkbox) */
+.pg__scelte { display: grid; gap: 10px; margin-top: 4px; }
+@media (min-width: 520px) { .pg__scelte { grid-template-columns: 1fr 1fr; } }
+.pg__scelta {
+  position: relative; display: flex; align-items: center; gap: 14px; min-height: 56px; padding: 12px 16px;
+  border-radius: var(--r); background: var(--avorio); box-shadow: inset 0 0 0 1px var(--linea-forte);
+  font-size: 16px; line-height: 1.3; cursor: pointer; -webkit-tap-highlight-color: transparent;
+  transition: box-shadow .4s var(--ease), background-color .4s var(--ease);
+}
+.pg__scelta input { position: absolute; opacity: 0; width: 1px; height: 1px; margin: 0; pointer-events: none; }
+.pg__segno { flex: none; position: relative; width: 18px; height: 18px; border-radius: 50%; box-shadow: inset 0 0 0 1px var(--linea-forte); background: var(--carta); }
+.pg__segno::after { content: ""; position: absolute; inset: 4px; border-radius: inherit; background: var(--inchiostro); transform: scale(0); transition: transform .4s var(--ease); }
+.pg__scelta input[type="checkbox"] + .pg__segno { border-radius: 2px; }
+.pg__scelta input[type="checkbox"] + .pg__segno::after { inset: 3px; border-radius: 1px; }
+.pg__scelta:has(input:checked) { background: #FFFFFF; box-shadow: inset 0 0 0 1.5px var(--inchiostro); }
+.pg__scelta input:checked + .pg__segno { box-shadow: inset 0 0 0 1.5px var(--inchiostro); }
+.pg__scelta input:checked + .pg__segno::after { transform: scale(1); }
+.pg__scelta:has(input:focus-visible) { box-shadow: inset 0 0 0 1.5px var(--inchiostro), 0 0 0 4px rgba(166, 70, 31, .25); }
+@media (hover: hover) { .pg__scelta:hover { box-shadow: inset 0 0 0 1px var(--inchiostro); } }
+/* campi */
+.pg__campo { display: grid; gap: 8px; }
+.pg__etichetta { font: 600 13px/1.3 var(--f-testo); letter-spacing: .04em; margin-top: 6px; }
+.pg__etichetta span { font-weight: 400; color: var(--grigio); letter-spacing: 0; }
+.pg__input {
+  width: 100%; min-height: 56px; padding: 14px 16px; border-radius: var(--r);
+  font: 400 17px/1.35 var(--f-testo); color: var(--inchiostro);
+  background: var(--avorio); border: 1px solid var(--linea-forte); -webkit-appearance: none; appearance: none;
+}
+.pg__input--corto { max-width: 220px; }
+textarea.pg__input { min-height: 112px; resize: vertical; }
+.pg__input::placeholder { color: #8C857B; }
+.pg__input:focus { outline: none; border-color: var(--inchiostro); box-shadow: 0 0 0 1px var(--inchiostro); background: #FFFFFF; }
+.pg__input:focus-visible { box-shadow: 0 0 0 1px var(--inchiostro), 0 0 0 4px rgba(166, 70, 31, .25); }
+.pg__input[aria-invalid="true"] { border-color: var(--accento); box-shadow: 0 0 0 1px var(--accento); }
+.pg__errore { font-size: 14px; color: var(--accento); }
+/* navigazione */
+.pg__avviso { margin-top: 22px; font-size: 14.5px; color: var(--grigio); padding-left: 14px; box-shadow: inset 2px 0 0 var(--accento); }
+.pg__nav {
+  margin-top: clamp(26px, 3vw, 36px); padding-top: 22px; border-top: 1px solid var(--linea);
+  display: grid; grid-template-columns: auto 1fr; grid-template-areas: "torna avanti" "salta salta"; align-items: center; gap: 14px 16px;
+}
+.pg__nav[hidden] { display: none; }
+.pg__nav .pg__torna { grid-area: torna; }
+.pg__avanti { grid-area: avanti; justify-self: end; }
+.pg__salta { grid-area: salta; justify-self: center; }
+.pg__salta[hidden] { display: none; }
+@media (min-width: 640px) {
+  .pg__nav { grid-template-columns: auto 1fr auto; grid-template-areas: "torna salta avanti"; }
+  .pg__salta { justify-self: end; }
+}
+.pg__torna { display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 0 4px; margin-left: -4px; font: 600 15px/1 var(--f-testo); color: var(--grigio); transition: color .4s var(--ease); justify-self: start; }
+.pg__torna svg { width: 14px; height: 14px; transition: transform .5s var(--ease); }
+@media (hover: hover) { .pg__torna:hover { color: var(--inchiostro); } .pg__torna:hover svg { transform: translateX(-3px); } }
+.pg__salta { min-height: 44px; }
+.pg__form button:disabled { opacity: .38; cursor: not-allowed; }
+.pg__form .btn:disabled::before { transform: scaleY(0); }
+.pg__form .btn:disabled svg { transform: none; }
+.pg__privacy { margin-top: 18px; }
+/* riepilogo */
+.pg__riepilogo .pg__torna { margin-bottom: -6px; }
+.pg__lista { margin-top: 6px; border-top: 1px solid var(--linea); }
+.pg__riga { display: grid; grid-template-columns: 1fr auto; grid-template-areas: "voce mod" "val val"; gap: 4px 16px; padding: 14px 0; border-bottom: 1px solid var(--linea); }
+.pg__riga dt { grid-area: voce; font: 600 11.5px/1.3 var(--f-testo); letter-spacing: .14em; text-transform: uppercase; color: var(--grigio); align-self: center; }
+.pg__riga dd { grid-area: val; margin: 0; font-size: 17px; line-height: 1.45; overflow-wrap: anywhere; }
+.pg__modifica { grid-area: mod; min-height: 32px; font: 600 14px/1 var(--f-testo); color: var(--inchiostro); text-decoration: underline; text-underline-offset: 4px; text-decoration-thickness: 1px; }
+@media (min-width: 640px) {
+  .pg__riga { grid-template-columns: 170px 1fr auto; grid-template-areas: "voce val mod"; align-items: baseline; padding: 16px 0; }
+}
+.pg__solo { font-size: 15px; color: var(--grigio); }
+.pg__wa { width: 100%; min-height: 62px; padding-inline: 14px; gap: 10px; font-size: clamp(15px, 4vw, 16px); margin-top: 8px; white-space: normal; text-align: center; line-height: 1.25; }
+.pg__wa svg { width: 22px; height: 22px; }
+@media (hover: hover) { .pg__wa:hover svg { transform: none; } }
 
 /* =====================================================================
    CONTATTI E MAPPA

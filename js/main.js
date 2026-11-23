@@ -374,8 +374,8 @@
     } else bar.classList.add('is-su');
     // mentre si scrive nel modulo la barra si nasconde (non copre i campi)
     let t = 0;
-    D.addEventListener('focusin', e => { if (e.target.matches('input, select, textarea')) { clearTimeout(t); B.classList.add('scrivendo'); } });
-    D.addEventListener('focusout', e => { if (e.target.matches('input, select, textarea')) t = setTimeout(() => B.classList.remove('scrivendo'), 250); });
+    D.addEventListener('focusin', e => { if (e.target.matches('input:not([type=radio]):not([type=checkbox]), select, textarea')) { clearTimeout(t); B.classList.add('scrivendo'); } });
+    D.addEventListener('focusout', e => { if (e.target.matches('input:not([type=radio]):not([type=checkbox]), select, textarea')) t = setTimeout(() => B.classList.remove('scrivendo'), 250); });
   }
 
   /* =====================================================================
@@ -418,72 +418,169 @@
   }
 
   /* =====================================================================
-     7. MODULO PREVENTIVO (Web3Forms) + WhatsApp con messaggio pronto
+     7. PREVENTIVO GUIDATO → riepilogo → messaggio WhatsApp
+        Opzioni e testi in config.js (S.preventivo). Il sito non salva
+        e non invia nulla: prepara solo il link wa.me.
      ===================================================================== */
-  function modulo() {
-    const f = $('[data-modulo]');
-    if (!f) return;
-    const el = f.elements;
-    el.tipo.innerHTML = `<option value="">Scegli il tipo di evento</option>${EVENTI.map(e => `<option${e.chiave === CHIAVE ? ' selected' : ''}>${esc(e.nome)}</option>`).join('')}<option>Altro</option>`;
+  function preventivoGuidato() {
+    $$('[data-wa-modulo]').forEach(a => { a.href = linkWa(); });
+    const box = $('[data-pg]');
+    const P = S.preventivo;
+    if (!box || !P) return;
+    const T = P.passi || {};
+    const ORDINE = ['evento', 'data', 'ospiti', 'luogo', 'servizio', 'extra', 'esigenze', 'note'];
+    const N = ORDINE.length;
     const iso = d => `${d.getFullYear()}-${due(d.getMonth() + 1)}-${due(d.getDate())}`;
     const oggi = iso(new Date());
-    el.data.min = oggi;
-    const wa = $$('[data-wa-modulo]');
-    const aggiornaWa = () => wa.forEach(a => { a.href = linkWa(el.tipo.value, el.data.value, el.ospiti.value); });
-    aggiornaWa();
-    f.addEventListener('input', aggiornaWa);
-    f.addEventListener('change', aggiornaWa);
+    const dataIt = v => v.split('-').reverse().join('/');
+    const sceltaEv = (P.tipiEvento || []).find(t => t.evento && t.evento === CHIAVE);
+    const WA_ICONA = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4.2 19.8l1.1-3.9A8.3 8.3 0 1 1 8.4 19l-4.2.8Z" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><path d="M9.2 8.4c.2-.5.5-.5.8-.5h.5c.2 0 .4 0 .5.4l.7 1.6c.1.2 0 .4-.1.6l-.5.6c-.1.1-.2.3 0 .5a6 6 0 0 0 2.6 2.2c.2.1.4.1.5-.1l.6-.7c.2-.2.4-.2.6-.1l1.6.8c.2.1.4.2.4.4 0 .7-.4 1.4-1 1.7-.7.3-1.6.4-3.3-.4a8.5 8.5 0 0 1-3.6-3.6c-.6-1.2-.6-2.3.1-3.4Z" fill="currentColor"/></svg>';
 
-    const stato = $('[data-stato-modulo]', f);
-    const mostra = (msg, tipo) => { stato.hidden = false; stato.dataset.tipo = tipo || ''; stato.textContent = msg; };
-    const errore = (campo, msg) => {
-      const box = campo.closest('.campo'); const e = box && $('.campo__errore', box);
-      campo.setAttribute('aria-invalid', msg ? 'true' : 'false');
-      if (e) { e.textContent = msg || ''; e.hidden = !msg; }
+    const scelte = (nome, tipo, lista, sel) => `<div class="pg__scelte${tipo === 'radio' ? ' pg__scelte--eventi' : ''}">${lista.map(v => `<label class="pg__scelta"><input type="${tipo}" name="${nome}" value="${esc(v)}"${v === sel ? ' checked' : ''}><span class="pg__segno" aria-hidden="true"></span><span>${esc(v)}</span></label>`).join('')}</div>`;
+    const testa = (k, extra = '') => `<h3 class="pg__titolo" id="pg-t-${k}" tabindex="-1">${enfasi(T[k]?.titolo || '')}</h3>${T[k]?.aiuto ? `<p class="pg__aiuto" id="pg-a-${k}">${esc(T[k].aiuto)}</p>` : ''}${extra}`;
+    const campo = (k, html) => `<div class="pg__campo">${html}<p class="pg__errore" id="pg-e-${k}" hidden></p></div>`;
+    const corpo = {
+      evento: scelte('evento', 'radio', (P.tipiEvento || []).map(t => t.nome), sceltaEv?.nome),
+      data: campo('data', `<input class="pg__input" type="date" name="data" min="${oggi}" aria-labelledby="pg-t-data" aria-describedby="pg-a-data pg-e-data">`),
+      ospiti: campo('ospiti', `<input class="pg__input pg__input--corto" type="number" name="ospiti" min="1" max="5000" step="1" inputmode="numeric" placeholder="Es. 80" aria-labelledby="pg-t-ospiti" aria-describedby="pg-a-ospiti pg-e-ospiti">`),
+      luogo: `<div class="pg__campo"><input class="pg__input" name="luogo" autocomplete="off" maxlength="120" placeholder="Es. villa a Torre de' Passeri" aria-labelledby="pg-t-luogo" aria-describedby="pg-a-luogo"></div>`,
+      servizio: scelte('servizio', 'checkbox', P.servizi || []),
+      extra: scelte('extra', 'checkbox', P.extra || []),
+      esigenze: `${scelte('esigenze', 'checkbox', P.esigenze || [])}<div class="pg__campo"><label class="pg__etichetta" for="pg-allergie">Allergie o intolleranze <span>(facoltativo)</span></label><input class="pg__input" id="pg-allergie" name="allergie" autocomplete="off" maxlength="200" placeholder="Es. un ospite allergico alla frutta secca"></div>`,
+      note: `<div class="pg__campo"><label class="pg__etichetta" for="pg-nome">Nome</label><input class="pg__input" id="pg-nome" name="nome" autocomplete="name" maxlength="80"></div><div class="pg__campo"><label class="pg__etichetta" for="pg-note">Note</label><textarea class="pg__input" id="pg-note" name="note" rows="3" maxlength="600" placeholder="Raccontaci la festa che hai in mente"></textarea></div>`,
     };
-    const regole = {
-      nome: v => (v.trim().length < 2 ? 'Scrivi il tuo nome.' : ''),
-      telefono: v => (v.replace(/[^\d]/g, '').length < 6 ? 'Scrivi un numero di telefono valido.' : ''),
-      email: v => (v && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v) ? "Controlla l'indirizzo email." : ''),
-      tipo: v => (!v ? 'Scegli il tipo di evento.' : ''),
-      data: v => (!v ? 'Scegli la data dell’evento.' : v < oggi ? 'La data non può essere già passata.' : ''),
-      ospiti: v => (v && (+v < 1 || !Number.isFinite(+v)) ? 'Scrivi un numero di ospiti valido.' : ''),
-    };
-    const valida = campo => { const r = regole[campo.name]; if (!r) return true; const m = r(campo.value); errore(campo, m); return !m; };
-    Object.keys(regole).forEach(n => el[n]?.addEventListener('blur', () => { if (el[n].value) valida(el[n]); }));
-    Object.keys(regole).forEach(n => el[n]?.addEventListener('input', () => { if (el[n].getAttribute('aria-invalid') === 'true') valida(el[n]); }));
+    const gruppo = k => ['evento', 'servizio', 'extra', 'esigenze'].includes(k);
+    box.innerHTML = `<form class="pg__form" novalidate>
+      <div class="pg__testa"><p class="pg__conta" aria-live="polite"><span data-pg-n></span><span data-pg-nome></span></p><div class="pg__barra" aria-hidden="true"><span data-pg-barra></span></div></div>
+      <div class="pg__palco">
+        ${ORDINE.map((k, i) => `<${gruppo(k) ? 'fieldset' : 'div role="group"'} class="pg__passo" data-passo="${k}" aria-labelledby="pg-t-${k}"${i ? ' hidden' : ''}>${testa(k)}${corpo[k]}</${gruppo(k) ? 'fieldset' : 'div'}>`).join('')}
+        <div class="pg__passo pg__riepilogo" data-passo="riepilogo" hidden>
+          <button class="pg__torna" type="button" data-pg-indietro>${ICONA.sx}Indietro</button>
+          <h3 class="pg__titolo" id="pg-t-riepilogo" tabindex="-1">Il tuo <em>riepilogo</em></h3>
+          <p class="pg__aiuto">Controlla le scelte: con «Modifica» torni al passo.</p>
+          <dl class="pg__lista" data-pg-lista></dl>
+          <p class="pg__solo" data-pg-solo hidden>Hai indicato solo il tipo di evento: puoi inviare così oppure aggiungere qualche dettaglio.</p>
+          <a class="btn pg__wa" data-pg-wa href="#" target="_blank" rel="noopener">${WA_ICONA}Invia la richiesta su WhatsApp</a>
+        </div>
+      </div>
+      <p class="pg__avviso" id="pg-avviso" data-pg-avviso hidden>Scegli il tipo di evento per continuare: tutto il resto è facoltativo.</p>
+      <div class="pg__nav" data-pg-nav>
+        <button class="pg__torna" type="button" data-pg-indietro>${ICONA.sx}Indietro</button>
+        <button class="link-sottile pg__salta" type="button" data-pg-salta aria-describedby="pg-avviso">Vai al riepilogo</button>
+        <button class="btn pg__avanti" type="submit" data-pg-avanti aria-describedby="pg-avviso"><span data-pg-avanti-t>Avanti</span>${ICONA.freccia}</button>
+      </div>
+      <p class="modulo__privacy pg__privacy">I dati che inserisci servono solo a preparare il messaggio WhatsApp e non vengono salvati dal sito. <a href="${esc(box.dataset.privacy || `${BASE}privacy.html`)}">Leggi l'informativa privacy</a></p>
+    </form>`;
 
-    f.addEventListener('submit', async ev => {
-      ev.preventDefault();
-      const campi = Object.keys(regole).map(n => el[n]).filter(Boolean);
-      const sbagliati = campi.filter(c => !valida(c));
-      if (sbagliati.length) { sbagliati[0].focus(); mostra('Controlla i campi evidenziati.', 'errore'); return; }
-      if (el.botcheck?.checked) return;
-      const chiave = String(S.web3formsKey || '');
-      if (!chiave || /INSERIRE|CHIAVE|xxxx/i.test(chiave)) {
-        // bozza: il modulo non invia nulla finché non c'è la chiave vera
-        mostra('Questa è una bozza: il modulo non è ancora collegato. Per ora scrivici su WhatsApp o chiamaci.', 'info');
-        return;
-      }
-      const invia = $('[type="submit"]', f);
-      invia.disabled = true;
-      mostra('Invio in corso…');
-      try {
-        const dati = Object.fromEntries(new FormData(f));
-        delete dati.botcheck;
-        const risp = await fetch('https://api.web3forms.com/submit', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
-          body: JSON.stringify({ access_key: chiave, subject: `Richiesta preventivo: ${dati.tipo}`, from_name: `${S.nome} · sito`, ...dati }),
-        });
-        const j = await risp.json();
-        if (!j.success) throw new Error(j.message);
-        f.reset(); aggiornaWa();
-        mostra('Grazie! Abbiamo ricevuto la tua richiesta: ti rispondiamo al più presto.', 'ok');
-      } catch {
-        mostra('Invio non riuscito. Riprova tra poco oppure scrivici su WhatsApp.', 'errore');
-      } finally { invia.disabled = false; }
+    const f = $('form', box), el = f.elements;
+    const passi = Object.fromEntries($$('[data-passo]', f).map(p => [p.dataset.passo, p]));
+    const avanti = $('[data-pg-avanti]', f), salta = $('[data-pg-salta]', f), avviso = $('[data-pg-avviso]', f);
+    const nav = $('[data-pg-nav]', f), indietroNav = $('[data-pg-indietro]', nav);
+    let corrente = 'evento', ultimoPasso = 'evento', giro = 0, altezza = 0;
+
+    const valori = n => $$(`input[name="${n}"]:checked`, f).map(i => i.value);
+    const pulito = n => (el[n]?.value || '').trim().replace(/\s+/g, ' ');
+    const evento = () => valori('evento')[0] || '';
+    const errore = (k, msg) => {
+      const e = $(`#pg-e-${k}`, f), inp = el[k];
+      if (e) { e.textContent = msg; e.hidden = !msg; }
+      inp?.setAttribute('aria-invalid', msg ? 'true' : 'false');
+      return !msg;
+    };
+    const controlla = {
+      data: () => { const v = el.data.value; return errore('data', el.data.validity.badInput ? 'Controlla la data.' : v && v < oggi ? 'La data non può essere già passata.' : ''); },
+      ospiti: () => { const v = el.ospiti.value; return errore('ospiti', el.ospiti.validity.badInput || (v && (!Number.isInteger(+v) || +v < 1 || +v > 5000)) ? 'Scrivi un numero di ospiti valido.' : ''); },
+    };
+    // voci compilate, nell'ordine dei passi: [passo, voce, valore]
+    function voci() {
+      const v = [];
+      const metti = (k, voce, val) => { if (val) v.push([k, voce, val]); };
+      metti('evento', T.evento?.voce || 'Evento', evento());
+      if (controlla.data()) metti('data', T.data?.voce || 'Data', el.data.value && dataIt(el.data.value));
+      if (controlla.ospiti()) metti('ospiti', T.ospiti?.voce || 'Ospiti', el.ospiti.value && String(+el.ospiti.value));
+      metti('luogo', T.luogo?.voce || 'Luogo', pulito('luogo'));
+      metti('servizio', T.servizio?.voce || 'Servizio', valori('servizio').join(', '));
+      metti('extra', T.extra?.voce || 'Extra', valori('extra').join(', '));
+      metti('esigenze', T.esigenze?.voce || 'Esigenze alimentari', valori('esigenze').join(', '));
+      metti('esigenze', T.esigenze?.voceAllergie || 'Allergie', pulito('allergie'));
+      metti('note', T.note?.voce || 'Nome', pulito('nome'));
+      metti('note', T.note?.voceNote || 'Note', pulito('note'));
+      return v;
+    }
+    const messaggio = v => [P.messaggioInizio || 'Ciao! Vorrei un preventivo per il catering.', ...v.map(([, voce, val]) => `${voce}: ${val}`)].join('\n');
+
+    function aggiornaPulsanti() {
+      const ok = !!evento();
+      avanti.disabled = !ok; salta.disabled = !ok;
+      avviso.hidden = ok;
+    }
+    function aggiornaTesta(k) {
+      const i = ORDINE.indexOf(k);
+      $('[data-pg-n]', f).textContent = i < 0 ? 'Riepilogo' : `Passo ${i + 1} di ${N}`;
+      $('[data-pg-nome]', f).textContent = i < 0 ? 'Tutto pronto' : (T[k]?.voce || '');
+      $('[data-pg-barra]', f).style.transform = `scaleX(${i < 0 ? 1 : (i + 1) / (N + 1)})`;
+      nav.hidden = i < 0;
+      indietroNav.style.visibility = i > 0 ? '' : 'hidden';
+      salta.hidden = i === N - 1;
+      $('[data-pg-avanti-t]', f).textContent = i === N - 1 ? 'Riepilogo' : 'Avanti';
+    }
+    function riepilogo() {
+      const v = voci();
+      $('[data-pg-lista]', f).innerHTML = v.map(([k, voce, val]) => `<div class="pg__riga"><dt>${esc(voce)}</dt><dd>${esc(val)}</dd><button class="pg__modifica" type="button" data-vai="${k}">Modifica<span class="sr-only"> ${esc(voce.toLowerCase())}</span></button></div>`).join('');
+      $('[data-pg-solo]', f).hidden = v.length !== 1;
+      $('[data-pg-wa]', f).href = `https://wa.me/${C.whatsapp || ''}?text=${encodeURIComponent(messaggio(v))}`;
+    }
+
+    function vai(k, dir = 1) {
+      const nuovo = passi[k];
+      const vecchio = Object.values(passi).find(p => !p.hidden);
+      if (!nuovo || nuovo === vecchio) return;
+      if (k !== 'riepilogo') ultimoPasso = k;
+      corrente = k;
+      if (k === 'riepilogo') riepilogo();
+      aggiornaTesta(k);
+      const t = ++giro;
+      const mostra = () => {
+        if (t !== giro) return;
+        Object.values(passi).forEach(p => { p.hidden = p !== nuovo; });
+        if (!RIDOTTO && nuovo.animate) nuovo.animate([{ opacity: 0, transform: `translate3d(${dir * 28}px,0,0)` }, { opacity: 1, transform: 'none' }], { duration: 520, easing: 'cubic-bezier(.22,1,.36,1)' });
+        $('.pg__titolo', nuovo).focus({ preventScroll: true });
+        // le animazioni allo scorrimento si ricalcolano solo se cambia l'altezza del modulo
+        const h = f.offsetHeight;
+        if (ANIM && Math.abs(h - altezza) > 1) { altezza = h; ScrollTrigger.refresh(); }
+      };
+      Object.values(passi).forEach(p => p.getAnimations?.().forEach(a => a.cancel()));
+      if (RIDOTTO || !vecchio?.animate) return mostra();
+      vecchio.animate([{ opacity: 1, transform: 'none' }, { opacity: 0, transform: `translate3d(${dir * -16}px,0,0)` }], { duration: 200, easing: 'cubic-bezier(.65,0,.35,1)', fill: 'forwards' }).finished.then(mostra, () => {});
+    }
+    // prima di lasciare il passo: niente date passate o numeri sbagliati
+    const passoValido = () => (controlla[corrente] ? controlla[corrente]() : true);
+    const datiValidi = () => {
+      if (!controlla.data()) { vai('data', -1); return false; }
+      if (!controlla.ospiti()) { vai('ospiti', -1); return false; }
+      return true;
+    };
+
+    f.addEventListener('submit', e => {
+      e.preventDefault();
+      if (!evento() || !passoValido()) return;
+      const i = ORDINE.indexOf(corrente);
+      if (i === N - 1) { if (datiValidi()) vai('riepilogo'); } else if (i >= 0) vai(ORDINE[i + 1]);
     });
+    salta.addEventListener('click', () => { if (evento() && passoValido() && datiValidi()) vai('riepilogo'); });
+    $$('[data-pg-indietro]', f).forEach(b => b.addEventListener('click', () => {
+      if (corrente === 'riepilogo') return vai(ultimoPasso, -1);
+      const i = ORDINE.indexOf(corrente);
+      if (i > 0) vai(ORDINE[i - 1], -1);
+    }));
+    $('[data-pg-lista]', f).addEventListener('click', e => { const b = e.target.closest('[data-vai]'); if (b) vai(b.dataset.vai, -1); });
+    f.addEventListener('change', aggiornaPulsanti);
+    f.addEventListener('input', e => { const k = e.target.name; if (controlla[k] && e.target.getAttribute('aria-invalid') === 'true') controlla[k](); });
+    el.data.addEventListener('change', controlla.data);
+
+    aggiornaPulsanti();
+    aggiornaTesta('evento');
+    altezza = f.offsetHeight;
   }
 
   /* =====================================================================
@@ -957,7 +1054,7 @@
   barraTelefono();
   orari();
   mappa();
-  modulo();
+  preventivoGuidato();
   faq();
   heroVideo();
   anteprimeCard();

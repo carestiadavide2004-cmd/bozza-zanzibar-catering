@@ -129,8 +129,8 @@ function piede({ base, evento }) {
     <div>
       <h3>Seguici</h3>
       <ul class="pie__lista">
-        <li><a data-link="instagram" href="${esc(S.social.instagram)}">Instagram</a></li>
-        <li><a data-link="facebook" href="${esc(S.social.facebook)}">Facebook</a></li>
+        <li><a data-link="instagram" href="${esc(S.social.instagram)}" target="_blank" rel="noopener noreferrer" aria-label="${esc(S.nome)} su Instagram">Instagram</a></li>
+        <li><a data-link="facebook" href="${esc(S.social.facebook)}" target="_blank" rel="noopener noreferrer" aria-label="${esc(S.nome)} su Facebook">Facebook</a></li>
       </ul>
     </div>
   </div>
@@ -161,22 +161,9 @@ function preventivo({ base, titolo, testo }) {
         <p>Oppure chiama il <a data-link="tel" href="tel:${esc(C.telefonoLink)}" data-t="contatti.telefono">${t('contatti.telefono')}</a></p>
       </div>
     </div>
-    <form class="modulo" data-modulo novalidate>
-      <div class="campo"><label for="f-nome">Nome e cognome</label><input id="f-nome" name="nome" autocomplete="name" required aria-describedby="e-nome"><p class="campo__errore" id="e-nome" hidden></p></div>
-      <div class="campo"><label for="f-tel">Telefono</label><input id="f-tel" name="telefono" type="tel" inputmode="tel" autocomplete="tel" required aria-describedby="e-tel"><p class="campo__errore" id="e-tel" hidden></p></div>
-      <div class="campo"><label for="f-email">Email <span>(facoltativa)</span></label><input id="f-email" name="email" type="email" inputmode="email" autocomplete="email" aria-describedby="e-email"><p class="campo__errore" id="e-email" hidden></p></div>
-      <div class="campo"><label for="f-tipo">Tipo di evento</label><select id="f-tipo" name="tipo" required aria-describedby="e-tipo"><option value="">Scegli il tipo di evento</option>${S.eventi.map(e => `<option>${esc(e.nome)}</option>`).join('')}<option>Altro</option></select><p class="campo__errore" id="e-tipo" hidden></p></div>
-      <div class="campo"><label for="f-data">Data dell'evento</label><input id="f-data" name="data" type="date" required aria-describedby="e-data"><p class="campo__errore" id="e-data" hidden></p></div>
-      <div class="campo"><label for="f-ospiti">Numero di ospiti <span>(circa)</span></label><input id="f-ospiti" name="ospiti" type="number" min="1" step="1" inputmode="numeric" aria-describedby="e-ospiti"><p class="campo__errore" id="e-ospiti" hidden></p></div>
-      <div class="campo campo--largo"><label for="f-luogo">Luogo <span>(facoltativo)</span></label><input id="f-luogo" name="luogo" autocomplete="off" placeholder="Villa, sala, giardino di casa, comune…"></div>
-      <div class="campo campo--largo"><label for="f-msg">Messaggio <span>(facoltativo)</span></label><textarea id="f-msg" name="messaggio" rows="4" placeholder="Raccontaci la festa che hai in mente"></textarea></div>
-      <label class="trappola" aria-hidden="true">Non compilare questo campo<input type="checkbox" name="botcheck" tabindex="-1" autocomplete="off"></label>
-      <p class="modulo__stato" data-stato-modulo role="status" aria-live="polite" hidden></p>
-      <div class="modulo__invia">
-        <button class="btn" type="submit">Invia la richiesta ${I.freccia}</button>
-        <p class="modulo__privacy">I dati inviati servono solo per rispondere alla tua richiesta. <a href="${base}privacy.html">Leggi l'informativa privacy</a></p>
-      </div>
-    </form>
+    <div class="pg" data-pg data-privacy="${base}privacy.html">
+      <p class="pg__senza-js">Per chiedere un preventivo scrivici su WhatsApp o chiamaci: trovi i contatti qui accanto.</p>
+    </div>
   </div>
 </section>`;
 }
@@ -296,7 +283,7 @@ ${intestazione({ base, home: true })}
           <div class="cont__riga"><dt>Zona servita</dt><dd data-t="zona.testo">${t('zona.testo')}</dd></div>
           <div class="cont__riga"><dt>Orari</dt><dd data-t="orari.testo">${t('orari.testo')}</dd></div>
         </dl>
-        <p class="cont__social"><a class="link-sottile" data-link="instagram" href="${esc(S.social.instagram)}">Instagram</a><a class="link-sottile" data-link="facebook" href="${esc(S.social.facebook)}">Facebook</a></p>
+        <p class="cont__social"><a class="link-sottile" data-link="instagram" href="${esc(S.social.instagram)}" target="_blank" rel="noopener noreferrer" aria-label="${esc(S.nome)} su Instagram">Instagram</a><a class="link-sottile" data-link="facebook" href="${esc(S.social.facebook)}" target="_blank" rel="noopener noreferrer" aria-label="${esc(S.nome)} su Facebook">Facebook</a></p>
       </div>
       <div class="mappa" data-mappa>
         <div class="mappa__box">
@@ -448,15 +435,16 @@ ${intestazione({ base })}
       <p>Raccogliamo solo i dati che servono:</p>
       <ul>
         <li><strong>Dati di navigazione.</strong> Quando visitate il sito, il servizio che lo ospita registra in automatico alcuni dati tecnici: indirizzo IP, tipo di browser e di dispositivo, pagina richiesta, data e ora. Servono a far funzionare il sito e a proteggerlo, non a capire chi siete.</li>
-        <li><strong>Dati del modulo.</strong> Solo quelli che scrivete voi nel modulo di richiesta preventivo: nome e cognome, numero di telefono, email (facoltativa), tipo di evento, data, numero indicativo di ospiti, luogo ed eventuale messaggio.</li>
+        <li><strong>Dati del preventivo guidato.</strong> Le scelte che fate nel preventivo (tipo di evento, data, numero di ospiti, luogo, servizi, extra, esigenze alimentari, nome e note) restano solo nel vostro browser e servono a preparare il messaggio WhatsApp. Il sito non le salva e non le invia a nessuno: le riceviamo solo se decidete voi di inviare il messaggio su WhatsApp.</li>
         <li><strong>Dati dei contatti diretti.</strong> Se ci scrivete per email, su WhatsApp o ci telefonate, usiamo i dati che ci comunicate (per esempio nome, numero, indirizzo email e testo del messaggio).</li>
       </ul>
-      <p>Vi chiediamo di non inserire nei messaggi dati non necessari, in particolare informazioni sulla salute: se ci sono allergie o intolleranze da gestire, ne parleremo direttamente.</p>
+      <p>Le esigenze alimentari (per esempio celiachia o allergie) possono riguardare la salute: indicatele solo se volete e solo quanto serve per preparare il menù. Vi chiediamo di non inserire altri dati non necessari.</p>
 
       <h2>Perché usiamo i dati e su quale base</h2>
       <ul>
         <li><strong>Far funzionare il sito e proteggerlo</strong> (dati di navigazione).<br>Base giuridica: nostro legittimo interesse alla sicurezza e al buon funzionamento del sito (articolo 6.1.f del GDPR).</li>
         <li><strong>Rispondere alle vostre richieste</strong> e prepararvi un eventuale preventivo.<br>Base giuridica: misure precontrattuali adottate su vostra richiesta (articolo 6.1.b del GDPR).</li>
+        <li><strong>Preparare piatti adatti a esigenze alimentari</strong> (per esempio celiachia o allergie), se ce le indicate.<br>Base giuridica: il vostro consenso esplicito, che date inviandocele (articolo 9.2.a del GDPR). Potete ritirarlo in ogni momento chiedendoci di cancellarle.</li>
         <li><strong>Rispettare gli obblighi di legge</strong>, per esempio fiscali e contabili, se alla richiesta segue un contratto.<br>Base giuridica: obbligo di legge (articolo 6.1.c del GDPR).</li>
       </ul>
       <p>Non vendiamo i dati e non li cediamo ad altri per i loro scopi. Senza i dati necessari (per esempio nome e telefono) non possiamo rispondere alla richiesta.</p>
@@ -472,9 +460,8 @@ ${intestazione({ base })}
       <p>I dati sono trattati da noi e dalle persone autorizzate che lavorano con noi. Per far funzionare il sito ci appoggiamo ad alcuni fornitori. Ognuno riceve solo i dati che servono al proprio servizio.</p>
       <ul>
         <li><strong>GitHub Pages</strong> (GitHub, Inc.): è il servizio che ospita il sito. Come ogni server web, registra dati tecnici delle visite (indirizzo IP, browser, pagina richiesta) per sicurezza e funzionamento. <a href="https://docs.github.com/it/site-policy/privacy-policies/github-general-privacy-statement" target="_blank" rel="noopener">Informativa di GitHub</a>.</li>
-        <li><strong>Web3Forms</strong>: invia per email a noi i dati che scrivete nel modulo. Riceve quindi i dati del modulo e alcuni dati tecnici dell'invio (come l'indirizzo IP). <a href="https://web3forms.com/privacy" target="_blank" rel="noopener">Informativa di Web3Forms</a>.</li>
         <li><strong>Google Maps</strong>: la mappa si carica <em>solo se premete</em> il pulsante "Mostra la mappa". Da quel momento Google riceve dati di navigazione (come l'indirizzo IP) e può usare propri cookie. Lo stesso vale se aprite il link "Apri in Google Maps". <a href="https://policies.google.com/privacy?hl=it" target="_blank" rel="noopener">Informativa di Google</a>.</li>
-        <li><strong>WhatsApp</strong>: solo se scegliete di scriverci premendo un pulsante WhatsApp. In quel caso la conversazione passa attraverso WhatsApp, che ne tratta i dati secondo la propria informativa. <a href="https://www.whatsapp.com/legal/privacy-policy-eea" target="_blank" rel="noopener">Informativa di WhatsApp</a>.</li>
+        <li><strong>WhatsApp</strong>: solo se scegliete di scriverci premendo un pulsante WhatsApp, compreso "Invia la richiesta su WhatsApp" alla fine del preventivo guidato. Il pulsante apre WhatsApp con il messaggio già scritto e siete voi a decidere se inviarlo. Da quel momento la conversazione passa attraverso WhatsApp (Meta), che ne tratta i dati secondo la propria informativa. <a href="https://www.whatsapp.com/legal/privacy-policy-eea" target="_blank" rel="noopener">Informativa di WhatsApp</a>.</li>
       </ul>
       <p>I link ai nostri profili social sono semplici collegamenti: i social ricevono dati solo se li aprite.</p>
       <p>Quando serve, i dati possono essere comunicati anche ai consulenti che ci assistono (per esempio il commercialista, per gli obblighi fiscali) e alle autorità, se lo prevede la legge.</p>

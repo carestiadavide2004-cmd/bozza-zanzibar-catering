@@ -81,12 +81,39 @@ window.SITO = (() => {
       sedeLegale: "Via Esempio 1, 65029 Torre de' Passeri (PE)",
       emailPrivacy: "privacy@esempio.it",
       pec: "nomeattivita@pec.it",
-      aggiornamentoPrivacy: "19 novembre 2026",
+      aggiornamentoPrivacy: "23 novembre 2026",
     },
 
-    /* Chiave del modulo (la crea il cliente, gratis, su web3forms.com).
-       Finché resta questo segnaposto il modulo NON invia nulla. */
-    web3formsKey: "INSERIRE-CHIAVE-WEB3FORMS", // DA CONFERMARE
+    /* PREVENTIVO GUIDATO: passi, opzioni e messaggio WhatsApp.
+       Per aggiungere o togliere una scelta basta cambiare le liste qui sotto.
+       Nei tipi di evento, "evento" = chiave della pagina evento (così nella
+       pagina di quell'evento la scelta è già selezionata). */
+    preventivo: { // TESTO DI ESEMPIO DA CONFERMARE
+      messaggioInizio: "Ciao! Vorrei un preventivo per il catering.",
+      tipiEvento: [
+        { nome: "Matrimonio", evento: "matrimoni" },
+        { nome: "Comunione, battesimo o cresima", evento: "comunioni" },
+        { nome: "Compleanno o festa privata", evento: "compleanni" },
+        { nome: "Evento aziendale", evento: "aziendali" },
+        { nome: "Aperitivo o buffet", evento: "aperitivi" },
+        { nome: "Laurea", evento: "lauree" },
+        { nome: "Altro" },
+      ],
+      servizi: ["Buffet", "Servizio al tavolo", "Aperitivo e finger food", "Open bar"],
+      extra: ["Torta", "Allestimento", "Personale di sala", "Noleggio stoviglie"],
+      esigenze: ["Vegetariani", "Vegani", "Celiaci"],
+      /* Titolo di ogni passo e voce usata nel riepilogo e nel messaggio */
+      passi: {
+        evento:   { titolo: "Che *evento* festeggi?", voce: "Evento" },
+        data:     { titolo: "Quando sarà la *festa*?", aiuto: "Anche indicativa: puoi lasciarla vuota.", voce: "Data" },
+        ospiti:   { titolo: "Quanti *ospiti* aspetti?", aiuto: "Un numero indicativo va benissimo.", voce: "Ospiti" },
+        luogo:    { titolo: "*Dove* si terrà?", aiuto: "Villa, sala, giardino di casa o solo il comune.", voce: "Luogo" },
+        servizio: { titolo: "Che tipo di *servizio*?", aiuto: "Puoi sceglierne più di uno.", voce: "Servizio" },
+        extra:    { titolo: "Ti servono degli *extra*?", aiuto: "Puoi sceglierne più di uno.", voce: "Extra" },
+        esigenze: { titolo: "Ci sono *esigenze* alimentari?", aiuto: "Prepariamo piatti dedicati, serviti a parte.", voce: "Esigenze alimentari", voceAllergie: "Allergie" },
+        note:     { titolo: "Due parole su di *te*", aiuto: "Facoltativo: come ti chiami e cosa hai in mente.", voce: "Nome", voceNote: "Note" },
+      },
+    },
 
     /* Messaggio già scritto per WhatsApp: {evento} diventa il tipo di evento scelto */
     whatsappMessaggio: "Ciao Zanzibar! Vorrei un preventivo per {evento}.", // TESTO DI ESEMPIO DA CONFERMARE
