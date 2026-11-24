@@ -1,6 +1,6 @@
 # Design — Zeta Catering
 
-**Tipo:** catering ed eventi · **Zona:** tutto l'Abruzzo e regioni limitrofe (sede a Torre de' Passeri) · **Stato:** bozza per cliente reale (noindex)
+**Tipo:** catering ed eventi · **Zona:** tutto l'Abruzzo e regioni limitrofe (sede a Torre de' Passeri) · **Stato:** sito definitivo su https://zetacatering.com (indicizzato)
 Dettagli completi in `DIREZIONE.md`. Dati e testi in `config.js`.
 
 ## Direzione

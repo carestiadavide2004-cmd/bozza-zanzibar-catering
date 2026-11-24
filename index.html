@@ -5,15 +5,15 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Zeta Catering · Catering per matrimoni ed eventi in Abruzzo</title>
 <meta name="description" content="Catering per matrimoni, comunioni, compleanni, eventi aziendali, aperitivi e lauree in tutto l&#39;Abruzzo e nelle regioni limitrofe.">
-<meta name="robots" content="noindex, nofollow">
+<link rel="canonical" href="https://zetacatering.com/">
 <meta name="theme-color" content="#15120F">
 <meta property="og:type" content="website">
 <meta property="og:locale" content="it_IT">
 <meta property="og:site_name" content="Zeta Catering">
 <meta property="og:title" content="Zeta Catering · Catering per matrimoni ed eventi in Abruzzo">
 <meta property="og:description" content="Catering per matrimoni, comunioni, compleanni, eventi aziendali, aperitivi e lauree in tutto l&#39;Abruzzo e nelle regioni limitrofe.">
-<meta property="og:url" content="https://carestiadavide2004-cmd.github.io/bozza-zanzibar-catering/">
-<meta property="og:image" content="https://carestiadavide2004-cmd.github.io/bozza-zanzibar-catering/assets/og/home.jpg">
+<meta property="og:url" content="https://zetacatering.com/">
+<meta property="og:image" content="https://zetacatering.com/assets/og/home.jpg">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
@@ -24,14 +24,14 @@
 <link rel="preload" href="fonts/manrope-latin.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" as="image" imagesrcset="assets/img/home/hero-telefono-640.webp 640w, assets/img/home/hero-telefono-1280.webp 1280w, assets/img/home/hero-telefono-1920.webp 1920w" imagesizes="100vw" media="(max-width: 767px), (orientation: portrait)" fetchpriority="high">
 <link rel="preload" as="image" imagesrcset="assets/img/home/hero-computer-1280.webp 1280w, assets/img/home/hero-computer-1920.webp 1920w, assets/img/home/hero-computer-2560.webp 2560w" imagesizes="100vw" media="(min-width: 768px) and (orientation: landscape)" fetchpriority="high">
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"FoodEstablishment","name":"Zeta Catering","description":"Catering per matrimoni, cerimonie, feste private ed eventi aziendali in tutto l'Abruzzo e nelle regioni limitrofe.","url":"https://carestiadavide2004-cmd.github.io/bozza-zanzibar-catering/","telephone":"+393922850875","email":"cristiano.favara@gmail.com","address":{"@type":"PostalAddress","streetAddress":"Via Garibaldi 4","postalCode":"65029","addressLocality":"Torre de' Passeri","addressRegion":"PE","addressCountry":"IT"},"areaServed":["Abruzzo","Regioni limitrofe"],"image":"https://carestiadavide2004-cmd.github.io/bozza-zanzibar-catering/assets/og/home.jpg"}</script>
-<link rel="stylesheet" href="css/style.css">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"FoodEstablishment","@id":"https://zetacatering.com/#azienda","name":"Zeta Catering","description":"Catering per matrimoni, cerimonie, feste private ed eventi aziendali in tutto l'Abruzzo e nelle regioni limitrofe.","url":"https://zetacatering.com/","telephone":"+393922850875","email":"cristiano.favara@gmail.com","address":{"@type":"PostalAddress","streetAddress":"Via Garibaldi 4","postalCode":"65029","addressLocality":"Torre de' Passeri","addressRegion":"PE","addressCountry":"IT"},"areaServed":{"@type":"Place","name":"Abruzzo e regioni limitrofe"},"sameAs":["https://www.instagram.com/zeta_catering/"],"image":"https://zetacatering.com/assets/og/home.jpg","logo":"https://zetacatering.com/assets/icone/favicon-192.png","parentOrganization":{"@type":"Organization","name":"Zanzibar · Coffee & Lounge Bar","url":"https://zanzibartorre.com"}}</script>
+<link rel="stylesheet" href="css/style.css?v=20261124">
 <script>document.documentElement.classList.add('js')</script>
-<script src="config.js" defer></script>
-<script src="js/vendor/gsap.min.js" defer></script>
-<script src="js/vendor/ScrollTrigger.min.js" defer></script>
-<script src="js/vendor/SplitText.min.js" defer></script>
-<script src="js/main.js" defer></script>
+<script src="config.js?v=20261124" defer></script>
+<script src="js/vendor/gsap.min.js?v=20261124" defer></script>
+<script src="js/vendor/ScrollTrigger.min.js?v=20261124" defer></script>
+<script src="js/vendor/SplitText.min.js?v=20261124" defer></script>
+<script src="js/main.js?v=20261124" defer></script>
 </head>
 <body class="pagina-home" data-pagina="home">
 <a class="salta" href="#contenuto">Vai al contenuto</a>
@@ -132,13 +132,13 @@
   </section>
   </div>
 
-  <section class="recensioni sez">
+  <section class="recensioni sez" hidden>
     <div class="wrap">
       <div class="rec__testa">
-        <h2 class="titolo titolo--m" data-titolo data-t="home.recensioni.titolo" style="margin-top:0">Recensioni di esempio</h2>
-        <p class="rec__nota" data-t="home.recensioni.nota">Testi segnaposto: qui andranno le recensioni vere dei clienti.</p>
+        <h2 class="titolo titolo--m" data-titolo style="margin-top:0"></h2>
+        <p class="rec__nota"></p>
       </div>
-      <ul class="carosello rec__lista" data-render="recensioni"></ul>
+      <ul class="carosello rec__lista"></ul>
     </div>
   </section>
 
@@ -214,8 +214,9 @@
     </div>
   </div>
   <div class="wrap pie__legale">
-    <p>© <span data-anno>2026</span> <span data-t="legale.ragioneSociale">Nome attività S.r.l.</span> · P.IVA <span data-t="legale.piva">00000000000</span> · Sede legale: <span data-t="legale.sedeLegale">Via Esempio 1, 65029 Torre de&#39; Passeri (PE)</span></p>
+    <p>© <span data-anno>2026</span> <span data-se="legale.ragioneSociale" hidden><span data-t="legale.ragioneSociale"></span></span><span data-se="!legale.ragioneSociale" data-t="nome">Zeta Catering</span><span data-se="legale.piva" hidden> · P.IVA <span data-t="legale.piva"></span></span><span data-se="legale.sedeLegale" hidden> · Sede legale: <span data-t="legale.sedeLegale"></span></span></p>
     <p><a href="privacy.html">Privacy e cookie</a></p>
+    <p class="pie__gruppo"><span data-t="gruppo.testo">Zeta Catering è il servizio catering di</span> <a href="https://zanzibartorre.com" target="_blank" rel="noopener" data-t="gruppo.nome">Zanzibar · Coffee &amp; Lounge Bar</a><span class="pie__punto" aria-hidden="true">·</span><a href="https://menu.zanzibartorre.com" target="_blank" rel="noopener">Sfoglia il menù del bar</a></p>
   </div>
   <div class="pie__gigante" aria-hidden="true"><p class="giant" data-giant="marchio" data-max="9"><span class="giant__parola" style="--fit-k:2.12">Zeta</span></p></div>
 </footer>

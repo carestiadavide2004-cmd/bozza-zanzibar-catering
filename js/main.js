@@ -83,12 +83,18 @@
      1. TESTI E DATI DA config.js
      ===================================================================== */
   const NOMI_SOCIAL = { instagram: 'Instagram', facebook: 'Facebook', tiktok: 'TikTok' };
+  // dato legale "compilato": non vuoto e non segnaposto (stessa regola in _strumenti/genera.mjs)
+  const compilato = v => !!String(v ?? '').trim() && !/^0+$|esempio|nome ?attivit/i.test(String(v).trim());
+  const emailPrivacy = () => (compilato(S.legale?.emailPrivacy) ? S.legale.emailPrivacy : C.email || '');
   function riempi() {
-    $$('[data-t]').forEach(el => { const v = prendi(el.dataset.t); if (v != null) el.textContent = v; });
+    $$('[data-t]').forEach(el => { const v = prendi(el.dataset.t); if (v != null && !(el.dataset.t.startsWith('legale.') && !compilato(v))) el.textContent = v; });
     $$('[data-h]').forEach(el => { const v = prendi(el.dataset.h); if (v != null) el.innerHTML = enfasi(v); });
     $$('[data-ev]').forEach(el => { const v = EVENTO?.[el.dataset.ev]; if (v != null) el.innerHTML = enfasi(v); });
     $$('[data-indirizzo]').forEach(el => { el.textContent = indirizzo(); });
     $$('[data-anno]').forEach(el => { el.textContent = new Date().getFullYear(); });
+    // righe legali: visibili solo se il dato è compilato ("!" = solo se NON è compilato)
+    $$('[data-se]').forEach(el => { const no = el.dataset.se[0] === '!'; el.hidden = compilato(prendi(el.dataset.se.slice(no ? 1 : 0))) === no; });
+    $$('[data-email-privacy]').forEach(el => { el.textContent = emailPrivacy(); });
     $$('[data-link]').forEach(a => {
       const t = a.dataset.link;
       // social: link veri da config.js; se il link è vuoto il pulsante non compare
@@ -103,7 +109,7 @@
       }
       if (t === 'tel') a.href = `tel:${C.telefonoLink || ''}`;
       else if (t === 'mail') a.href = `mailto:${C.email || ''}`;
-      else if (t === 'mail-privacy') a.href = `mailto:${S.legale?.emailPrivacy || ''}`;
+      else if (t === 'mail-privacy') a.href = `mailto:${emailPrivacy()}`;
       else if (t === 'wa') a.href = linkWa();
       else if (t === 'maps') a.href = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(indirizzo())}`;
       else if (S.social?.[t]) a.href = S.social[t];

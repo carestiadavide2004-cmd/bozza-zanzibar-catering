@@ -16,11 +16,17 @@ const URL_SITO = S.indirizzoSito.replace(/\/?$/, '/');
 const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 const enfasi = s => esc(s).replace(/\*(.+?)\*([,.;:!?]+)/g, '*$1$2*').replace(/\*(.+?)\*/g, '<em>$1</em>');
 const prendi = p => p.split('.').reduce((o, k) => (o == null ? o : o[k]), S);
-const t = p => esc(prendi(p));
+// i dati legali non compilati non finiscono nell'HTML (nemmeno nascosti)
+const t = p => esc(p.startsWith('legale.') && !compilato(prendi(p)) ? '' : prendi(p));
 const h = p => enfasi(prendi(p));
 const C = S.contatti, L = S.legale;
 const indirizzo = `${C.indirizzo}, ${C.cap} ${C.citta} (${C.provincia})`;
 const fitK = s => (s.length * 0.53).toFixed(2);
+const V = `?v=${esc(S.versione || '1')}`;
+// un dato legale è "compilato" se non è vuoto e non è un segnaposto (stessa regola in js/main.js)
+const compilato = v => !!String(v ?? '').trim() && !/^0+$|esempio|nome ?attivit/i.test(String(v).trim());
+const se = (p, html) => `<span data-se="${p}"${compilato(prendi(p)) ? '' : ' hidden'}>${html}</span>`;
+const emailPrivacy = compilato(L.emailPrivacy) ? L.emailPrivacy : C.email;
 
 const I = {
   freccia: '<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M1 8h13M9.5 3.5 14 8l-4.5 4.5" fill="none" stroke="currentColor" stroke-width="1.4"/></svg>',
@@ -35,7 +41,7 @@ const NOMI_SOCIAL = { instagram: 'Instagram', facebook: 'Facebook', tiktok: 'Tik
 // solo i social con un link in config.js (link vuoto = pulsante nascosto)
 const social = (avvolgi, cls = '') => Object.entries(NOMI_SOCIAL).filter(([k]) => S.social?.[k])
   .map(([k, n]) => avvolgi(`<a${cls ? ` class="${cls}"` : ''} data-link="${k}" href="${esc(S.social[k])}" target="_blank" rel="noopener noreferrer" aria-label="${esc(S.nome)} su ${n}">${n}</a>`)).join('');
-function testa({ titolo, descrizione, base, og, percorso, extra = '' }) {
+function testa({ titolo, descrizione, base, og, percorso, extra = '', noindex = false }) {
   return `<!doctype html>
 <html lang="it" data-base="${base}">
 <head>
@@ -43,8 +49,7 @@ function testa({ titolo, descrizione, base, og, percorso, extra = '' }) {
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>${esc(titolo)}</title>
 <meta name="description" content="${esc(descrizione)}">
-<meta name="robots" content="noindex, nofollow">
-<meta name="theme-color" content="#15120F">
+${noindex ? '<meta name="robots" content="noindex, nofollow">\n' : `<link rel="canonical" href="${URL_SITO}${percorso}">\n`}<meta name="theme-color" content="#15120F">
 <meta property="og:type" content="website">
 <meta property="og:locale" content="it_IT">
 <meta property="og:site_name" content="${esc(S.nome)}">
@@ -60,13 +65,13 @@ function testa({ titolo, descrizione, base, og, percorso, extra = '' }) {
 <link rel="apple-touch-icon" href="${base}assets/icone/apple-touch-icon.png">
 <link rel="preload" href="${base}fonts/bodoni-moda-latin.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="${base}fonts/manrope-latin.woff2" as="font" type="font/woff2" crossorigin>
-${extra}<link rel="stylesheet" href="${base}css/style.css">
+${extra}<link rel="stylesheet" href="${base}css/style.css${V}">
 <script>document.documentElement.classList.add('js')</script>
-<script src="${base}config.js" defer></script>
-<script src="${base}js/vendor/gsap.min.js" defer></script>
-<script src="${base}js/vendor/ScrollTrigger.min.js" defer></script>
-<script src="${base}js/vendor/SplitText.min.js" defer></script>
-<script src="${base}js/main.js" defer></script>
+<script src="${base}config.js${V}" defer></script>
+<script src="${base}js/vendor/gsap.min.js${V}" defer></script>
+<script src="${base}js/vendor/ScrollTrigger.min.js${V}" defer></script>
+<script src="${base}js/vendor/SplitText.min.js${V}" defer></script>
+<script src="${base}js/main.js${V}" defer></script>
 </head>`;
 }
 
@@ -137,8 +142,9 @@ function piede({ base, evento }) {
     </div>
   </div>
   <div class="wrap pie__legale">
-    <p>© <span data-anno>2026</span> <span data-t="legale.ragioneSociale">${t('legale.ragioneSociale')}</span> · P.IVA <span data-t="legale.piva">${t('legale.piva')}</span> · Sede legale: <span data-t="legale.sedeLegale">${t('legale.sedeLegale')}</span></p>
+    <p>© <span data-anno>2026</span> ${se('legale.ragioneSociale', `<span data-t="legale.ragioneSociale">${t('legale.ragioneSociale')}</span>`)}<span data-se="!legale.ragioneSociale"${compilato(L.ragioneSociale) ? ' hidden' : ''} data-t="nome">${t('nome')}</span>${se('legale.piva', ` · P.IVA <span data-t="legale.piva">${t('legale.piva')}</span>`)}${se('legale.sedeLegale', ` · Sede legale: <span data-t="legale.sedeLegale">${t('legale.sedeLegale')}</span>`)}</p>
     <p><a href="${base}privacy.html">Privacy e cookie</a></p>
+    ${S.gruppo ? `<p class="pie__gruppo"><span data-t="gruppo.testo">${t('gruppo.testo')}</span> <a href="${esc(S.gruppo.sito)}" target="_blank" rel="noopener" data-t="gruppo.nome">${t('gruppo.nome')}</a><span class="pie__punto" aria-hidden="true">·</span><a href="${esc(S.gruppo.menu)}" target="_blank" rel="noopener">Sfoglia il menù del bar</a></p>` : ''}
   </div>
   <div class="pie__gigante" aria-hidden="true"><p class="giant" data-giant="marchio" data-max="9"><span class="giant__parola" style="--fit-k:${fitK(S.marchio)}">${esc(S.marchio)}</span></p></div>
 </footer>
@@ -191,6 +197,7 @@ const passi = ({ chiari, et, tit, testo }) => `<section class="passi${chiari ? '
 
 /* ---------------- HOME ---------------- */
 function paginaHome() {
+  const REC = !!S.home.recensioni?.mostra; // recensioni: false = sezione nascosta e vuota
   const base = '';
   const hc = [1280, 1920, 2560].map(w => `assets/img/home/hero-computer-${w}.webp ${w}w`).join(', ');
   const ht = [640, 1280, 1920].map(w => `assets/img/home/hero-telefono-${w}.webp ${w}w`).join(', ');
@@ -198,10 +205,13 @@ function paginaHome() {
   const extra = `<link rel="preload" as="image" imagesrcset="${ht}" imagesizes="100vw" media="${MQ}" fetchpriority="high">
 <link rel="preload" as="image" imagesrcset="${hc}" imagesizes="100vw" media="(min-width: 768px) and (orientation: landscape)" fetchpriority="high">
 <script type="application/ld+json">${JSON.stringify({
-    '@context': 'https://schema.org', '@type': 'FoodEstablishment', name: S.nome,
+    '@context': 'https://schema.org', '@type': 'FoodEstablishment', '@id': `${URL_SITO}#azienda`, name: S.nome,
     description: S.descrizione, url: URL_SITO, telephone: C.telefonoLink, email: C.email,
     address: { '@type': 'PostalAddress', streetAddress: C.indirizzo, postalCode: C.cap, addressLocality: C.citta, addressRegion: C.provincia, addressCountry: 'IT' },
-    areaServed: S.zona.luoghi, image: `${URL_SITO}assets/og/home.jpg`,
+    areaServed: { '@type': 'Place', name: 'Abruzzo e regioni limitrofe' },
+    sameAs: Object.values(S.social || {}).filter(Boolean),
+    image: `${URL_SITO}assets/og/home.jpg`, logo: `${URL_SITO}assets/icone/favicon-192.png`,
+    ...(S.gruppo ? { parentOrganization: { '@type': 'Organization', name: S.gruppo.nome, url: S.gruppo.sito } } : {}),
   })}</script>
 `;
   return `${testa({ titolo: S.home.meta.titolo, descrizione: S.home.meta.descrizione, base, og: 'home', percorso: '', extra })}
@@ -256,13 +266,13 @@ ${intestazione({ base, home: true })}
   ${strisce('Galleria', 'home.galleria.titolo')}
   </div>
 
-  <section class="recensioni sez">
+  <section class="recensioni sez"${REC ? '' : ' hidden'}>
     <div class="wrap">
       <div class="rec__testa">
-        <h2 class="titolo titolo--m" data-titolo data-t="home.recensioni.titolo" style="margin-top:0">${t('home.recensioni.titolo')}</h2>
-        <p class="rec__nota" data-t="home.recensioni.nota">${t('home.recensioni.nota')}</p>
+        <h2 class="titolo titolo--m" data-titolo${REC ? ` data-t="home.recensioni.titolo"` : ''} style="margin-top:0">${REC ? t('home.recensioni.titolo') : ''}</h2>
+        <p class="rec__nota"${REC ? ` data-t="home.recensioni.nota"` : ''}>${REC ? t('home.recensioni.nota') : ''}</p>
       </div>
-      <ul class="carosello rec__lista" data-render="recensioni"></ul>
+      <ul class="carosello rec__lista"${REC ? ' data-render="recensioni"' : ''}></ul>
     </div>
   </section>
 
@@ -410,8 +420,8 @@ ${piede({ base, evento: true })}`;
 function paginaPrivacy() {
   const base = '';
   const d = p => `<span data-t="${p}">${t(p)}</span>`;
-  const mail = `<a data-link="mail-privacy" href="mailto:${esc(L.emailPrivacy)}">${d('legale.emailPrivacy')}</a>`;
-  const pec = `<a href="mailto:${esc(L.pec)}">${d('legale.pec')}</a>`;
+  const mail = `<a data-link="mail-privacy" href="mailto:${esc(emailPrivacy)}"><span data-email-privacy>${esc(emailPrivacy)}</span></a>`;
+  const pec = `<a href="mailto:${esc(compilato(L.pec) ? L.pec : '')}">${d('legale.pec')}</a>`;
   const tel = `<a data-link="tel" href="tel:${esc(C.telefonoLink)}">${d('contatti.telefono')}</a>`;
   return `${testa({ titolo: `Informativa privacy · ${S.nome}`, descrizione: `Come ${S.nome} tratta i dati personali di chi visita il sito o chiede un preventivo.`, base, og: 'home', percorso: 'privacy.html' })}
 <body class="pagina-semplice" data-pagina="privacy">
@@ -424,11 +434,11 @@ ${intestazione({ base })}
 
       <h2>Chi è il titolare del trattamento</h2>
       <p>Il titolare è chi decide come e perché vengono usati i dati:</p>
-      <p><strong>${d('legale.ragioneSociale')}</strong> (${d('nome')})<br>
-      P.IVA ${d('legale.piva')} · C.F. ${d('legale.codiceFiscale')}<br>
-      Sede legale: ${d('legale.sedeLegale')}<br>
+      <p><strong>${se('legale.ragioneSociale', `${d('legale.ragioneSociale')} (`)}${d('nome')}${se('legale.ragioneSociale', ')')}</strong><br>
+      ${se('legale.piva', `P.IVA ${d('legale.piva')}<br>`)}${se('legale.codiceFiscale', `C.F. ${d('legale.codiceFiscale')}<br>`)}
+      ${se('legale.sedeLegale', `Sede legale: ${d('legale.sedeLegale')}<br>`)}<span data-se="!legale.sedeLegale"${compilato(L.sedeLegale) ? ' hidden' : ''}>Sede: <span data-indirizzo>${esc(indirizzo)}</span><br></span>
       Email ${mail}<br>
-      PEC ${pec}<br>
+      ${se('legale.pec', `PEC ${pec}<br>`)}
       Telefono ${tel}</p>
 
       <h2>Quali dati raccogliamo</h2>
@@ -484,7 +494,7 @@ ${intestazione({ base })}
         <li><strong>limitarne</strong> l'uso o <strong>opporvi</strong> al trattamento, in particolare quando si basa sul nostro legittimo interesse;</li>
         <li>riceverli in un formato di uso comune (<strong>portabilità</strong>).</li>
       </ul>
-      <p><strong>Come fare:</strong> scrivete a ${mail} (oppure via PEC a ${pec}) o chiamate il ${tel}. Vi risponderemo entro un mese.</p>
+      <p><strong>Come fare:</strong> scrivete a ${mail}${se('legale.pec', ` (oppure via PEC a ${pec})`)} o chiamate il ${tel}. Vi risponderemo entro un mese.</p>
       <p>Se ritenete che i vostri dati siano trattati in modo non corretto, potete presentare <strong>reclamo al Garante per la protezione dei dati personali</strong> (<a href="https://www.garanteprivacy.it" target="_blank" rel="noopener">garanteprivacy.it</a>).</p>
 
       <h2>Modifiche a questa informativa</h2>
@@ -502,7 +512,7 @@ ${piede({ base })}`;
 function pagina404() {
   // percorsi assoluti dalla radice del progetto, perché la 404 può apparire in qualsiasi cartella
   const base = new URL(URL_SITO).pathname;
-  return `${testa({ titolo: `Pagina non trovata · ${S.nome}`, descrizione: 'La pagina che cerchi non esiste o è stata spostata.', base, og: 'home', percorso: '404.html' })}
+  return `${testa({ titolo: `Pagina non trovata · ${S.nome}`, descrizione: 'La pagina che cerchi non esiste o è stata spostata.', base, og: 'home', percorso: '404.html', noindex: true })}
 <body class="pagina-semplice" data-pagina="errore">
 ${intestazione({ base })}
 <main id="contenuto">
@@ -523,3 +533,12 @@ scrivi('index.html', paginaHome());
 S.eventi.forEach((e, n) => scrivi(`eventi/${e.pagina}.html`, paginaEvento(e, n)));
 scrivi('privacy.html', paginaPrivacy());
 scrivi('404.html', pagina404());
+
+const oggi = new Date().toISOString().slice(0, 10);
+const indirizzi = ['', ...S.eventi.map(e => `eventi/${e.pagina}.html`), 'privacy.html'];
+scrivi('sitemap.xml', `<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+${indirizzi.map(p => `  <url><loc>${URL_SITO}${p}</loc><lastmod>${oggi}</lastmod></url>`).join('\n')}
+</urlset>
+`);
+scrivi('robots.txt', `User-agent: *\nAllow: /\n\nSitemap: ${URL_SITO}sitemap.xml\n`);

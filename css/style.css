@@ -763,6 +763,10 @@ textarea.pg__input { min-height: 112px; resize: vertical; }
 .pie__lista a:hover { text-decoration: underline; text-underline-offset: 4px; }
 .pie__legale { margin-top: clamp(56px, 7vw, 96px); padding-block: 24px; border-top: 1px solid var(--linea-chiara); display: flex; flex-wrap: wrap; gap: 10px 28px; justify-content: space-between; font-size: 13px; color: var(--pietra); }
 .pie__legale a { color: var(--avorio); }
+.pie__gruppo { flex-basis: 100%; font-size: 13.5px; color: var(--pietra); }
+.pie__gruppo a { text-decoration: none; background: linear-gradient(currentColor, currentColor) 0 100% / 100% 1px no-repeat; padding-bottom: 1px; transition: background-size .5s var(--ease); }
+.pie__gruppo a:hover { background-size: 0 1px; background-position: 100% 100%; }
+.pie__punto { margin-inline: 10px; opacity: .6; }
 .pie__gigante { padding-inline: var(--giant-m); margin-top: 8px; margin-bottom: calc(-.2 * var(--fit-px, 120px)); pointer-events: none; user-select: none; }
 .pie__gigante .giant { color: rgba(167, 157, 142, .2); }
 @media (max-width: 1023px) { .pie { padding-bottom: calc(var(--mbar-h) + env(safe-area-inset-bottom)); } }

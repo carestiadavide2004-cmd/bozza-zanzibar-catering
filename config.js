@@ -38,7 +38,8 @@ window.SITO = (() => {
     marchio: "Zeta",          // la parola gigante nel footer
     sottotitolo: "Catering",  // sotto il marchio, in maiuscoletto
     descrizione: "Catering per matrimoni, cerimonie, feste private ed eventi aziendali in tutto l'Abruzzo e nelle regioni limitrofe.", // TESTO DI ESEMPIO DA CONFERMARE
-    indirizzoSito: "https://carestiadavide2004-cmd.github.io/bozza-zanzibar-catering/", // indirizzo della bozza online
+    indirizzoSito: "https://zetacatering.com/", // indirizzo del sito online (canonical, anteprime social, sitemap)
+    versione: "20261124", // cambiala dopo ogni modifica a CSS o JS (forza il ricaricamento), poi rigenera le pagine
 
     contatti: {
       telefono: "+39 392 285 0875",
@@ -62,14 +63,25 @@ window.SITO = (() => {
       facebook: "", // vuoto = pulsante nascosto
     },
 
-    legale: { // DA CONFERMARE: tutti i dati legali
-      ragioneSociale: "Nome attività S.r.l.",
-      piva: "00000000000",
-      codiceFiscale: "00000000000",
-      sedeLegale: "Via Esempio 1, 65029 Torre de' Passeri (PE)",
-      emailPrivacy: "privacy@esempio.it",
-      pec: "nomeattivita@pec.it",
-      aggiornamentoPrivacy: "23 novembre 2026",
+    /* Dati legali: finché un valore resta un segnaposto (zeri, "Nome attività",
+       "esempio", vuoto) la riga NON compare sul sito. Basta scrivere il dato vero
+       qui e la riga appare da sola (poi rigenera le pagine). */
+    legale: {
+      ragioneSociale: "Nome attività S.r.l.",          // DA CONFERMARE
+      piva: "00000000000",                             // DA CONFERMARE
+      codiceFiscale: "00000000000",                    // DA CONFERMARE
+      sedeLegale: "Via Esempio 1, 65029 Torre de' Passeri (PE)", // DA CONFERMARE
+      emailPrivacy: "privacy@esempio.it",              // DA CONFERMARE (se resta segnaposto si usa l'email dei contatti)
+      pec: "nomeattivita@pec.it",                      // DA CONFERMARE
+      aggiornamentoPrivacy: "24 novembre 2026",
+    },
+
+    /* Riga del footer che collega il bar */
+    gruppo: {
+      testo: "Zeta Catering è il servizio catering di",
+      nome: "Zanzibar · Coffee & Lounge Bar",
+      sito: "https://zanzibartorre.com",
+      menu: "https://menu.zanzibartorre.com",
     },
 
     /* PREVENTIVO GUIDATO: passi, opzioni e messaggio WhatsApp.
@@ -145,6 +157,7 @@ window.SITO = (() => {
         titolo: "Il nostro *mestiere*, da vicino",
       },
       recensioni: {
+        mostra: false, // false = sezione nascosta (true quando arrivano le recensioni vere)
         titolo: "Recensioni di esempio",
         nota: "Testi segnaposto: qui andranno le recensioni vere dei clienti.",
         lista: [
